@@ -54,7 +54,7 @@ async def check_chapter():
 
     time_posted = li_element.find('time').text
 
-    text_channel = client.get_channel(int(os.getenv('CHANNEL_ID')))
+    text_channel = bot.get_channel(int(os.getenv('CHANNEL_ID')))
 
     last_message = (await text_channel.history(limit=1).flatten())[0].content
     last_message_array = last_message.split()
