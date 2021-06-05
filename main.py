@@ -75,4 +75,4 @@ async def on_ready():
     check_chapter.start()
     
 
-client.run(os.getenv('TOKEN'))
+bot.run(os.getenv('TOKEN'))
