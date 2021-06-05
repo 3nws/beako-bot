@@ -13,8 +13,8 @@ channels = []
 
 @bot.command()
 async def add_channel(ctx):
-    print(ctx.channel)
-    channels.append(ctx.channel)
+    print(ctx.channel.id)
+    channels.append(ctx.channel.id)
 
 @bot.command()
 async def avatar(ctx, member: discord.Member=None):
