@@ -9,6 +9,13 @@ import threading
 load_dotenv()
 bot = commands.Bot(command_prefix='r.')
 
+channels = []
+
+@bot.command()
+async def add_channel(ctx):
+    print(ctx.channel)
+    channels.append(ctx.channel)
+
 @bot.command()
 async def avatar(ctx, member: discord.Member=None):
   avatar_frame = discord.Embed(
