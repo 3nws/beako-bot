@@ -14,6 +14,7 @@ channels = [] # keep these on a database later
 @bot.command()
 async def add_channel(ctx):
     channels.append(ctx.channel.id)
+    await ctx.send("This text channel has been added to the list.")
 
 @bot.command()
 async def avatar(ctx, member: discord.Member=None):
@@ -30,7 +31,7 @@ async def avatar(ctx, member: discord.Member=None):
   await ctx.send(embed=avatar_frame)
 
 
-@tasks.loop(minutes=10)
+@tasks.loop(seconds=10)
 async def check_chapter():
     page = requests.get('https://witchculttranslation.com/arc-7/')
 
