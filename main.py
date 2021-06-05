@@ -14,7 +14,7 @@ channels = [] # keep these on a database later
 @bot.command()
 async def add_channel(ctx):
     channels.append(ctx.channel.id)
-    await ctx.send("This text channel has been added to the list.")
+    await ctx.send("This text channel will receive notifications.")
 
 @bot.command()
 async def avatar(ctx, member: discord.Member=None):
