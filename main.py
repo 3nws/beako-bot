@@ -9,11 +9,10 @@ import threading
 load_dotenv()
 bot = commands.Bot(command_prefix='r.')
 
-channels = []
+channels = [] # keep these on a database later
 
 @bot.command()
 async def add_channel(ctx):
-    print(ctx.channel.id)
     channels.append(ctx.channel.id)
 
 @bot.command()
@@ -73,10 +72,9 @@ async def check_chapter():
 
     last_chapter = last_chapter.strip()
     if last_chapter != most_recent_post_str:
-        await text_channel.send(
-            f'{most_recent_post} has been translated {time_posted}.\n{latest_chapter_translated_link}'
-        )
-
+        for channel in channels:
+            await (bot.get_channel(int(channel))).send(f'{most_recent_post} has been translated {time_posted}.\n{latest_chapter_translated_link}')
+            
 @bot.event
 async def on_ready():
     check_chapter.start()
