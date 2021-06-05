@@ -3,11 +3,26 @@ import os
 import requests
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
-from discord.ext import tasks
+from discord.ext import tasks, commands
 import threading
 
 load_dotenv()
-client = discord.Client()
+bot = commands.Bot(command_prefix='r.')
+
+@bot.command()
+async def avatar(ctx, member: discord.Member=None):
+  avatar_frame = discord.Embed(
+    color = discord.Colour.random()
+  )
+  if member:
+    avatar_frame.add_field(name=str(ctx.author)+" requested", value=member.mention+"'s avatar.")
+    avatar_frame.set_image(url=f'{member.avatar_url}')
+  else:
+    avatar_frame.add_field(name=str(ctx.author), value=ctx.author.mention+"'s avatar.")
+    avatar_frame.set_image(url=f'{ctx.author.avatar_url}')
+    
+  await ctx.send(embed=avatar_frame)
+
 
 @tasks.loop(minutes=10)
 async def check_chapter():
@@ -55,8 +70,9 @@ async def check_chapter():
             f'{most_recent_post} has been translated {time_posted}.\n{latest_chapter_translated_link}'
         )
 
-@client.event
+@bot.event
 async def on_ready():
     check_chapter.start()
+    
 
 client.run(os.getenv('TOKEN'))
