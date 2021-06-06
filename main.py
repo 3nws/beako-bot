@@ -14,6 +14,8 @@ bot = commands.Bot(command_prefix='r.')
 
 client = pymongo.MongoClient(os.getenv('DB_URL'))
 
+client.database_names()
+
 db = client.channel_id
 
 channels = db.data
