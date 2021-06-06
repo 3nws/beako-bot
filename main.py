@@ -76,11 +76,7 @@ async def check_chapter():
     
     last_chapter = db_chapter.data.find_one()
     
-    print(last_chapter == most_recent_post_str)
-    print("last", last_chapter)
-    print("recent", most_recent_post_str)
-    
-    if last_chapter != most_recent_post_str:
+    if last_chapter.title != most_recent_post_str:
         db_chapter.data.find_one_and_update({'title':str(last_chapter['title'])}, { '$set': { "title" : most_recent_post_str} })
         for channel in channels.find():
             await (bot.get_channel(int(channel['id']))).send(f'{most_recent_post} has been translated {time_posted}.\n{latest_chapter_translated_link}')
