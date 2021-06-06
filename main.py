@@ -21,6 +21,12 @@ db_chapter = client.chapter
 
 channels = db_channels.data
 
+@commands.has_permissions(administrator=True)
+async def clean(ctx, limit: int):
+  await ctx.channel.purge(limit=limit+1)
+  await ctx.send('Cleared by {}'.format(ctx.author.mention))
+  await ctx.message.delete()
+
 @bot.command()
 async def say(ctx, msg):
   await ctx.message.delete()
