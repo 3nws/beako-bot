@@ -54,14 +54,6 @@ async def clean(ctx, limit: int):
   await ctx.send('Cleared by {}'.format(ctx.author.mention))
   await ctx.message.delete()
 
-@ban.error,
-@kick.error,
-@unban.error,
-@clean.error
-async def clear_error(ctx, error):
-    if isinstance(error, commands.MissingPermissions):
-      await ctx.send("You cant do that!")
-
 @bot.command()
 async def say(ctx, msg):
   await ctx.message.delete()
@@ -141,6 +133,25 @@ async def check_chapter():
         for channel in channels.find():
             if bot.get_channel((channel['id'])):
               await (bot.get_channel(int(channel['id']))).send(f'{most_recent_post} has been translated {time_posted}.\n{latest_chapter_translated_link}')
+  
+# Error handling
+
+@clean.error
+async def clear_error(ctx, error):
+    if isinstance(error, commands.MissingPermissions):
+      await ctx.send("You cant do that!")  
+@ban.error
+async def clear_error(ctx, error):
+    if isinstance(error, commands.MissingPermissions):
+      await ctx.send("You cant do that!") 
+@kick.error
+async def clear_error(ctx, error):
+    if isinstance(error, commands.MissingPermissions):
+      await ctx.send("You cant do that!") 
+@unban.error
+async def clear_error(ctx, error):
+    if isinstance(error, commands.MissingPermissions):
+      await ctx.send("You cant do that!") 
             
 @bot.event
 async def on_ready():
