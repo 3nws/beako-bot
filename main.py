@@ -14,11 +14,9 @@ bot = commands.Bot(command_prefix='r.')
 
 client = pymongo.MongoClient(os.getenv('DB_URL'))
 
-client.list_database_names()
+db_channels = client.channel_id
 
-db = client.channel_id
-
-channels = db.data
+channels = db_channels.data
 
 @bot.command()
 async def add_channel(ctx):
@@ -84,9 +82,9 @@ async def check_chapter():
             last_chapter += last_message_array[i] + " "
 
     last_chapter = last_chapter.strip()
-    # if last_chapter != most_recent_post_str:
-    #     for channel in channels:
-    #         await (bot.get_channel(int(channel))).send(f'{most_recent_post} has been translated {time_posted}.\n{latest_chapter_translated_link}')
+    if last_chapter != most_recent_post_str:
+        for channel in channels.find():
+            await (bot.get_channel(int(channel['id']))).send(f'{most_recent_post} has been translated {time_posted}.\n{latest_chapter_translated_link}')
             
 @bot.event
 async def on_ready():
