@@ -14,9 +14,9 @@ bot = commands.Bot(command_prefix='r.')
 
 client = pymongo.MongoClient(os.getenv('DB_URL'))
 
-db = client['channel_id']
+db = client.channel_id
 
-channels = db['data']
+channels = db.data
 
 @bot.command()
 async def add_channel(ctx):
