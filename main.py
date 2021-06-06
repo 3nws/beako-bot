@@ -54,9 +54,9 @@ async def clean(ctx, limit: int):
   await ctx.send('Cleared by {}'.format(ctx.author.mention))
   await ctx.message.delete()
 
-@ban.error
-@kick.error
-@unban.error
+@ban.error,
+@kick.error,
+@unban.error,
 @clean.error
 async def clear_error(ctx, error):
     if isinstance(error, commands.MissingPermissions):
