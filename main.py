@@ -28,6 +28,14 @@ async def add_channel(ctx):
     }
     channels.insert_one(channel_entry)
     await ctx.send("This text channel will receive notifications.")
+    
+@bot.command()
+async def remove_channel(ctx):
+    channel_entry = {
+      'id': ctx.channel.id,
+    }
+    channels.find_one_and_delete(channel_entry)
+    await ctx.send("This text channel will no longer receive notifications.")
 
 @bot.command()
 async def avatar(ctx, member: discord.Member=None):
