@@ -79,7 +79,7 @@ async def check_chapter():
     if last_chapter['title'] != most_recent_post_str:
         db_chapter.data.find_one_and_update({'title':str(last_chapter['title'])}, { '$set': { "title" : most_recent_post_str} })
         for channel in channels.find():
-            if bot.get_channel((channel)):
+            if bot.get_channel((channel['id'])):
               await (bot.get_channel(int(channel['id']))).send(f'{most_recent_post} has been translated {time_posted}.\n{latest_chapter_translated_link}')
             
 @bot.event
