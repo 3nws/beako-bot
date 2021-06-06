@@ -33,7 +33,7 @@ async def ban(ctx, user: discord.Member, *, reason=None):
   await user.ban(reason=reason)
   await ctx.send(f"{user} has been yeeted forever.")
 
-@bot.command(pass_context=True)
+@bot.command()
 @commands.has_permissions(administrator=True)
 async def unban(ctx, *, member):
   banned_users = await ctx.guild.bans()
@@ -47,7 +47,7 @@ async def unban(ctx, *, member):
     await ctx.send(f"{user} has been unbanned.")
     return
 
-@bot.command(pass_context=True)
+@bot.command()
 @commands.has_permissions(administrator=True)
 async def clean(ctx, limit: int):
   await ctx.channel.purge(limit=limit+1)
