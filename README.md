@@ -13,5 +13,4 @@ I scrape the data from [WitchCultTranslation](https://witchculttranslation.com/)
 
 ### TODO
 
-- add remove_channel command
 - remove channel_id from db when a channel is deleted.
