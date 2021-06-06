@@ -21,6 +21,11 @@ db_chapter = client.chapter
 
 channels = db_channels.data
 
+@clean.error
+async def clear_error(ctx, error):
+    if isinstance(error, commands.MissingPermissions):
+      await ctx.send("You cant do that!")
+
 @bot.command()
 @commands.has_permissions(kick_members=True)
 async def kick(ctx, user: discord.Member, *, reason=None):
