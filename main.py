@@ -22,6 +22,11 @@ db_chapter = client.chapter
 channels = db_channels.data
 
 @bot.command()
+async def say(ctx, msg):
+  await ctx.message.delete()
+  await ctx.send(msg)
+
+@bot.command()
 async def add_channel(ctx):
     channel_entry = {
       'id': ctx.channel.id,
