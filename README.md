@@ -13,6 +13,9 @@ I scrape the data from [WitchCultTranslation](https://witchculttranslation.com/)
 - r.remove_channel (remove the text channel from the list that will receive notifications)
 - r.say x (make the bot say something)
 - r.clean x (deletes the last x messages, needs admin permissions)
+- r.kick x (kicks the user x, needs kick permission)
+- r.ban x (bans the user x, needs ban permission)
+- r.unban x (unbans the user x, needs admin permissions)
 
 ### TODO
 

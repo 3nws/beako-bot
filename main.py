@@ -34,6 +34,7 @@ async def ban(ctx, user: discord.Member, *, reason=None):
   await ctx.send(f"{user} has been yeeted forever.")
 
 @bot.command()
+@commands.has_permissions(administrator=True)
 async def unban(ctx, *, member):
   banned_users = await ctx.guild.bans()
   member_name, member_discriminator = member.split('#')
