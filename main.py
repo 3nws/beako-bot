@@ -55,7 +55,7 @@ async def clean(ctx, limit: int):
   await ctx.message.delete()
 
 @bot.command()
-async def say(ctx, msg):
+async def say(ctx, *, msg=''):
   await ctx.message.delete()
   await ctx.send(msg)
 
