@@ -2,6 +2,7 @@ import discord
 import os
 import requests
 from bs4 import BeautifulSoup
+from pymongo import  MongoClient
 from dotenv import load_dotenv
 from discord.ext import tasks, commands
 import threading
@@ -9,11 +10,18 @@ import threading
 load_dotenv()
 bot = commands.Bot(command_prefix='r.')
 
-channels = [] # keep these on a database later
+db = pymongo.MongoClient(os.getenv('DB_URL'))
+
+my_db = connection['chapter_database']
+
+data = my_database['data']
 
 @bot.command()
 async def add_channel(ctx):
-    channels.append(ctx.channel.id)
+    channel_entry = {
+      'id': ctx.channel.id,
+    }
+    data.insert_one(channel_entry)
     await ctx.send("This text channel will receive notifications.")
 
 @bot.command()
@@ -72,9 +80,9 @@ async def check_chapter():
             last_chapter += last_message_array[i] + " "
 
     last_chapter = last_chapter.strip()
-    if last_chapter != most_recent_post_str:
-        for channel in channels:
-            await (bot.get_channel(int(channel))).send(f'{most_recent_post} has been translated {time_posted}.\n{latest_chapter_translated_link}')
+    # if last_chapter != most_recent_post_str:
+    #     for channel in channels:
+    #         await (bot.get_channel(int(channel))).send(f'{most_recent_post} has been translated {time_posted}.\n{latest_chapter_translated_link}')
             
 @bot.event
 async def on_ready():

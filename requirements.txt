@@ -1,5 +1,6 @@
 discord.py==1.7.2
 requests==2.21.0
+pymongo==3.11.4
 beautifulsoup4==4.9.3
 discord==1.0.1
 python-dotenv==0.17.1
