@@ -17,6 +17,10 @@ client = pymongo.MongoClient(os.getenv('DB_URL'))
 
 db_channels = client.channel_id
 
+db_chapter = client.chapter
+
+chapter = db_chapter.data
+
 channels = db_channels.data
 
 @bot.command()
@@ -71,21 +75,14 @@ async def check_chapter():
         pass
 
     time_posted = li_element.find('time').text
+    
+    # last_chapter = db_chapter.data.find_one()
 
-    text_channel = bot.get_channel(int(os.getenv('CHANNEL_ID')))
-
-    last_message = (await text_channel.history(limit=1).flatten())[0].content
-    last_message_array = last_message.split()
-    last_chapter = ""
-
-    if (len(last_message_array)>3):
-        for i in range(0, 4):
-            last_chapter += last_message_array[i] + " "
-
-    last_chapter = last_chapter.strip()
-    if last_chapter != most_recent_post_str:
-        for channel in channels.find():
-            await (bot.get_channel(int(channel['id']))).send(f'{most_recent_post} has been translated {time_posted}.\n{latest_chapter_translated_link}')
+    # print(last_chapter)
+    
+    # if last_chapter != most_recent_post_str:
+    #     for channel in channels.find():
+    #         await (bot.get_channel(int(channel['id']))).send(f'{most_recent_post} has been translated {time_posted}.\n{latest_chapter_translated_link}')
             
 @bot.event
 async def on_ready():
