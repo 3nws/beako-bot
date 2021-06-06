@@ -21,6 +21,7 @@ db_chapter = client.chapter
 
 channels = db_channels.data
 
+@bot.command(pass_context=True)
 @commands.has_permissions(administrator=True)
 async def clean(ctx, limit: int):
   await ctx.channel.purge(limit=limit+1)
