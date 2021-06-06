@@ -38,7 +38,7 @@ async def remove_channel(ctx):
       'id': ctx.channel.id,
     }
     if channels.count_documents(channel_entry, limit = 1) == 0:
-          await ct.send("This text channel is not on the receiver list!")
+          await ctx.send("This text channel is not on the receiver list!")
           return
     channels.find_one_and_delete(channel_entry)
     await ctx.send("This text channel will no longer receive notifications.")
