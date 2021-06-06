@@ -2,7 +2,7 @@ import discord
 import os
 import requests
 from bs4 import BeautifulSoup
-from pymongo import MongoClient
+import pymongo
 from dotenv import load_dotenv
 from discord.ext import tasks, commands
 import threading
@@ -10,9 +10,11 @@ import threading
 load_dotenv()
 bot = commands.Bot(command_prefix='r.')
 
-db = MongoClient(os.getenv('DB_URL'))
+client = pymongo.MongoClient(os.getenv('DB_URL'))
 
-channels = db.data
+db = client['channel_id']
+
+channels = db['data']
 
 @bot.command()
 async def add_channel(ctx):
