@@ -2,7 +2,7 @@ import discord
 import os
 import requests
 from bs4 import BeautifulSoup
-from pymongo import  MongoClient
+from pymongo import MongoClient
 from dotenv import load_dotenv
 from discord.ext import tasks, commands
 import threading
@@ -10,18 +10,18 @@ import threading
 load_dotenv()
 bot = commands.Bot(command_prefix='r.')
 
-db = pymongo.MongoClient(os.getenv('DB_URL'))
+db = MongoClient(os.getenv('DB_URL'))
 
-my_db = connection['chapter_database']
+my_db = connection['channel_id']
 
-data = my_database['data']
+channels = my_database['data']
 
 @bot.command()
 async def add_channel(ctx):
     channel_entry = {
       'id': ctx.channel.id,
     }
-    data.insert_one(channel_entry)
+    channels.insert_one(channel_entry)
     await ctx.send("This text channel will receive notifications.")
 
 @bot.command()
