@@ -19,8 +19,6 @@ db_channels = client.channel_id
 
 db_chapter = client.chapter
 
-chapter = db_chapter.data
-
 channels = db_channels.data
 
 @bot.command()
@@ -76,13 +74,12 @@ async def check_chapter():
 
     time_posted = li_element.find('time').text
     
-    # last_chapter = db_chapter.data.find_one()
-
-    # print(last_chapter)
+    last_chapter = db_chapter.data.find_one() # test
     
-    # if last_chapter != most_recent_post_str:
-    #     for channel in channels.find():
-    #         await (bot.get_channel(int(channel['id']))).send(f'{most_recent_post} has been translated {time_posted}.\n{latest_chapter_translated_link}')
+    if last_chapter != most_recent_post_str:
+        db_chapter.data.find_one_and_update({'title':str(last_chapter['title'])}, { '$set': { "title" : most_recent_post_str} })
+        for channel in channels.find():
+            await (bot.get_channel(int(channel['id']))).send(f'{most_recent_post} has been translated {time_posted}.\n{latest_chapter_translated_link}')
             
 @bot.event
 async def on_ready():
