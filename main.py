@@ -12,9 +12,7 @@ bot = commands.Bot(command_prefix='r.')
 
 db = MongoClient(os.getenv('DB_URL'))
 
-my_db = connection.channel_id
-
-channels = my_db.data
+channels = db.data
 
 @bot.command()
 async def add_channel(ctx):
