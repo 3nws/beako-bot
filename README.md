@@ -2,7 +2,7 @@ Notifies when a new chapter of the Re:Zero web novel is translated.
 
 Checks every 10 seconds.
 
-I get the data from [WitchCultTranslation](https://witchculttranslation.com/).
+I scrape the data from [WitchCultTranslation](https://witchculttranslation.com/).
 
 ## Commands
 
@@ -11,5 +11,5 @@ I get the data from [WitchCultTranslation](https://witchculttranslation.com/).
 
 ### TODO
 
-- add delete_channel command
-- delete channel_id from db when a channel is deleted.
+- add remove_channel command
+- remove channel_id from db when a channel is deleted.
