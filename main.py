@@ -1,9 +1,10 @@
 import discord
 import os
 import requests
+import dns
+import pymongo
 
 from bs4 import BeautifulSoup
-import pymongo
 from dotenv import load_dotenv
 from discord.ext import tasks, commands
 
