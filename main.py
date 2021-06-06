@@ -1,10 +1,12 @@
 import discord
 import os
 import requests
+
 from bs4 import BeautifulSoup
 import pymongo
 from dotenv import load_dotenv
 from discord.ext import tasks, commands
+
 import threading
 
 load_dotenv()
