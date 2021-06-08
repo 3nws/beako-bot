@@ -136,7 +136,6 @@ async def check_chapter():
             
 @bot.event
 async def on_ready():
-    await bot.user.edit(username="Beako")
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name="Songstress Liliana!"))
     check_chapter.start()
     
