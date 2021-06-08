@@ -75,7 +75,6 @@ async def remove_channel(ctx):
     channel_entry = {
       'id': ctx.channel.id,
     }
-    
     if channels.count_documents(channel_entry, limit = 1) == 0:
           await ctx.send("This text channel is not on the receiver list!")
           return
@@ -137,6 +136,7 @@ async def check_chapter():
             
 @bot.event
 async def on_ready():
+    await bot.user.edit(username="Beako")
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name="Songstress Liliana!"))
     check_chapter.start()
     
