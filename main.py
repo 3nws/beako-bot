@@ -75,6 +75,7 @@ async def remove_channel(ctx):
     channel_entry = {
       'id': ctx.channel.id,
     }
+    
     if channels.count_documents(channel_entry, limit = 1) == 0:
           await ctx.send("This text channel is not on the receiver list!")
           return
