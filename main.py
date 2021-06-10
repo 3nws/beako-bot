@@ -3,11 +3,11 @@ import os
 import requests
 import dns
 import pymongo
-import datetime
 
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 from discord.ext import tasks, commands
+from datetime import datetime
 
 import threading
 
