@@ -24,10 +24,9 @@ channels = db_channels.data
 
 @bot.command(case_insensitive = True, aliases = ["remindme", "remind_me"])
 async def remind(ctx, time, unit):
-    user = ctx.message.author
     embed = discord.Embed(color=discord.Colour.random(), timestamp=datetime.utcnow())
     seconds = 0
-    if reminder is None:
+    if unit is None:
         embed.add_field(name='Warning', value='Please specify what do you want me to remind you about.')
     if unit.lower().endswith("d"):
         seconds += int(time) * 60 * 60 * 24
@@ -49,7 +48,7 @@ async def remind(ctx, time, unit):
     else:
         await ctx.send(f"I'll ping you in {counter}.")
         await asyncio.sleep(seconds)
-        await ctx.send(f"Ping pong.")
+        await ctx.send(f"Yo {ctx.author}, what up!.")
         return
     await ctx.send(embed=embed)
 
