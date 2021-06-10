@@ -23,23 +23,23 @@ db_chapter = client.chapter
 channels = db_channels.data
 
 @bot.command(case_insensitive = True, aliases = ["remindme", "remind_me"])
-async def remind(ctx, reminder, time):
+async def remind(ctx, time, unit):
     user = ctx.message.author
     embed = discord.Embed(color=discord.Colour.random(), timestamp=datetime.utcnow())
     seconds = 0
     if reminder is None:
         embed.add_field(name='Warning', value='Please specify what do you want me to remind you about.')
-    if time.lower().endswith("d"):
-        seconds += int(time[:-1]) * 60 * 60 * 24
+    if unit.lower().endswith("d"):
+        seconds += int(time) * 60 * 60 * 24
         counter = f"{seconds // 60 // 60 // 24} days"
-    if time.lower().endswith("h"):
-        seconds += int(time[:-1]) * 60 * 60
+    if unit.lower().endswith("h"):
+        seconds += int(time) * 60 * 60
         counter = f"{seconds // 60 // 60} hours"
-    elif time.lower().endswith("m"):
-        seconds += int(time[:-1]) * 60
+    elif unit.lower().endswith("m"):
+        seconds += int(time) * 60
         counter = f"{seconds // 60} minutes"
-    elif time.lower().endswith("s"):
-        seconds += int(time[:-1])
+    elif unit.lower().endswith("s"):
+        seconds += int(time)
         counter = f"{seconds} seconds"
     if seconds == 0:
         embed.add_field(name='Warning',
