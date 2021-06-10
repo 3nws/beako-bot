@@ -47,9 +47,9 @@ async def remind(ctx, time, unit):
     elif seconds > 7776000:
         embed.add_field(name='Warning', value='ERROR IT IS')
     else:
-        await ctx.send(f"Alright, I will remind you about {reminder} in {counter}.")
+        await ctx.send(f"I'll ping you in {counter}.")
         await asyncio.sleep(seconds)
-        await ctx.send(f"Hi, you asked me to remind you about {reminder} {counter} ago.")
+        await ctx.send(f"Ping pong.")
         return
     await ctx.send(embed=embed)
 
