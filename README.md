@@ -16,6 +16,7 @@ I scrape the data from [WitchCultTranslation](https://witchculttranslation.com/)
 - r.kick x (kicks the user x, needs kick permission)
 - r.ban x (bans the user x, needs ban permission)
 - r.unban x (unbans the user x, needs admin permissions)
+- r.remind x y (reminds the user after x y's (ex. 5 seconds) d: day, h: hour, m: minute, s: second)
 
 ### TODO
 

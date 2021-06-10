@@ -3,6 +3,7 @@ import os
 import requests
 import dns
 import pymongo
+import datetime
 
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
@@ -22,7 +23,7 @@ db_chapter = client.chapter
 channels = db_channels.data
 
 @bot.command(case_insensitive = True, aliases = ["remindme", "remind_me"])
-async def remind(ctx, time, *, reminder):
+async def remind(ctx, reminder, *, time):
     user = ctx.message.author
     embed = discord.Embed(color=0x55a7f7, timestamp=datetime.utcnow())
     seconds = 0
