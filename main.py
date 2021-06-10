@@ -3,6 +3,7 @@ import os
 import requests
 import dns
 import pymongo
+import asyncio
 
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
