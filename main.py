@@ -21,7 +21,7 @@ db_chapter = client.chapter
 
 channels = db_channels.data
 
-@bot.command(case_insensitive = True, aliases = ["remind", "remindme", "remind_me"])
+@bot.command(case_insensitive = True, aliases = ["remindme", "remind_me"])
 async def remind(ctx, time, *, reminder):
     user = ctx.message.author
     embed = discord.Embed(color=0x55a7f7, timestamp=datetime.utcnow())
