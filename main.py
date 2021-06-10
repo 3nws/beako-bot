@@ -21,8 +21,39 @@ db_chapter = client.chapter
 
 channels = db_channels.data
 
+@bot.command(case_insensitive = True, aliases = ["remind", "remindme", "remind_me"])
+async def remind(ctx, time, *, reminder):
+    user = ctx.message.author
+    embed = discord.Embed(color=0x55a7f7, timestamp=datetime.utcnow())
+    seconds = 0
+    if reminder is None:
+        embed.add_field(name='Warning', value='Please specify what do you want me to remind you about.')
+    if time.lower().endswith("d"):
+        seconds += int(time[:-1]) * 60 * 60 * 24
+        counter = f"{seconds // 60 // 60 // 24} days"
+    if time.lower().endswith("h"):
+        seconds += int(time[:-1]) * 60 * 60
+        counter = f"{seconds // 60 // 60} hours"
+    elif time.lower().endswith("m"):
+        seconds += int(time[:-1]) * 60
+        counter = f"{seconds // 60} minutes"
+    elif time.lower().endswith("s"):
+        seconds += int(time[:-1])
+        counter = f"{seconds} seconds"
+    if seconds == 0:
+        embed.add_field(name='Warning',
+                        value='ERROR IT IS')
+    elif seconds > 7776000:
+        embed.add_field(name='Warning', value='ERROR IT IS')
+    else:
+        await ctx.send(f"Alright, I will remind you about {reminder} in {counter}.")
+        await asyncio.sleep(seconds)
+        await ctx.send(f"Hi, you asked me to remind you about {reminder} {counter} ago.")
+        return
+    await ctx.send(embed=embed)
+
 @bot.command()
-@commands.has_permissions(kick_members=True)
+@commands.has_permissions(kick_members=True, aliases = ["yeet", "yeeto"])
 async def kick(ctx, user: discord.Member, *, reason=None):
   await user.kick(reason=reason)
   await ctx.send(f"{user} has been yeeted.")
@@ -48,7 +79,7 @@ async def unban(ctx, *, member):
     return
 
 @bot.command()
-@commands.has_permissions(administrator=True)
+@commands.has_permissions(administrator=True, aliases = ["clear"])
 async def clean(ctx, limit: int):
   await ctx.channel.purge(limit=limit+1)
   await ctx.send('Cleared by {}'.format(ctx.author.mention))
@@ -59,7 +90,7 @@ async def say(ctx, *, msg=''):
   await ctx.message.delete()
   await ctx.send(msg)
 
-@bot.command()
+@bot.command(aliases = ["add"])
 async def add_channel(ctx):
     channel_entry = {
       'id': ctx.channel.id,
@@ -70,7 +101,7 @@ async def add_channel(ctx):
     channels.insert_one(channel_entry)
     await ctx.send("This text channel will receive notifications.")
     
-@bot.command()
+@bot.command(aliases = ["remove"])
 async def remove_channel(ctx):
     channel_entry = {
       'id': ctx.channel.id,
