@@ -49,7 +49,7 @@ async def remind(ctx, time, unit):
     else:
         await ctx.send(f"I'll ping you in {counter}.")
         await asyncio.sleep(seconds)
-        await ctx.send(f"Yo @{ctx.author}, what up!.")
+        await ctx.send(f"Yo {ctx.author.mention}, what up!.")
         return
     await ctx.send(embed=embed)
 
