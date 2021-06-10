@@ -28,7 +28,7 @@ async def remind(ctx, time, unit):
     embed = discord.Embed(color=discord.Colour.random(), timestamp=datetime.utcnow())
     seconds = 0
     if unit is None:
-        embed.add_field(name='Warning', value='Please specify what do you want me to remind you about.')
+        embed.add_field(name='Warning', value='ERROR IT IS!')
     if unit.lower().endswith("d"):
         seconds += int(time) * 60 * 60 * 24
         counter = f"{seconds // 60 // 60 // 24} days"
@@ -45,11 +45,11 @@ async def remind(ctx, time, unit):
         embed.add_field(name='Warning',
                         value='ERROR IT IS')
     elif seconds > 7776000:
-        embed.add_field(name='Warning', value='ERROR IT IS')
+        embed.add_field(name='Warning', value='ERROR IT IS!')
     else:
         await ctx.send(f"I'll ping you in {counter}.")
         await asyncio.sleep(seconds)
-        await ctx.send(f"Yo {ctx.author.mention}, what up!.")
+        await ctx.send(f"Yo {ctx.author.mention}, what up!")
         return
     await ctx.send(embed=embed)
 
