@@ -52,8 +52,8 @@ async def remind(ctx, time, *, reminder):
         return
     await ctx.send(embed=embed)
 
-@bot.command()
-@commands.has_permissions(kick_members=True, aliases = ["yeet", "yeeto"])
+@bot.command(aliases = ["yeet", "yeeto"])
+@commands.has_permissions(kick_members=True)
 async def kick(ctx, user: discord.Member, *, reason=None):
   await user.kick(reason=reason)
   await ctx.send(f"{user} has been yeeted.")
@@ -78,8 +78,8 @@ async def unban(ctx, *, member):
     await ctx.send(f"{user} has been unbanned.")
     return
 
-@bot.command()
-@commands.has_permissions(administrator=True, aliases = ["clear"])
+@bot.command(aliases = ["clear"])
+@commands.has_permissions(administrator=True)
 async def clean(ctx, limit: int):
   await ctx.channel.purge(limit=limit+1)
   await ctx.send('Cleared by {}'.format(ctx.author.mention))
