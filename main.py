@@ -27,11 +27,6 @@ channels = db_channels.data
 async def remind(ctx, time, unit, *, reminder=''):
     embed = discord.Embed(color=discord.Colour.random(), timestamp=datetime.utcnow())
     seconds = 0
-    if unit is None:
-        embed.add_field(name='Warning', value='Where unit? (s,m,h,d)')
-    if reminder=='':
-        embed.add_field(name='Warning', value='For what is the reminder?')
-        return await ctx.send(embed=embed)
     if unit.lower().endswith("d"):
         seconds += int(time) * 60 * 60 * 24
         counter = f"{seconds // 60 // 60 // 24} days"
@@ -45,14 +40,19 @@ async def remind(ctx, time, unit, *, reminder=''):
         seconds += int(time)
         counter = f"{seconds} seconds"
     if seconds == 0:
-        embed.add_field(name='Warning',
-                        value="Can't be zero!")
+        embed.add_field(name='Warning', value="ERROR IT IS!")
     elif seconds > 7776000:
         embed.add_field(name='Warning', value="We might not survive long enough to do this!")
     else:
-        await ctx.send(f"I'll ping you in {counter} for {reminder}.")
+        if reminder=='':
+          await ctx.send(f"I'll ping you in {counter}.")
+        else:
+          await ctx.send(f"I'll ping you in {counter} for {reminder}.")
         await asyncio.sleep(seconds)
-        await ctx.send(f"Yo {ctx.author.mention}, what up! Time for '{reminder}'!")
+        if reminder=='':
+          await ctx.send(f"Yo {ctx.author.mention}, what up!")
+        else:
+          await ctx.send(f"Yo {ctx.author.mention}, what up! Time for '{reminder}'!")
         return
     await ctx.send(embed=embed)
 
