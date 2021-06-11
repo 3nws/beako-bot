@@ -52,7 +52,7 @@ async def remind(ctx, time, unit, *, reminder=''):
         if reminder=='':
           await ctx.send(f"Yo {ctx.author.mention}, what up!")
         else:
-          await ctx.send(f"Yo {ctx.author.mention}, what up! Time about '{reminder}'!")
+          await ctx.send(f"Yo {ctx.author.mention}, what up! You asked me to remind you about '{reminder}' {counter} ago.")
         return
     await ctx.send(embed=embed)
 
