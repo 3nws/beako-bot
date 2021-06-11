@@ -47,12 +47,12 @@ async def remind(ctx, time, unit, *, reminder=''):
         if reminder=='':
           await ctx.send(f"I'll ping you in {counter}.")
         else:
-          await ctx.send(f"I'll ping you in {counter} for '{reminder}'.")
+          await ctx.send(f"I'll ping you in {counter} about '{reminder}'.")
         await asyncio.sleep(seconds)
         if reminder=='':
           await ctx.send(f"Yo {ctx.author.mention}, what up!")
         else:
-          await ctx.send(f"Yo {ctx.author.mention}, what up! Time for '{reminder}'!")
+          await ctx.send(f"Yo {ctx.author.mention}, what up! Time about '{reminder}'!")
         return
     await ctx.send(embed=embed)
 
