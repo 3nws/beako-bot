@@ -4,7 +4,7 @@ Checks every 10 seconds.
 
 I scrape the data from [WitchCultTranslation](https://witchculttranslation.com/).
 
-[Here's the invite link](https://discord.com/api/oauth2/authorize?client_id=834692619392385074&permissions=2148002880&scope=bot).
+[Here's the invite link](https://discord.com/api/oauth2/authorize?client_id=834692619392385074&permissions=2148002886&scope=bot).
 
 ## Commands
 
