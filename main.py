@@ -10,6 +10,14 @@ from dotenv import load_dotenv
 from discord.ext import tasks, commands
 from datetime import datetime
 
+from commands.r_say import commands_say
+from commands.r_remind import commands_remind
+from commands.r_kick import commands_kick
+from commands.r_ban import commands_ban
+from commands.r_unban import commands_unban
+from commands.r_clean import commands_clean
+from commands.r_avatar import commands_avatar
+
 import threading
 
 load_dotenv()
@@ -25,111 +33,59 @@ channels = db_channels.data
 
 @bot.command(case_insensitive = True, aliases = ["remindme", "remind_me"])
 async def remind(ctx, time, unit, *, reminder=''):
-    embed = discord.Embed(color=discord.Colour.random(), timestamp=datetime.utcnow())
-    seconds = 0
-    if unit.lower().endswith("d"):
-        seconds += int(time) * 60 * 60 * 24
-        counter = f"{seconds // 60 // 60 // 24} days"
-    if unit.lower().endswith("h"):
-        seconds += int(time) * 60 * 60
-        counter = f"{seconds // 60 // 60} hours"
-    elif unit.lower().endswith("m"):
-        seconds += int(time) * 60
-        counter = f"{seconds // 60} minutes"
-    elif unit.lower().endswith("s"):
-        seconds += int(time)
-        counter = f"{seconds} seconds"
-    if seconds == 0:
-        embed.add_field(name='Warning', value="ERROR IT IS!")
-    elif seconds > 7776000:
-        embed.add_field(name='Warning', value="We might not survive long enough to do this!")
-    else:
-        if reminder=='':
-          await ctx.send(f"I'll ping you in {counter}.")
-        else:
-          await ctx.send(f"I'll ping you in {counter} about '{reminder}'.")
-        await asyncio.sleep(seconds)
-        if reminder=='':
-          await ctx.send(f"Yo {ctx.author.mention}, what up!")
-        else:
-          await ctx.send(f"Yo {ctx.author.mention}, what up! You asked me to remind you about '{reminder}' {counter} ago.")
-        return
-    await ctx.send(embed=embed)
+  await commands_remind(ctx, time, unit, reminder)
 
 @bot.command(aliases = ["yeet", "yeeto"])
 @commands.has_permissions(kick_members=True)
 async def kick(ctx, user: discord.Member, *, reason=None):
-  await user.kick(reason=reason)
-  await ctx.send(f"{user} has been yeeted.")
+  await commands_kick(ctx, user, reason)
 
 @bot.command()
 @commands.has_permissions(ban_members=True)
 async def ban(ctx, user: discord.Member, *, reason=None):
-  await user.ban(reason=reason)
-  await ctx.send(f"{user} has been yeeted forever.")
+  await commands_ban(ctx, user, reason)
 
 @bot.command()
 @commands.has_permissions(administrator=True)
 async def unban(ctx, *, member):
-  banned_users = await ctx.guild.bans()
-  member_name, member_discriminator = member.split('#')
-
-  for ban_entry in banned_users:
-    user = ban_entry.user
-  
-  if (user.name, user.discriminator) == (member_name, member_discriminator):
-    await ctx.guild.unban(user)
-    await ctx.send(f"{user} has been unbanned.")
-    return
+  await commands_unban(ctx, member)
 
 @bot.command(aliases = ["clear"])
 @commands.has_permissions(administrator=True)
 async def clean(ctx, limit: int):
-  await ctx.channel.purge(limit=limit+1)
-  await ctx.send('Cleared by {}'.format(ctx.author.mention))
-  await ctx.message.delete()
+  await commands_clean(ctx, limit)
 
 @bot.command()
 async def say(ctx, *, msg=''):
-  await ctx.message.delete()
-  await ctx.send(msg)
+  await commands_say(ctx, msg)
+  
+@bot.command()
+async def avatar(ctx, member: discord.Member=None):
+  await commands_avatar(ctx, member)
+
+# Unholy commands
 
 @bot.command(aliases = ["add"])
 async def add_channel(ctx):
-    channel_entry = {
-      'id': ctx.channel.id,
-    }
-    if channels.count_documents(channel_entry, limit = 1) != 0:
-          await ctx.send("This text channel is already on the receiver list!")
-          return
-    channels.insert_one(channel_entry)
-    await ctx.send("This text channel will receive notifications.")
-    
+  channel_entry = {
+    'id': ctx.channel.id,
+  }
+  if channels.count_documents(channel_entry, limit = 1) != 0:
+        await ctx.send("This text channel is already on the receiver list!")
+        return
+  channels.insert_one(channel_entry)
+  await ctx.send("This text channel will receive notifications.")
+  
 @bot.command(aliases = ["remove"])
 async def remove_channel(ctx):
-    channel_entry = {
-      'id': ctx.channel.id,
-    }
-    if channels.count_documents(channel_entry, limit = 1) == 0:
-          await ctx.send("This text channel is not on the receiver list!")
-          return
-    channels.find_one_and_delete(channel_entry)
-    await ctx.send("This text channel will no longer receive notifications.")
-
-@bot.command()
-async def avatar(ctx, member: discord.Member=None):
-  avatar_frame = discord.Embed(
-    color = discord.Colour.random()
-  )
-  if member:
-    avatar_frame.add_field(name=str(ctx.author)+" requested", value=member.mention+"'s avatar.")
-    avatar_frame.set_image(url=f'{member.avatar_url}')
-  else:
-    avatar_frame.add_field(name=str(ctx.author), value=ctx.author.mention+"'s avatar.")
-    avatar_frame.set_image(url=f'{ctx.author.avatar_url}')
-    
-  await ctx.send(embed=avatar_frame)
-
+  channel_entry = {
+    'id': ctx.channel.id,
+  }
+  if channels.count_documents(channel_entry, limit = 1) == 0:
+        await ctx.send("This text channel is not on the receiver list!")
+        return
+  channels.find_one_and_delete(channel_entry)
+  await ctx.send("This text channel will no longer receive notifications.")
 
 @tasks.loop(seconds=10)
 async def check_chapter():
@@ -171,8 +127,8 @@ async def check_chapter():
             
 @bot.event
 async def on_ready():
-    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name="Songstress Liliana!"))
-    check_chapter.start()
+  await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name="Songstress Liliana!"))
+  check_chapter.start()
     
 
 bot.run(os.getenv('TOKEN'))
