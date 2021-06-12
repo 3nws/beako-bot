@@ -17,6 +17,8 @@ I scrape the data from [WitchCultTranslation](https://witchculttranslation.com/)
 - r.ban x (bans the user x, needs ban permission)
 - r.unban x (unbans the user x, needs admin permissions)
 - r.remind x y z (reminds the user after x y's (ex. 5 seconds) for z (not required), d: day(s), h: hour(s), m: minute(s), s: second(s))
+- r.roll x (rolls a random number between 1 and x(100 if no argument is passed))
+- r.flip (sends a flip image)
 
 ### TODO
 

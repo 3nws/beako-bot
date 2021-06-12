@@ -17,6 +17,8 @@ from commands.r_ban import commands_ban
 from commands.r_unban import commands_unban
 from commands.r_clean import commands_clean
 from commands.r_avatar import commands_avatar
+from commands.r_roll import commands_roll
+from commands.r_flip import commands_flip
 from commands.db.r_db import commands_add_channel, commands_remove_channel
 
 import threading
@@ -32,6 +34,14 @@ db_chapter = client.chapter
 channels = db_channels.data
 
 bot = commands.Bot(command_prefix='r.')
+
+@bot.command()
+async def flip(ctx):
+  await commands_flip(ctx)
+
+@bot.command()
+async def roll(ctx, num=""):
+  await commands_roll(ctx, num)
 
 @bot.command(case_insensitive = True, aliases = ["remindme", "remind_me"])
 async def remind(ctx, time, unit, *, reminder=''):
