@@ -17,11 +17,11 @@ from commands.r_ban import commands_ban
 from commands.r_unban import commands_unban
 from commands.r_clean import commands_clean
 from commands.r_avatar import commands_avatar
+from commands.db.r_db import commands_add_channel, commands_remove_channel
 
 import threading
 
 load_dotenv()
-bot = commands.Bot(command_prefix='r.')
 
 client = pymongo.MongoClient(os.getenv('DB_URL'))
 
@@ -30,6 +30,8 @@ db_channels = client.channel_id
 db_chapter = client.chapter
 
 channels = db_channels.data
+
+bot = commands.Bot(command_prefix='r.')
 
 @bot.command(case_insensitive = True, aliases = ["remindme", "remind_me"])
 async def remind(ctx, time, unit, *, reminder=''):
@@ -67,63 +69,51 @@ async def avatar(ctx, member: discord.Member=None):
 
 @bot.command(aliases = ["add"])
 async def add_channel(ctx):
-  channel_entry = {
-    'id': ctx.channel.id,
-  }
-  if channels.count_documents(channel_entry, limit = 1) != 0:
-        await ctx.send("This text channel is already on the receiver list!")
-        return
-  channels.insert_one(channel_entry)
-  await ctx.send("This text channel will receive notifications.")
+  await commands_add_channel(ctx)
   
 @bot.command(aliases = ["remove"])
 async def remove_channel(ctx):
-  channel_entry = {
-    'id': ctx.channel.id,
-  }
-  if channels.count_documents(channel_entry, limit = 1) == 0:
-        await ctx.send("This text channel is not on the receiver list!")
-        return
-  channels.find_one_and_delete(channel_entry)
-  await ctx.send("This text channel will no longer receive notifications.")
+  await commands_remove_channel(ctx)
 
+
+# task that checks chapter every 10 seconds
 @tasks.loop(seconds=10)
 async def check_chapter():
-    page = requests.get('https://witchculttranslation.com/arc-7/')
+  page = requests.get('https://witchculttranslation.com/arc-7/')
 
-    soup = BeautifulSoup(page.content, 'html.parser')
+  soup = BeautifulSoup(page.content, 'html.parser')
 
-    most_recent_post = soup.find_all('h3', 'rpwe-title')[0]
+  most_recent_post = soup.find_all('h3', 'rpwe-title')[0]
 
-    post_link = most_recent_post.find('a')
+  post_link = most_recent_post.find('a')
 
-    most_recent_post = most_recent_post.text
-    most_recent_post_array = most_recent_post.split()
+  most_recent_post = most_recent_post.text
+  most_recent_post_array = most_recent_post.split()
 
-    most_recent_post_str = ""
+  most_recent_post_str = ""
 
-    for i in range(0, 4):
-        most_recent_post_str += most_recent_post_array[i] + " "
+  for i in range(0, 4):
+      most_recent_post_str += most_recent_post_array[i] + " "
 
-    most_recent_post_str = most_recent_post_str.strip()
+  most_recent_post_str = most_recent_post_str.strip()
 
-    li_element = soup.find_all('li', 'rpwe-li rpwe-clearfix')[0]
+  li_element = soup.find_all('li', 'rpwe-li rpwe-clearfix')[0]
 
-    try:
-        if 'href' in post_link.attrs:
-            latest_chapter_translated_link = post_link.get('href')
-    except:
-        pass
+  try:
+      if 'href' in post_link.attrs:
+          latest_chapter_translated_link = post_link.get('href')
+  except:
+      pass
 
-    time_posted = li_element.find('time').text
-    
-    last_chapter = db_chapter.data.find_one()
-    
-    if last_chapter['title'] != most_recent_post_str:
-        db_chapter.data.find_one_and_update({'title':str(last_chapter['title'])}, { '$set': { "title" : most_recent_post_str} })
-        for channel in channels.find():
-            if bot.get_channel((channel['id'])):
-              await (bot.get_channel(int(channel['id']))).send(f'{most_recent_post} has been translated {time_posted}.\n{latest_chapter_translated_link}')
+  time_posted = li_element.find('time').text
+  
+  last_chapter = db_chapter.data.find_one()
+  
+  if last_chapter['title'] != most_recent_post_str:
+      db_chapter.data.find_one_and_update({'title':str(last_chapter['title'])}, { '$set': { "title" : most_recent_post_str} })
+      for channel in channels.find():
+          if bot.get_channel((channel['id'])):
+            await (bot.get_channel(int(channel['id']))).send(f'{most_recent_post} has been translated {time_posted}.\n{latest_chapter_translated_link}')
             
 @bot.event
 async def on_ready():
