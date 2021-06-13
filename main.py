@@ -20,7 +20,7 @@ from commands.r_avatar import commands_avatar
 from commands.r_roll import commands_roll
 from commands.r_flip import commands_flip
 from commands.r_pout import commands_pout
-from commands.db.r_db import commands_add_channel, commands_remove_channel
+from commands.db.r_db import commands_add_channel, commands_remove_channel, tasks_check_chapter
 
 import threading
 
@@ -80,8 +80,6 @@ async def say(ctx, *, msg=''):
 async def avatar(ctx, member: discord.Member=None):
   await commands_avatar(ctx, member)
 
-# Unholy commands
-
 @bot.command(aliases = ["add"])
 async def add_channel(ctx):
   await commands_add_channel(ctx)
@@ -90,45 +88,9 @@ async def add_channel(ctx):
 async def remove_channel(ctx):
   await commands_remove_channel(ctx)
 
-
-# task that checks chapter every 10 seconds
 @tasks.loop(seconds=10)
 async def check_chapter():
-  page = requests.get('https://witchculttranslation.com/arc-7/')
-
-  soup = BeautifulSoup(page.content, 'html.parser')
-
-  most_recent_post = soup.find_all('h3', 'rpwe-title')[0]
-
-  post_link = most_recent_post.find('a')
-
-  most_recent_post = most_recent_post.text
-  most_recent_post_array = most_recent_post.split()
-
-  most_recent_post_str = ""
-
-  for i in range(0, 4):
-      most_recent_post_str += most_recent_post_array[i] + " "
-
-  most_recent_post_str = most_recent_post_str.strip()
-
-  li_element = soup.find_all('li', 'rpwe-li rpwe-clearfix')[0]
-
-  try:
-      if 'href' in post_link.attrs:
-          latest_chapter_translated_link = post_link.get('href')
-  except:
-      pass
-
-  time_posted = li_element.find('time').text
-  
-  last_chapter = db_chapter.data.find_one()
-  
-  if last_chapter['title'] != most_recent_post_str:
-      db_chapter.data.find_one_and_update({'title':str(last_chapter['title'])}, { '$set': { "title" : most_recent_post_str} })
-      for channel in channels.find():
-          if bot.get_channel((channel['id'])):
-            await (bot.get_channel(int(channel['id']))).send(f'{most_recent_post} has been translated {time_posted}.\n{latest_chapter_translated_link}')
+  await tasks_check_chapter(bot)
             
 @bot.event
 async def on_ready():
