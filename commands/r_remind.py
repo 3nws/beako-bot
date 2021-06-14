@@ -19,18 +19,18 @@ async def commands_remind(ctx, time, unit, reminder):
         seconds += int(time)
         counter = f"{seconds} seconds"
     if seconds == 0:
-        embed.add_field(name='Warning', value="ERROR IT IS!")
+        embed.add_field(name='Warning', value="What is this in fact?")
     elif seconds > 7776000:
-        embed.add_field(name='Warning', value="We might not survive long enough to do this!")
+        embed.add_field(name='Warning', value="We might not survive long enough to do this, in fact!")
     else:
         if reminder=='':
-          await ctx.send(f"I'll ping you in {counter}.")
+          await ctx.send(f"I'll ping you in {counter}, I suppose!")
         else:
-          await ctx.send(f"I'll ping you in {counter} about '{reminder}'.")
+          await ctx.send(f"I'll ping you in {counter} about '{reminder}', I suppose!")
         await asyncio.sleep(seconds)
         if reminder=='':
-          await ctx.send(f"Yo {ctx.author.mention}, what up!")
+          await ctx.send(f"Hey {ctx.author.mention}, what up, in fact!")
         else:
-          await ctx.send(f"Yo {ctx.author.mention}, what up! You asked me to remind you about '{reminder}' {counter} ago.")
+          await ctx.send(f"Hey {ctx.author.mention}, what up, in fact! You asked me to remind you about '{reminder}' {counter} ago, I suppose!")
         return
     await ctx.send(embed=embed)

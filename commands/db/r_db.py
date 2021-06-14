@@ -21,10 +21,10 @@ async def commands_add_channel(ctx):
     'id': ctx.channel.id,
   }
   if channels.count_documents(channel_entry, limit = 1) != 0:
-        await ctx.send("This text channel is already on the receiver list!")
+        await ctx.send("This text channel is already on the receiver list, in fact!")
         return
   channels.insert_one(channel_entry)
-  await ctx.send("This text channel will receive notifications.")
+  await ctx.send("This text channel will receive notifications, I suppose!")
   
 # remove channel
 async def commands_remove_channel(ctx):
@@ -32,10 +32,10 @@ async def commands_remove_channel(ctx):
     'id': ctx.channel.id,
   }
   if channels.count_documents(channel_entry, limit = 1) == 0:
-        await ctx.send("This text channel is not on the receiver list!")
+        await ctx.send("This text channel is not on the receiver list, in fact!")
         return
   channels.find_one_and_delete(channel_entry)
-  await ctx.send("This text channel will no longer receive notifications.")
+  await ctx.send("This text channel will no longer receive notifications, I suppose!")
   
 # task that checks chapter every 10 seconds
 async def tasks_check_chapter(bot):
@@ -73,4 +73,4 @@ async def tasks_check_chapter(bot):
       db_chapter.data.find_one_and_update({'title':str(last_chapter['title'])}, { '$set': { "title" : most_recent_post_str} })
       for channel in channels.find():
           if bot.get_channel((channel['id'])):
-            await (bot.get_channel(int(channel['id']))).send(f'{most_recent_post} has been translated {time_posted}.\n{latest_chapter_translated_link}')
+            await (bot.get_channel(int(channel['id']))).send(f'{most_recent_post} has been translated {time_posted}.\n{latest_chapter_translated_link}, I suppose!')

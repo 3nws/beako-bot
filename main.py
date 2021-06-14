@@ -19,7 +19,7 @@ from commands.r_clean import commands_clean
 from commands.r_avatar import commands_avatar
 from commands.r_roll import commands_roll
 from commands.r_flip import commands_flip
-from commands.r_pout import commands_pout
+from commands.r_gif import commands_pat, commands_pout
 from commands.db.r_db import commands_add_channel, commands_remove_channel, tasks_check_chapter
 
 import threading
@@ -35,6 +35,10 @@ db_chapter = client.chapter
 channels = db_channels.data
 
 bot = commands.Bot(command_prefix='r.')
+
+@bot.command()
+async def pat(ctx, user : discord.Member=None):
+  await commands_pat(ctx, user)
 
 @bot.command()
 async def pout(ctx):

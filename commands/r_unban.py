@@ -7,5 +7,5 @@ async def commands_unban(ctx, member):
   
   if (user.name, user.discriminator) == (member_name, member_discriminator):
     await ctx.guild.unban(user)
-    await ctx.send(f"{user} has been unbanned.")
+    await ctx.send(f"{user} has been unbanned, I suppose!")
     return
