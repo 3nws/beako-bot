@@ -20,6 +20,7 @@ I scrape the data from [WitchCultTranslation](https://witchculttranslation.com/)
 - r.roll x (rolls a random number between 1 and x(100 if no argument is passed))
 - r.flip (sends a flip image)
 - r.pout (sends a pout gif from tenor api)
+- r.pat x (pat another user or yourself if you want)
 
 ### TODO
 
