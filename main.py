@@ -34,7 +34,11 @@ db_chapter = client.chapter
 
 channels = db_channels.data
 
-bot = commands.Bot(command_prefix='r.')
+
+intents = discord.Intents.default()
+intents.members = True
+intents.guilds = True
+bot = commands.Bot(command_prefix='r.', intents=intents)
 
 # pat uwu
 @bot.command()
@@ -118,6 +122,12 @@ async def check_chapter():
 # runs everytime the bot is back online
 @bot.event
 async def on_ready():
+  print(f'Logged in as: {bot.user.name}\n')
+  print(f'Server List ({len(bot.guilds)})\n')
+  server_counter = 1
+  for guild in bot.guilds:
+    print(f"{server_counter}. {guild.name}")
+    server_counter += 1
   await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name="Songstress Liliana!"))
   check_chapter.start()
   filter_channels.start()
