@@ -21,7 +21,3 @@ I scrape the data from [WitchCultTranslation](https://witchculttranslation.com/)
 - r.flip (sends a flip image)
 - r.pout (sends a pout gif from tenor api)
 - r.pat x (pat another user or yourself if you want)
-
-### TODO
-
-- remove channel_id from db when a channel is deleted.
