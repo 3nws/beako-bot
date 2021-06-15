@@ -37,6 +37,15 @@ async def commands_remove_channel(ctx):
   channels.find_one_and_delete(channel_entry)
   await ctx.send("This text channel will no longer receive notifications, I suppose!")
   
+# task that removes non existing(deleted) channels every 10 seconds
+async def tasks_filter_channels(bot):
+  for channel in channels.find():
+    if not bot.get_channel((channel['id'])):
+      channel_entry = {
+        'id': channel['id'],
+      }
+      channels.find_one_and_delete(channel_entry)
+
 # task that checks chapter every 10 seconds
 async def tasks_check_chapter(bot):
   page = requests.get('https://witchculttranslation.com/arc-7/')
