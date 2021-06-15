@@ -119,7 +119,7 @@ async def filter_channels():
 async def check_chapter():
   await tasks_check_chapter(bot)
 
-# runs everytime the bot is back online
+# runs everytime the bot comes online
 @bot.event
 async def on_ready():
   print(f'Logged in as: {bot.user.name}\n')
