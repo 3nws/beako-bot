@@ -10,6 +10,8 @@ from dotenv import load_dotenv
 from discord.ext import tasks, commands
 from datetime import datetime
 
+from classes import Help
+from commands.r_help import commands_help
 from commands.r_say import commands_say
 from commands.r_remind import commands_remind
 from commands.r_kick import commands_kick
@@ -39,6 +41,7 @@ intents = discord.Intents.default()
 intents.members = True
 intents.guilds = True
 bot = commands.Bot(command_prefix='r.', intents=intents)
+bot.remove_command('help')
 
 # pat uwu
 @bot.command()
@@ -108,6 +111,11 @@ async def add_channel(ctx):
 @bot.command(aliases = ["remove"])
 async def remove_channel(ctx):
   await commands_remove_channel(ctx)
+  
+# help command
+@bot.command()
+async def help(ctx, *,  cmd=''):
+  await commands_help(ctx, Help(cmd))
 
 # task that removes non existing(deleted) channels every 10 seconds
 @tasks.loop(seconds=10)
