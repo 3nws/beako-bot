@@ -12,6 +12,7 @@ from datetime import datetime
 
 from classes import Help
 from commands.r_help import commands_help
+from commands.r_servers import commands_servers
 from commands.r_say import commands_say
 from commands.r_remind import commands_remind
 from commands.r_kick import commands_kick
@@ -96,6 +97,11 @@ async def clean(ctx, limit: int):
 @bot.command()
 async def say(ctx, *, msg=''):
   await commands_say(ctx, msg)
+  
+# print the joined servers in the logs
+@bot.command()
+async def servers(ctx):
+  await commands_servers(ctx, bot)
   
 # sends a user's avatar
 @bot.command()
