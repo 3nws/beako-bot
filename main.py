@@ -136,7 +136,7 @@ async def on_ready():
   for guild in bot.guilds:
     print(f"{server_counter}. {guild.name}")
     server_counter += 1
-  await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name="Songstress Liliana!"))
+  await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name="r.help and Songstress Liliana!"))
   check_chapter.start()
   filter_channels.start()
 
