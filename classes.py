@@ -5,7 +5,7 @@ class Help:
     def get_help(self):
         help_message = "No such command, in fact!"
         if self.cmd == "":
-            help_message = "```Prefix is 'r.', in fact!\nTo get help and to learn aliases for a specific command use r.help <command>, I suppose!\nAvailable commands are:\n-add_channel\n-remove_channel\n-avatar\n-say\n-clean\n-kick\n-ban\n-unban\n-remind\n-roll\n-flip\n-pout\n-pat\n-smug,in fact!```"                                                                                                                                                              
+            help_message = "```Prefix is 'r.', in fact!\nTo get help and to learn aliases for a specific command use r.help <command>, I suppose!\nAvailable commands are:\n-add_channel\n-remove_channel\n-avatar\n-say\n-clean\n-kick\n-ban\n-unban\n-remind\n-roll\n-flip\n-pout\n-pat\n-smug,\n-coinflip,in fact!```"                                                                                                                                                              
         elif self.cmd == "avatar":
             help_message = "```Betty will send a member's(author's if no member is passed) avatar image to the text channel, in fact!```"
         elif self.cmd == "add_channel" or self.cmd == "add":
@@ -34,5 +34,7 @@ class Help:
             help_message = "```Pat a member or yourself(how pathetic, in fact!).```"
         elif self.cmd == "smug":
             help_message = "```Betty will send smug gifs from tenor gif, I suppose!```"
+        elif self.cmd == "coinflip":
+            help_message = "```Betty will flip a coin, I suppose!```"
         
         return help_message
