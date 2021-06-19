@@ -23,4 +23,4 @@ I scrape the data from [WitchCultTranslation](https://witchculttranslation.com/)
 - `r.pout` (sends a pout gif from tenor api)
 - `r.pat member` (pat a member or yourself if you want)
 - `r.smug` (sends a smug gif from tenor api)
-- `r.coinflip` (flip a coin)
+- `r.coinflip` (flip a coin), aliases: `r.coin`

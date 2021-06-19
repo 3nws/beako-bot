@@ -8,15 +8,15 @@ class Help:
             help_message = "```Prefix is 'r.', in fact!\nTo get help and to learn aliases for a specific command use r.help <command>, I suppose!\nAvailable commands are:\n-add_channel\n-remove_channel\n-avatar\n-say\n-clean\n-kick\n-ban\n-unban\n-remind\n-roll\n-flip\n-pout\n-pat\n-smug,\n-coinflip,in fact!```"                                                                                                                                                              
         elif self.cmd == "avatar":
             help_message = "```Betty will send a member's(author's if no member is passed) avatar image to the text channel, in fact!```"
-        elif self.cmd == "add_channel" or self.cmd == "add":
+        elif self.cmd == "add_channel":
             help_message = "```Betty will add the text channel to the list of channels that will receive notifications, I suppose!\nAn alias for this is 'add', in fact!```"
-        elif self.cmd == "remove_channel" or self.cmd == "remove":
+        elif self.cmd == "remove_channel":
             help_message = "```Betty will remove the text channel from the list of channels that will receive notifications, I suppose!\nAn alias for this is 'remove', in fact!```"
         elif self.cmd == "say":
             help_message = "```Betty will repeat what you say, I suppose!```"
-        elif self.cmd == "clean" or self.cmd == "clear":
+        elif self.cmd == "clean":
             help_message = "```Betty will clean up the text channel by the specified amount of messages, in fact!\nAn alias for this is 'clear', in fact!```"
-        elif self.cmd == "kick" or self.cmd == "yeet" or self.cmd == "yeeto":
+        elif self.cmd == "kick":
             help_message = "```Betty will use wind magic to kick a member, I suppose!\nAliases for this are 'yeet' and 'yeeto', in fact!```"
         elif self.cmd == "ban":
             help_message = "```Betty will use yin magic to ban a member, I suppose!```"
@@ -35,6 +35,6 @@ class Help:
         elif self.cmd == "smug":
             help_message = "```Betty will send smug gifs from tenor gif, I suppose!```"
         elif self.cmd == "coinflip":
-            help_message = "```Betty will flip a coin, I suppose!```"
+            help_message = "```Betty will flip a coin, I suppose!\nAn alias for this is 'coin', in fact!```"
         
         return help_message

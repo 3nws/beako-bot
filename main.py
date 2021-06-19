@@ -46,7 +46,7 @@ bot = commands.Bot(command_prefix='r.', intents=intents)
 bot.remove_command('help')
 
 # coin flip
-@bot.command()
+@bot.command(aliases = ["coin"])
 async def coinflip(ctx):
   await commands_coinflip(ctx)
 
