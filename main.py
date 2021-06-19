@@ -1,14 +1,10 @@
 import discord
 import os
-import requests
 import dns
-import pymongo
 import asyncio
 
-from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 from discord.ext import tasks, commands
-from datetime import datetime
 
 from classes import Help
 from commands.r_help import commands_help
@@ -29,14 +25,6 @@ from commands.db.r_db import commands_add_channel, commands_remove_channel, task
 import threading
 
 load_dotenv()
-
-client = pymongo.MongoClient(os.getenv('DB_URL'))
-
-db_channels = client.channel_id
-
-db_chapter = client.chapter
-
-channels = db_channels.data
 
 
 intents = discord.Intents.default()
