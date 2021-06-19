@@ -39,3 +39,16 @@ async def commands_pat(ctx, user):
     embed = discord.Embed(description=desc, color = discord.Colour.random())
     embed.set_image(url=(pats['results'])[rand_index]['media'][0]['mediumgif']['url'])
     await ctx.send(embed=embed)
+    
+async def commands_smug(ctx):
+    r = requests.get("https://g.tenor.com/v1/search?q=%s&key=%s" % ("anime smug", tenor_api_key))
+    if r.status_code == 200:
+        smugs = json.loads(r.content)
+    embed = discord.Embed(
+        color = discord.Colour.random()
+    )
+    rand_index=random.randrange(len(smugs['results']))
+    desc = '{} is being smug, I suppose!'.format(ctx.author.mention)
+    embed = discord.Embed(description=desc, color = discord.Colour.random())
+    embed.set_image(url=(smugs['results'])[rand_index]['media'][0]['mediumgif']['url'])
+    await ctx.send(embed=embed)
