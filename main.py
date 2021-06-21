@@ -35,8 +35,8 @@ bot.remove_command('help')
 
 # coin flip
 @bot.command(aliases = ["coin"])
-async def coinflip(ctx):
-  await commands_coinflip(ctx)
+async def coinflip(ctx, heads=None, tails=None):
+  await commands_coinflip(ctx, heads, tails)
 
 # smug uwu
 @bot.command()

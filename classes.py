@@ -35,6 +35,6 @@ class Help:
         elif self.cmd == "smug":
             help_message = "```Betty will send smug gifs from tenor gif, I suppose!```"
         elif self.cmd == "coinflip":
-            help_message = "```Betty will flip a coin, I suppose!\nAn alias for this is 'coin', in fact!```"
+            help_message = "```Betty will flip a coin, I suppose!\nAn alias for this is 'coin', in fact!\nThe format for this is 'coinflip for_heads(not required) for_tails(not required)' (ex. coinflip lol valo), in fact!```"
         
         return help_message
