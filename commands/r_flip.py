@@ -6,5 +6,6 @@ async def commands_flip(ctx):
         'https://i.imgur.com/nQeGRPz.jpg',
         'https://i.imgur.com/WS9TH5W.png',
         'https://i.imgur.com/DkdWlO4.png',
+        'https://i.imgur.com/fpj6W1k.jpg',
     ]
     await ctx.send(flips[random.randrange(len(flips))])
