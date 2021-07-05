@@ -1,6 +1,7 @@
 import pymongo
 import requests
 import os
+import random
 
 from dotenv import load_dotenv
 from bs4 import BeautifulSoup
@@ -12,6 +13,10 @@ client = pymongo.MongoClient(os.getenv('DB_URL'))
 db_channels = client.channel_id
 
 db_chapter = client.chapter
+
+db_flips = client.flips
+
+flips = db_flips.data
 
 channels = db_channels.data
 
@@ -83,3 +88,9 @@ async def tasks_check_chapter(bot):
       for channel in channels.find():
           if bot.get_channel((channel['id'])):
             await (bot.get_channel(int(channel['id']))).send(f'{most_recent_post} has been translated {time_posted}.\n{latest_chapter_translated_link}, I suppose!')
+            
+# flip command        
+async def commands_flip(ctx):
+  pipe = [{ '$sample': { 'size': 1 } }]
+  flip = list(flips.aggregate(pipeline=pipe))[0]['url']
+  await ctx.send(flip)

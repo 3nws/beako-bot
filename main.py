@@ -18,9 +18,8 @@ from commands.r_clean import commands_clean
 from commands.r_avatar import commands_avatar
 from commands.r_roll import commands_roll
 from commands.r_coinflip import commands_coinflip
-from commands.r_flip import commands_flip
 from commands.r_gif import commands_pat, commands_pout, commands_smug
-from commands.db.r_db import commands_add_channel, commands_remove_channel, tasks_check_chapter, tasks_filter_channels
+from commands.db.r_db import commands_add_channel, commands_remove_channel, tasks_check_chapter, tasks_filter_channels, commands_flip
 
 import threading
 
