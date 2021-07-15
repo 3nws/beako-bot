@@ -64,7 +64,7 @@ async def roll(ctx, num=""):
 
 # reminds the user about anything after specified time 
 @bot.command(case_insensitive = True, aliases = ["remindme", "remind_me"])
-async def remind(ctx, time, unit, *, reminder=''):
+async def remind(ctx, time, unit=None, *, reminder=''):
   await commands_remind(ctx, time, unit, reminder)
 
 # kicks user

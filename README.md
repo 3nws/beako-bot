@@ -8,7 +8,7 @@ I scrape the data from [WitchCultTranslation](https://witchculttranslation.com/)
 
 ## Commands
 
-- `r.help cmd` (sends information about the command or just general information if no argument is passed)
+- `r.help cmd` (sends detailed information about the command or just general information if no argument is passed)
 - `r.add_channel` (adds the text channel to the list that will receive notifications), aliases: `r.add`
 - `r.remove_channel` (remove the text channel from the list that will receive notifications), aliases: `r.remove`
 - `r.avatar member` (shows a member's avatar or the op's if no argument is passed)

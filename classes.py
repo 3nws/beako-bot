@@ -23,7 +23,7 @@ class Help:
         elif self.cmd == "unban":
             help_message = "```Betty will forgive a member and remove their ban, I suppose!```"
         elif self.cmd == "remind":
-            help_message = "```Betty will remind the author after specified time by pinging them, I suppose!\nThe format for this is 'remind time unit reason' (s: seconds, m: minutes, h: hours, d: days, ex. remind 5 m coffee), in fact!```"
+            help_message = "```Betty will remind the author after specified time by pinging them, I suppose!\nThe format for this is 'remind time unit reason' (The unit can be concatenated with remind such as remind 5m coffee, s: seconds, m: minutes, h: hours, d: days, ex. remind 5 m coffee), in fact!```"
         elif self.cmd == "roll":
             help_message = "```Betty will roll a number for the author between 0 and the specified number(100 if not), I suppose!```"
         elif self.cmd == "flip":
