@@ -37,6 +37,6 @@ class Help:
         elif self.cmd == "coinflip":
             help_message = "```Betty will flip a coin, I suppose!\nAn alias for this is 'coin', in fact!\nThe format for this is 'coinflip for_heads(not required) for_tails(not required)' (ex. coinflip lol valo), in fact!```"
         elif self.cmd == "latest_chapter":
-            help_message = "```Betty will tell you what the latest translated chapter is, I suppose!\Aliases for this are 'chp', 'latest', and 'last' in fact!```"
+            help_message = "```Betty will tell you what the latest translated chapter is, I suppose!\nAliases for this are 'chp', 'latest', and 'last' in fact!```"
         
         return help_message
