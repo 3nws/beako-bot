@@ -19,7 +19,7 @@ from commands.r_avatar import commands_avatar
 from commands.r_roll import commands_roll
 from commands.r_coinflip import commands_coinflip
 from commands.r_gif import commands_pat, commands_pout, commands_smug
-from commands.db.r_db import commands_add_channel, commands_remove_channel, tasks_check_chapter, tasks_filter_channels, commands_flip
+from commands.db.r_db import commands_add_channel, commands_remove_channel, tasks_check_chapter, tasks_filter_channels, commands_flip, commands_latest_chapter
 
 import threading
 
@@ -31,6 +31,12 @@ intents.members = True
 intents.guilds = True
 bot = commands.Bot(command_prefix='r.', intents=intents)
 bot.remove_command('help')
+
+
+# sends the latest english translated chapter
+@bot.command(aliases = ["latest", "last", "chp"])
+async def latest_chapter(ctx):
+  await commands_latest_chapter(ctx)
 
 # coin flip
 @bot.command(aliases = ["coin"])

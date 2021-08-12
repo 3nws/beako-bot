@@ -20,6 +20,25 @@ flips = db_flips.data
 
 channels = db_channels.data
 
+# sends the latest english translated chapter
+async def commands_latest_chapter(ctx):
+  page = requests.get('https://witchculttranslation.com/arc-7/')
+
+  soup = BeautifulSoup(page.content, 'html.parser')
+
+  most_recent_post = soup.find_all('h3', 'rpwe-title')[0]
+
+  post_link = most_recent_post.find('a')
+
+  try:
+      if 'href' in post_link.attrs:
+          latest_chapter_translated_link = post_link.get('href')
+  except:
+      pass
+
+  title = most_recent_post.text
+  await ctx.send(f'Latest translated chapter is {title}, I suppose!\n{latest_chapter_translated_link}')
+
 # add channel
 async def commands_add_channel(ctx):
   channel_entry = {
