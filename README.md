@@ -24,4 +24,4 @@ I scrape the data from [WitchCultTranslation](https://witchculttranslation.com/)
 - `r.pat member` (pat a member or yourself if you want)
 - `r.smug` (sends a smug gif from tenor api)
 - `r.coinflip h t` (flip a coin h and t are not required), aliases: `r.coin`
-- `r.latest_chapter` (inform you of the latest translated chapter), aliases: `r.chp`, `r.latest`, `r.last`
+- `r.latest_chapter` (informs of the latest translated chapter), aliases: `r.chp`, `r.latest`, `r.last`
