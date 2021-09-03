@@ -5,7 +5,7 @@ class Help:
     def get_help(self):
         help_message = "No such command, in fact!"
         if self.cmd == "":
-            help_message = "```Prefix is 'r.', in fact!\nTo get help and to learn aliases for a specific command use r.help <command>, I suppose!\nAvailable commands are:\n-add_channel\n-remove_channel\n-avatar\n-say\n-clean\n-kick\n-ban\n-unban\n-remind\n-roll\n-flip\n-pout\n-pat\n-smug\n-coinflip\n-latest_chapter,in fact!```"                                                                                                                                                              
+            help_message = "```Prefix is 'r.', in fact!\nTo get help and to learn aliases for a specific command use r.help <command>, I suppose!\nAvailable commands are:\n-add_channel\n-remove_channel\n-latest_chapter\n-avatar\n-say\n-clean\n-kick\n-ban\n-unban\n-remind\n-roll\n-flip\n-pout\n-pat\n-smug\n-coinflip\n-rps, in fact!```"                                                                                                                                                              
         elif self.cmd == "avatar":
             help_message = "```Betty will send a member's(author's if no member is passed) avatar image to the text channel, in fact!```"
         elif self.cmd == "add_channel":
@@ -38,5 +38,7 @@ class Help:
             help_message = "```Betty will flip a coin, I suppose!\nAn alias for this is 'coin', in fact!\nThe format for this is 'coinflip for_heads(not required) for_tails(not required)' (ex. coinflip lol valo), in fact!```"
         elif self.cmd == "latest_chapter":
             help_message = "```Betty will tell you what the latest translated chapter is, I suppose!\nAliases for this are 'chp', 'latest', and 'last' in fact!```"
+        elif self.cmd == "rps":
+            help_message = "```Betty will play rock-paper-scissors with you, I suppose! Rejoice, in fact!\nThe format for this is 'rps choice' (ex. rps rock), in fact!```"
         
         return help_message

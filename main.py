@@ -17,6 +17,7 @@ from commands.r_unban import commands_unban
 from commands.r_clean import commands_clean
 from commands.r_avatar import commands_avatar
 from commands.r_roll import commands_roll
+from commands.r_rps import commands_rps
 from commands.r_coinflip import commands_coinflip
 from commands.r_gif import commands_pat, commands_pout, commands_smug
 from commands.db.r_db import commands_add_channel, commands_remove_channel, tasks_check_chapter, tasks_filter_channels, commands_flip, commands_latest_chapter
@@ -32,6 +33,10 @@ intents.guilds = True
 bot = commands.Bot(command_prefix='r.', intents=intents)
 bot.remove_command('help')
 
+# play rock paper scissors
+@bot.command(aliases = ["scissors", "paper", "rock"])
+async def rps(ctx, choice):
+  await commands_rps(ctx, choice)
 
 # sends the latest english translated chapter
 @bot.command(aliases = ["latest", "last", "chp"])
