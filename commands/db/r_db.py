@@ -209,7 +209,7 @@ async def tasks_check_chapter(bot):
         db_chapter.data_kaguya.find_one_and_update({'title':str(last_kaguya_chapter['title'])}, { '$set': { "title" : most_recent_kaguya_chapter_str} })
         for channel in channels_kaguya.find():
             if bot.get_channel((channel['id'])):
-              await (bot.get_channel(int(channel['id']))).send(f'{most_recent_kaguya_chapter_str} has been translated.\n{kaguya_chapter_anchor}, I suppose!')
+              await (bot.get_channel(int(channel['id']))).send(f'Chapter {most_recent_kaguya_chapter_str} has been translated.\n{kaguya_chapter_anchor}, I suppose!')
   except:
     pass
             
@@ -243,7 +243,7 @@ async def tasks_check_chapter(bot):
         db_chapter.data_onk.find_one_and_update({'title':str(last_onk_chapter['title'])}, { '$set': { "title" : most_recent_onk_chapter_str} })
         for channel in channels_onk.find():
             if bot.get_channel((channel['id'])):
-              await (bot.get_channel(int(channel['id']))).send(f'{most_recent_onk_chapter_str} has been translated.\n{onk_chapter_anchor}, I suppose!')
+              await (bot.get_channel(int(channel['id']))).send(f'Chapter {most_recent_onk_chapter_str} has been translated.\n{onk_chapter_anchor}, I suppose!')
   except:
       pass
   
