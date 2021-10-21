@@ -13,9 +13,9 @@ class Help:
         elif self.cmd == "remove_channel":
             help_message = "```Betty will remove the text channel from the list of channels that will receive Re:Zero notifications, I suppose!\nAn alias for this is 'remove', in fact!```"
         elif self.cmd == "add_channel_kaguya":
-            help_message = "```Betty will add the text channel to the list of channels that will receive Kaguya-Sama notifications, I suppose!\nAliases for this are 'add_kaguya' and 'kaguya_add', in fact!```"
+            help_message = "```Betty will add the text channel to the list of channels that will receive Kaguya-sama notifications, I suppose!\nAliases for this are 'add_kaguya' and 'kaguya_add', in fact!```"
         elif self.cmd == "remove_channel_kaguya":
-            help_message = "```Betty will remove the text channel to the list of channels that will receive Kaguya-Sama notifications, I suppose!\nAliases for this are 'remove_kaguya' and 'kaguya_remove', in fact!```"
+            help_message = "```Betty will remove the text channel to the list of channels that will receive Kaguya-sama notifications, I suppose!\nAliases for this are 'remove_kaguya' and 'kaguya_remove', in fact!```"
         elif self.cmd == "add_channel_onk":
             help_message = "```Betty will add the text channel to the list of channels that will receive Oshi No Ko notifications, I suppose!\nAliases for this are 'add_onk' and 'onk_add', in fact!```"
         elif self.cmd == "remove_channel_onk":
