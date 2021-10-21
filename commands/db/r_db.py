@@ -135,112 +135,98 @@ async def tasks_filter_channels(bot):
 
 # task that checks chapter every 10 seconds
 async def tasks_check_chapter(bot):
-  page = requests.get('https://witchculttranslation.com/arc-7/')
-  page_kaguya = requests.get('https://guya.moe/read/manga/Kaguya-Wants-To-Be-Confessed-To/')
-  page_onk = requests.get('https://guya.moe/read/manga/Oshi-no-Ko/')
-
-  soup = BeautifulSoup(page.content, 'html.parser')
-
-  # web scraping for re zero
-  most_recent_post = soup.find_all('h3', 'rpwe-title')[0]
-
-  post_link = most_recent_post.find('a')
-
-  most_recent_post = most_recent_post.text
-  most_recent_post_array = most_recent_post.split()
-
-  most_recent_post_str = ""
-
-  for i in range(0, 4):
-      most_recent_post_str += most_recent_post_array[i] + " "
-
-  most_recent_post_str = most_recent_post_str.strip()
-
-  li_element = soup.find_all('li', 'rpwe-li rpwe-clearfix')[0]
-
   try:
-      if 'href' in post_link.attrs:
-          latest_chapter_translated_link = post_link.get('href')
-  except:
-      pass
+    page = requests.get('https://witchculttranslation.com/arc-7/')
+    page_kaguya = requests.get('https://guya.moe/read/manga/Kaguya-Wants-To-Be-Confessed-To/')
+    page_onk = requests.get('https://guya.moe/read/manga/Oshi-no-Ko/')
 
-  time_posted = li_element.find('time').text
-  
-  last_chapter = db_chapter.data.find_one()
-  
-  try:
+    soup = BeautifulSoup(page.content, 'html.parser')
+
+    # web scraping for re zero
+    most_recent_post = soup.find_all('h3', 'rpwe-title')[0]
+
+    post_link = most_recent_post.find('a')
+
+    most_recent_post = most_recent_post.text
+    most_recent_post_array = most_recent_post.split()
+
+    most_recent_post_str = ""
+
+    for i in range(0, 4):
+        most_recent_post_str += most_recent_post_array[i] + " "
+
+    most_recent_post_str = most_recent_post_str.strip()
+
+    li_element = soup.find_all('li', 'rpwe-li rpwe-clearfix')[0]
+
+    if 'href' in post_link.attrs:
+        latest_chapter_translated_link = post_link.get('href')
+
+    time_posted = li_element.find('time').text
+
+    last_chapter = db_chapter.data.find_one()
+
     if last_chapter['title'] != most_recent_post_str:
         db_chapter.data.find_one_and_update({'title':str(last_chapter['title'])}, { '$set': { "title" : most_recent_post_str} })
         for channel in channels.find():
             if bot.get_channel((channel['id'])):
               await (bot.get_channel(int(channel['id']))).send(f'{most_recent_post} has been translated {time_posted}.\n{latest_chapter_translated_link}, I suppose!')
-  except:
-      pass
-          
-  # web scraping for kaguya-sama
-  soup_kaguya = BeautifulSoup(page_kaguya.content, 'html.parser')
-  
-  most_recent_kaguya_chapter = soup_kaguya.find_all('td', 'chapter-title')[0]
-  
-  kaguya_chapter_link = most_recent_kaguya_chapter.find('a')
-  
-  try:
-      if 'href' in post_link.attrs:
-        kaguya_chapter_anchor = 'https://guya.moe'
-        kaguya_chapter_anchor += kaguya_chapter_link.get('href')
-  except:
-      pass
-  
-  most_recent_kaguya_chapter_title = kaguya_chapter_link.text
-  
-  most_recent_kaguya_chapter_array = most_recent_kaguya_chapter_title.split()
-  
-  most_recent_kaguya_chapter_str = ""
-  
-  for i in range(0, len(most_recent_kaguya_chapter_array)):
-    most_recent_kaguya_chapter_str += most_recent_kaguya_chapter_array[i] + " "
+
+    # web scraping for kaguya-sama
+    soup_kaguya = BeautifulSoup(page_kaguya.content, 'html.parser')
+
+    most_recent_kaguya_chapter = soup_kaguya.find_all('td', 'chapter-title')[0]
+
+    kaguya_chapter_link = most_recent_kaguya_chapter.find('a')
+
     
-  most_recent_kaguya_chapter_str = most_recent_kaguya_chapter_str.strip()
-  
-  last_kaguya_chapter = db_chapter.data_kaguya.find_one()
-  
-  try:
+    if 'href' in post_link.attrs:
+      kaguya_chapter_anchor = 'https://guya.moe'
+      kaguya_chapter_anchor += kaguya_chapter_link.get('href')
+      
+    most_recent_kaguya_chapter_title = kaguya_chapter_link.text
+
+    most_recent_kaguya_chapter_array = most_recent_kaguya_chapter_title.split()
+
+    most_recent_kaguya_chapter_str = ""
+
+    for i in range(0, len(most_recent_kaguya_chapter_array)):
+      most_recent_kaguya_chapter_str += most_recent_kaguya_chapter_array[i] + " "
+
+    most_recent_kaguya_chapter_str = most_recent_kaguya_chapter_str.strip()
+
+    last_kaguya_chapter = db_chapter.data_kaguya.find_one()
+
     if last_kaguya_chapter['title'] != most_recent_kaguya_chapter_str:
         db_chapter.data_kaguya.find_one_and_update({'title':str(last_kaguya_chapter['title'])}, { '$set': { "title" : most_recent_kaguya_chapter_str} })
         for channel in channels_kaguya.find():
             if bot.get_channel((channel['id'])):
               await (bot.get_channel(int(channel['id']))).send(f'Chapter {most_recent_kaguya_chapter_str} has been translated.\n{kaguya_chapter_anchor}, I suppose!')
-  except:
-    pass
-            
-  # web scraping for oshi no ko
-  soup_onk = BeautifulSoup(page_onk.content, 'html.parser')
-  
-  most_recent_onk_chapter = soup_onk.find_all('td', 'chapter-title')[0]
-  
-  onk_chapter_link = most_recent_onk_chapter.find('a')
-  
-  try:
-      if 'href' in post_link.attrs:
-        onk_chapter_anchor = 'https://guya.moe'
-        onk_chapter_anchor += onk_chapter_link.get('href')
-  except:
-      pass
-  
-  most_recent_onk_chapter_title = onk_chapter_link.text
-  
-  most_recent_onk_chapter_array = most_recent_onk_chapter_title.split()
-  
-  most_recent_onk_chapter_str = ""
-  
-  for i in range(0, len(most_recent_onk_chapter_array)):
-    most_recent_onk_chapter_str += most_recent_onk_chapter_array[i] + " "
-    
-  most_recent_onk_chapter_str = most_recent_onk_chapter_str.strip()
-  
-  last_onk_chapter = db_chapter.data_onk.find_one()
-  
-  try:
+
+    # web scraping for oshi no ko
+    soup_onk = BeautifulSoup(page_onk.content, 'html.parser')
+
+    most_recent_onk_chapter = soup_onk.find_all('td', 'chapter-title')[0]
+
+    onk_chapter_link = most_recent_onk_chapter.find('a')
+
+    if 'href' in post_link.attrs:
+      onk_chapter_anchor = 'https://guya.moe'
+      onk_chapter_anchor += onk_chapter_link.get('href')
+      
+    most_recent_onk_chapter_title = onk_chapter_link.text
+
+    most_recent_onk_chapter_array = most_recent_onk_chapter_title.split()
+
+    most_recent_onk_chapter_str = ""
+
+    for i in range(0, len(most_recent_onk_chapter_array)):
+      most_recent_onk_chapter_str += most_recent_onk_chapter_array[i] + " "
+
+    most_recent_onk_chapter_str = most_recent_onk_chapter_str.strip()
+
+    last_onk_chapter = db_chapter.data_onk.find_one()
+
     if last_onk_chapter['title'] != most_recent_onk_chapter_str:
         db_chapter.data_onk.find_one_and_update({'title':str(last_onk_chapter['title'])}, { '$set': { "title" : most_recent_onk_chapter_str} })
         for channel in channels_onk.find():
