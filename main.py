@@ -20,7 +20,7 @@ from commands.r_roll import commands_roll
 from commands.r_rps import commands_rps
 from commands.r_coinflip import commands_coinflip
 from commands.r_gif import commands_pat, commands_pout, commands_smug
-from commands.db.r_db import commands_add_channel, commands_remove_channel, tasks_check_chapter, tasks_filter_channels, commands_flip, commands_latest_chapter
+from commands.db.r_db import commands_add_channel, commands_remove_channel, commands_add_channel_kaguya, commands_remove_channel_kaguya, commands_add_channel_onk, commands_remove_channel_onk, tasks_check_chapter, tasks_filter_channels, commands_flip, commands_latest_chapter
 
 import threading
 
@@ -117,15 +117,35 @@ async def servers(ctx):
 async def avatar(ctx, member: discord.Member=None):
   await commands_avatar(ctx, member)
 
-# add channel to database
+# add channel to re zero notification list
 @bot.command(aliases = ["add"])
 async def add_channel(ctx):
   await commands_add_channel(ctx)
   
-# remove channel from database
+# remove channel from re zero notification list
 @bot.command(aliases = ["remove"])
 async def remove_channel(ctx):
   await commands_remove_channel(ctx)
+  
+# add channel to kaguya-sama notification list
+@bot.command(aliases = ["add_kaguya", "kaguya_add"])
+async def add_channel_kaguya(ctx):
+  await commands_add_channel_kaguya(ctx)
+  
+# remove channel from kaguya-sama notification list
+@bot.command(aliases = ["remove_kaguya", "kaguya_remove"])
+async def remove_channel_kaguya(ctx):
+  await commands_remove_channel_kaguya(ctx)
+  
+# add channel to oshi no ko notification list
+@bot.command(aliases = ["add_onk", "onk_add"])
+async def add_channel_onk(ctx):
+  await commands_add_channel_onk(ctx)
+  
+# remove channel from oshi no ko notification list
+@bot.command(aliases = ["remove_onk", "onk_remove"])
+async def remove_channel_onk(ctx):
+  await commands_remove_channel_onk(ctx)
   
 # help command
 @bot.command()
