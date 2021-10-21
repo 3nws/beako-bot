@@ -179,6 +179,7 @@ async def tasks_check_chapter(bot):
   # web scraping for kaguya-sama
   most_recent_kaguya_chapter = soup_kaguya.find_all('td', 'chapter-title')[0]
   
+  
   kaguya_chapter_link = most_recent_kaguya_chapter.find('a')
   
   try:
