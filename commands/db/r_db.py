@@ -140,8 +140,6 @@ async def tasks_check_chapter(bot):
   page_onk = requests.get('https://guya.moe/read/manga/Oshi-no-Ko/')
 
   soup = BeautifulSoup(page.content, 'html.parser')
-  soup_kaguya = BeautifulSoup(page_kaguya.content, 'html.parser')
-  soup_onk = BeautifulSoup(page_onk.content, 'html.parser')
 
   # web scraping for re zero
   most_recent_post = soup.find_all('h3', 'rpwe-title')[0]
@@ -180,6 +178,8 @@ async def tasks_check_chapter(bot):
       pass
           
   # web scraping for kaguya-sama
+  soup_kaguya = BeautifulSoup(page_kaguya.content, 'html.parser')
+  
   most_recent_kaguya_chapter = soup_kaguya.find_all('td', 'chapter-title')[0]
   
   kaguya_chapter_link = most_recent_kaguya_chapter.find('a')
@@ -214,6 +214,8 @@ async def tasks_check_chapter(bot):
     pass
             
   # web scraping for oshi no ko
+  soup_onk = BeautifulSoup(page_onk.content, 'html.parser')
+  
   most_recent_onk_chapter = soup_onk.find_all('td', 'chapter-title')[0]
   
   onk_chapter_link = most_recent_onk_chapter.find('a')
