@@ -170,11 +170,14 @@ async def tasks_check_chapter(bot):
   
   last_chapter = db_chapter.data.find_one()
   
-  if last_chapter['title'] != most_recent_post_str:
-      db_chapter.data.find_one_and_update({'title':str(last_chapter['title'])}, { '$set': { "title" : most_recent_post_str} })
-      for channel in channels.find():
-          if bot.get_channel((channel['id'])):
-            await (bot.get_channel(int(channel['id']))).send(f'{most_recent_post} has been translated {time_posted}.\n{latest_chapter_translated_link}, I suppose!')
+  try:
+    if last_chapter['title'] != most_recent_post_str:
+        db_chapter.data.find_one_and_update({'title':str(last_chapter['title'])}, { '$set': { "title" : most_recent_post_str} })
+        for channel in channels.find():
+            if bot.get_channel((channel['id'])):
+              await (bot.get_channel(int(channel['id']))).send(f'{most_recent_post} has been translated {time_posted}.\n{latest_chapter_translated_link}, I suppose!')
+  except:
+      pass
           
   # web scraping for kaguya-sama
   most_recent_kaguya_chapter = soup_kaguya.find_all('td', 'chapter-title')[0]
@@ -208,7 +211,7 @@ async def tasks_check_chapter(bot):
             if bot.get_channel((channel['id'])):
               await (bot.get_channel(int(channel['id']))).send(f'{most_recent_kaguya_chapter_str} has been translated.\n{kaguya_chapter_anchor}, I suppose!')
   except:
-    print("booo")
+    pass
             
   # web scraping for oshi no ko
   most_recent_onk_chapter = soup_onk.find_all('td', 'chapter-title')[0]
@@ -235,11 +238,14 @@ async def tasks_check_chapter(bot):
   
   last_onk_chapter = db_chapter.data_onk.find_one()
   
-  if last_onk_chapter['title'] != most_recent_onk_chapter_str:
-      db_chapter.data_onk.find_one_and_update({'title':str(last_onk_chapter['title'])}, { '$set': { "title" : most_recent_onk_chapter_str} })
-      for channel in channels_onk.find():
-          if bot.get_channel((channel['id'])):
-            await (bot.get_channel(int(channel['id']))).send(f'{most_recent_onk_chapter_str} has been translated.\n{onk_chapter_anchor}, I suppose!')
+  try:
+    if last_onk_chapter['title'] != most_recent_onk_chapter_str:
+        db_chapter.data_onk.find_one_and_update({'title':str(last_onk_chapter['title'])}, { '$set': { "title" : most_recent_onk_chapter_str} })
+        for channel in channels_onk.find():
+            if bot.get_channel((channel['id'])):
+              await (bot.get_channel(int(channel['id']))).send(f'{most_recent_onk_chapter_str} has been translated.\n{onk_chapter_anchor}, I suppose!')
+  except:
+      pass
   
             
 # flip command        
