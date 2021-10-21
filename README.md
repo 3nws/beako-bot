@@ -1,16 +1,20 @@
-Notifies when a new chapter of the Re:Zero web novel is translated.
+Notifies when new chapters of the Re:Zero web novel, Kaguya-sama manga, and Oshi No Ko manga are translated.
 
 Checks every 10 seconds.
 
-I scrape the data from [WitchCultTranslation](https://witchculttranslation.com/).
+I scrape the data from [WitchCultTranslation](https://witchculttranslation.com/) for Re:zero and [Guya.Moe](https://guya.moe) for Kaguya-sama and Oshi No Ko.
 
 [Here's the invite link](https://discord.com/api/oauth2/authorize?client_id=834692619392385074&permissions=2148002886&scope=bot).
 
 ## Commands
 
 - `r.help cmd` (sends detailed information about the command or just general information if no argument is passed)
-- `r.add_channel` (adds the text channel to the list that will receive notifications), aliases: `r.add`
-- `r.remove_channel` (remove the text channel from the list that will receive notifications), aliases: `r.remove`
+- `r.add_channel` (adds the text channel to the list that will receive Re:Zero notifications), aliases: `r.add`
+- `r.remove_channel` (remove the text channel from the list that will receive Re:Zero notifications), aliases: `r.remove`
+- `r.add_channel_kaguya` (adds the text channel to the list that will receive Kaguya-sama notifications), aliases: `r.add_kaguya`, `r.kaguya_add`
+- `r.remove_channel_kaguya` (remove the text channel from the list that will receive Kaguya-sama notifications), aliases: `r.remove_kaguya`, `r.kaguya_remove`
+- `r.add_channel_onk` (adds the text channel to the list that will receive Oshi No Ko notifications), aliases: `r.add_onk`, `r.onkadd`
+- `r.remove_channel_onk` (remove the text channel from the list that will receive Oshi No Ko notifications), aliases: `r.remove_onk`, `r.onk_remove`
 - `r.latest_chapter` (informs of the latest translated chapter), aliases: `r.chp`, `r.latest`, `r.last`
 - `r.avatar member` (shows a member's avatar or the op's if no argument is passed)
 - `r.say message` (make the bot say something)
@@ -26,3 +30,8 @@ I scrape the data from [WitchCultTranslation](https://witchculttranslation.com/)
 - `r.smug` (sends a smug gif from tenor api)
 - `r.coinflip h t` (flip a coin h and t are not required), aliases: `r.coin`
 - `r.rps choice` (play rock-paper-scissors with Betty)
+
+
+## TODO
+
+- Create a channels class or something to keep track of more series easily.
