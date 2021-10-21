@@ -179,7 +179,6 @@ async def tasks_check_chapter(bot):
   # web scraping for kaguya-sama
   most_recent_kaguya_chapter = soup_kaguya.find_all('td', 'chapter-title')[0]
   
-  
   kaguya_chapter_link = most_recent_kaguya_chapter.find('a')
   
   try:
@@ -202,11 +201,14 @@ async def tasks_check_chapter(bot):
   
   last_kaguya_chapter = db_chapter.data_kaguya.find_one()
   
-  if last_kaguya_chapter['title'] != most_recent_kaguya_chapter_str:
-      db_chapter.data_kaguya.find_one_and_update({'title':str(last_kaguya_chapter['title'])}, { '$set': { "title" : most_recent_kaguya_chapter_str} })
-      for channel in channels_kaguya.find():
-          if bot.get_channel((channel['id'])):
-            await (bot.get_channel(int(channel['id']))).send(f'{most_recent_kaguya_chapter_str} has been translated.\n{kaguya_chapter_anchor}, I suppose!')
+  try:
+    if last_kaguya_chapter['title'] != most_recent_kaguya_chapter_str:
+        db_chapter.data_kaguya.find_one_and_update({'title':str(last_kaguya_chapter['title'])}, { '$set': { "title" : most_recent_kaguya_chapter_str} })
+        for channel in channels_kaguya.find():
+            if bot.get_channel((channel['id'])):
+              await (bot.get_channel(int(channel['id']))).send(f'{most_recent_kaguya_chapter_str} has been translated.\n{kaguya_chapter_anchor}, I suppose!')
+  catch:
+    print("booo")
             
   # web scraping for oshi no ko
   most_recent_onk_chapter = soup_onk.find_all('td', 'chapter-title')[0]
