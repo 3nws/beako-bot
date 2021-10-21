@@ -207,7 +207,7 @@ async def tasks_check_chapter(bot):
         for channel in channels_kaguya.find():
             if bot.get_channel((channel['id'])):
               await (bot.get_channel(int(channel['id']))).send(f'{most_recent_kaguya_chapter_str} has been translated.\n{kaguya_chapter_anchor}, I suppose!')
-  catch:
+  except:
     print("booo")
             
   # web scraping for oshi no ko
