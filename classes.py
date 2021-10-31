@@ -30,21 +30,13 @@ class Help:
     def get_help(self):
         help_message = "No such command, in fact!"
         if self.cmd == "":
-            help_message = "```Prefix is 'r.', in fact!\nTo get help and to learn aliases for a specific command use r.help <command>, I suppose!\nAvailable commands are:\n-add_channel\n-remove_channel\n-add_channel_kaguya\n-remove_channel_kaguya\n-add_channel_onk\n-remove_channel_onk\n-latest_chapter\n-avatar\n-say\n-clean\n-kick\n-ban\n-unban\n-remind\n-roll\n-flip\n-pout\n-pat\n-smug\n-coinflip\n-rps, in fact!```"                                                                                                                                                              
+            help_message = "```Prefix is 'r.', in fact!\nTo get help and to learn aliases for a specific command use r.help <command>, I suppose!\nAvailable commands are:\n-add_channel\n-remove_channel\n-latest_chapter\n-avatar\n-say\n-clean\n-kick\n-ban\n-unban\n-remind\n-roll\n-flip\n-pout\n-pat\n-smug\n-coinflip\n-rps, in fact!```"                                                                                                                                                              
         elif self.cmd == "avatar":
             help_message = "```Betty will send a member's(author's if no member is passed) avatar image to the text channel, in fact!```"
         elif self.cmd == "add_channel":
-            help_message = "```Betty will add the text channel to the list of channels that will receive Re:Zero notifications, I suppose!\nAn alias for this is 'add', in fact!```"
+            help_message = "```Betty will add the text channel to the list of channels that will receive notifications of the preferred series, I suppose!\nAn alias for this is 'add', in fact!```"
         elif self.cmd == "remove_channel":
-            help_message = "```Betty will remove the text channel from the list of channels that will receive Re:Zero notifications, I suppose!\nAn alias for this is 'remove', in fact!```"
-        elif self.cmd == "add_channel_kaguya":
-            help_message = "```Betty will add the text channel to the list of channels that will receive Kaguya-sama notifications, I suppose!\nAliases for this are 'add_kaguya' and 'kaguya_add', in fact!```"
-        elif self.cmd == "remove_channel_kaguya":
-            help_message = "```Betty will remove the text channel to the list of channels that will receive Kaguya-sama notifications, I suppose!\nAliases for this are 'remove_kaguya' and 'kaguya_remove', in fact!```"
-        elif self.cmd == "add_channel_onk":
-            help_message = "```Betty will add the text channel to the list of channels that will receive Oshi No Ko notifications, I suppose!\nAliases for this are 'add_onk' and 'onk_add', in fact!```"
-        elif self.cmd == "remove_channel_onk":
-            help_message = "```Betty will remove the text channel to the list of channels that will receive Oshi No Ko notifications, I suppose!\nAliases for this are 'remove_onk' and 'onk_remove', in fact!```"
+            help_message = "```Betty will remove the text channel from the list of channels that will receiv notifications of the preferred series, I suppose!\nAn alias for this is 'remove', in fact!```"
         elif self.cmd == "say":
             help_message = "```Betty will repeat what you say, I suppose!```"
         elif self.cmd == "clean":
