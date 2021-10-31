@@ -119,43 +119,13 @@ async def servers(ctx):
 async def avatar(ctx, member: discord.Member=None):
   await commands_avatar(ctx, member)
 
-@bot.command()
+@bot.command(aliases = ["add"])
 async def add_channel(ctx, *, series=''):
   await commands_add_channel(ctx, ChannelList(series, ctx.channel.id))
   
-@bot.command()
+@bot.command(aliases = ["remove"])
 async def remove_channel(ctx, *, series=''):
   await commands_remove_channel(ctx, ChannelList(series, ctx.channel.id))
-
-# # add channel to re zero notification list
-# @bot.command(aliases = ["add"])
-# async def add_channel(ctx):
-#   await commands_add_channel(ctx)
-  
-# # remove channel from re zero notification list
-# @bot.command(aliases = ["remove"])
-# async def remove_channel(ctx):
-#   await commands_remove_channel(ctx)
-  
-# # add channel to kaguya-sama notification list
-# @bot.command(aliases = ["add_kaguya", "kaguya_add"])
-# async def add_channel_kaguya(ctx):
-#   await commands_add_channel_kaguya(ctx)
-  
-# # remove channel from kaguya-sama notification list
-# @bot.command(aliases = ["remove_kaguya", "kaguya_remove"])
-# async def remove_channel_kaguya(ctx):
-#   await commands_remove_channel_kaguya(ctx)
-  
-# # add channel to oshi no ko notification list
-# @bot.command(aliases = ["add_onk", "onk_add"])
-# async def add_channel_onk(ctx):
-#   await commands_add_channel_onk(ctx)
-  
-# # remove channel from oshi no ko notification list
-# @bot.command(aliases = ["remove_onk", "onk_remove"])
-# async def remove_channel_onk(ctx):
-#   await commands_remove_channel_onk(ctx)
   
 # help command
 @bot.command()
