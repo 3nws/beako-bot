@@ -52,10 +52,10 @@ async def commands_add_channel_rz(id):
     'id': id,
   }
   if channels.count_documents(channel_entry, limit = 1) != 0:
-        msg =  "This text channel is already on the receiver list, in fact!"
+        msg = "This text channel is already on the receiver list, in fact!"
         return msg
   channels.insert_one(channel_entry)
-  msg =  "This text channel will receive notifications, I suppose!"
+  msg = "This text channel will receive notifications, I suppose!"
   return msg
   
 # add channel to kaguya-sama notification list
@@ -64,10 +64,10 @@ async def commands_add_channel_kaguya(id):
     'id': id,
   }
   if channels_kaguya.count_documents(channel_entry, limit = 1) != 0:
-        msg =  "This text channel is already on the receiver list, in fact!"
+        msg = "This text channel is already on the receiver list, in fact!"
         return msg
   channels_kaguya.insert_one(channel_entry)
-  msg =  "This text channel will receive notifications, I suppose!"
+  msg = "This text channel will receive notifications, I suppose!"
   return msg
   
 # add channel to oshi no ko notification list
@@ -76,10 +76,10 @@ async def commands_add_channel_onk(id):
     'id': id,
   }
   if channels_onk.count_documents(channel_entry, limit = 1) != 0:
-        msg =  "This text channel is already on the receiver list, in fact!"
+        msg = "This text channel is already on the receiver list, in fact!"
         return msg
   channels_onk.insert_one(channel_entry)
-  msg =  "This text channel will receive notifications, I suppose!"
+  msg = "This text channel will receive notifications, I suppose!"
   return msg
   
 # remove channel from re zero notification list
@@ -88,10 +88,10 @@ async def commands_remove_channel_rz(id):
     'id': id,
   }
   if channels.count_documents(channel_entry, limit = 1) == 0:
-        msg =  "This text channel is not on the receiver list, in fact!"
+        msg = "This text channel is not on the receiver list, in fact!"
         return msg
   channels.find_one_and_delete(channel_entry)
-  msg =  "This text channel will no longer receive notifications, I suppose!"
+  msg = "This text channel will no longer receive notifications, I suppose!"
   return msg
   
 # remove channel from kaguya-sama notification list
@@ -100,10 +100,10 @@ async def commands_remove_channel_kaguya(id):
     'id': id,
   }
   if channels_kaguya.count_documents(channel_entry, limit = 1) == 0:
-        msg =  "This text channel is not on the receiver list, in fact!"
+        msg = "This text channel is not on the receiver list, in fact!"
         return msg
   channels_kaguya.find_one_and_delete(channel_entry)
-  msg =  "This text channel will no longer receive notifications, I suppose!"
+  msg = "This text channel will no longer receive notifications, I suppose!"
   return msg
   
 # remove channel from oshi no ko notification list
@@ -112,10 +112,10 @@ async def commands_remove_channel_onk(id):
     'id': id,
   }
   if channels_onk.count_documents(channel_entry, limit = 1) == 0:
-        msg =  "This text channel is not on the receiver list, in fact!"
+        msg = "This text channel is not on the receiver list, in fact!"
         return msg
   channels_onk.find_one_and_delete(channel_entry)
-  msg =  "This text channel will no longer receive notifications, I suppose!"
+  msg = "This text channel will no longer receive notifications, I suppose!"
   return msg
   
 # task that removes non existing(deleted) channels every 10 seconds
