@@ -26,7 +26,7 @@ async def commands_remind(ctx, time, unit, reminder):
         seconds += int(time)
         counter = f"{seconds} seconds"
     if seconds == 0:
-        embed.add_field(name='Warning', value="What is this in fact?")
+        embed.add_field(name='Warning', value="What is this, in fact?!")
     elif seconds > 7776000:
         embed.add_field(name='Warning', value="We might not survive long enough to do this, in fact!")
     else:

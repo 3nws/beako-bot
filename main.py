@@ -6,7 +6,11 @@ import asyncio
 from dotenv import load_dotenv
 from discord.ext import tasks, commands
 
-from classes import Help, ChannelList
+# classes import
+from ChannelList import ChannelList
+from Help import Help
+
+# commands import
 from commands.r_help import commands_help
 from commands.r_servers import commands_servers
 from commands.r_say import commands_say
