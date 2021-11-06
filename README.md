@@ -4,6 +4,8 @@ Checks every 10 seconds.
 
 I scrape the data from [WitchCultTranslation](https://witchculttranslation.com/) for Re:zero and [Guya.Moe](https://guya.moe) for Kaguya-sama and Oshi No Ko.
 
+I use [pysaucenao](https://github.com/FujiMakoto/pysaucenao) for reverse image searching.
+
 [Here's the invite link](https://discord.com/api/oauth2/authorize?client_id=834692619392385074&permissions=2148002886&scope=bot).
 
 ## Commands
@@ -26,3 +28,4 @@ I scrape the data from [WitchCultTranslation](https://witchculttranslation.com/)
 - `r.smug` (sends a smug gif from tenor api)
 - `r.coinflip h t` (flip a coin h and t are not required), aliases: `r.coin`
 - `r.rps choice` (play rock-paper-scissors with Betty)
+- `r.reverse_image_search url` (search the image you want for the source), aliases: `r.ris`, `r.sauce`, `r.source`

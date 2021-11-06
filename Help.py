@@ -24,6 +24,7 @@ class Help:
                             \n-pat\
                             \n-smug\
                             \n-coinflip\
+                            \n-reverse_image_search\
                             \n-rps, in fact!```"                                                                                                                                                              
         elif self.cmd == "avatar":
             help_message = "```Betty will send a member's(author's if no member is passed) avatar image to the text channel, in fact!```"
@@ -69,5 +70,9 @@ class Help:
         elif self.cmd == "rps":
             help_message = "```Betty will play rock-paper-scissors with you, I suppose! Rejoice, in fact!\
                             \nThe format for this is 'rps choice' (ex. rps rock), in fact!```"
+        elif self.cmd == "reverse_image_search":
+            help_message = "```Betty will reverse search for the image you want, I suppose!\
+                            \nAliases for this are 'ris', 'sauce', and 'source' in fact!\
+                            \nThe format for this is 'reverse_image_search url', in fact!```"
         
         return help_message
