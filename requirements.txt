@@ -5,3 +5,4 @@ beautifulsoup4==4.9.3
 discord==1.0.1
 dnspython==2.1.0
 python-dotenv==0.17.1
+pysaucenao==1.6.1
