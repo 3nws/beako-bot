@@ -8,7 +8,7 @@ load_dotenv()
 
 saucenao_api_key = os.getenv('SAUCENAO_API_KEY')
 
-saucenao = SauceNao(api_key=saucenao_api_key, results_limit=1)
+saucenao = SauceNao(api_key=saucenao_api_key, results_limit=1, db=5)
 
 async def commands_reverse_image_search(ctx, url):
     try:
@@ -24,4 +24,4 @@ async def commands_reverse_image_search(ctx, url):
         sauce_frame.set_image(url=best_result.thumbnail)
         await ctx.send(embed=sauce_frame)
     except:
-        await ctx.send("That doesn't seem like a usable URL, in fact!")
+        await ctx.send("I couldn't find that on pixiv, I suppose!'")
