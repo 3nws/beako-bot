@@ -20,8 +20,8 @@ async def commands_reverse_image_search(ctx, url):
         )
         results = await saucenao.from_url(url)
         best_result = results[0]
-        sauce_frame.add_field(name=best_result.title+" by "+best_result.author_name+" with "+str(best_result.similarity)+" similarity", value=" on "+best_result.source_url)
-        sauce_frame.set_image(url=best_result.thumbnail)
+        sauce_frame.add_field(name=f"{best_result.title} by {best_result.author_name} with {str(best_result.similarity)} similarity", value=f"on [PIXIV]({best_result.source_url})")
+        sauce_frame.set_thumbnail(url=best_result.thumbnail)
         await ctx.send(embed=sauce_frame)
     except:
         await ctx.send("I couldn't find that on pixiv, I suppose!'")
