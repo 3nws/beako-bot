@@ -46,78 +46,72 @@ async def commands_latest_chapter(ctx):
   title = most_recent_post.text
   await ctx.send(f'Latest translated chapter is {title}, I suppose!\n{latest_chapter_translated_link}')
 
-# add channel to re zero notification list
-async def commands_add_channel_rz(id):
+# add the channel to the receiver list
+async def commands_add_channel(id, series):
   channel_entry = {
     'id': id,
   }
-  if channels.count_documents(channel_entry, limit = 1) != 0:
-        msg = "This text channel is already on the receiver list, in fact!"
-        return msg
-  channels.insert_one(channel_entry)
-  msg = "This text channel will receive notifications, I suppose!"
-  return msg
-  
-# add channel to kaguya-sama notification list
-async def commands_add_channel_kaguya(id):
+  success_msg = "This text channel will receive notifications, I suppose!"
+  failure_msg = "This text channel is already on the receiver list, in fact!"
+  is_in_list = channels.count_documents(channel_entry, limit = 1) != 0
+  is_in_kaguya_list = channels_kaguya.count_documents(channel_entry, limit = 1) != 0
+  is_in_onk_list = channels_onk.count_documents(channel_entry, limit = 1) != 0
+  if (series == "rz" or series == "rezero"):
+        if (not is_in_list):
+          channels.insert_one(channel_entry)
+          return success_msg
+        else:
+          return failure_msg
+  elif (series == "kaguya" or series == "kaguya-sama" or series == "ks"):
+        if (not is_in_kaguya_list):
+          channels_kaguya.insert_one(channel_entry)
+          return success_msg
+        else:
+          return failure_msg
+  elif (series == "onk" or series == "oshi-no-ko" or series == "oshi no ko"):
+        if (not is_in_onk_list):
+          channels_onk.insert_one(channel_entry)
+          return success_msg
+        else:
+          return failure_msg
+  elif (series == "" or series == " "):
+        return "To what list do you want to add this channel, in fact?!"
+  else:
+        return "What is that, I suppose?!"
+
+# remove the channel from the receiver list
+async def commands_remove_channel(id, series):
   channel_entry = {
     'id': id,
   }
-  if channels_kaguya.count_documents(channel_entry, limit = 1) != 0:
-        msg = "This text channel is already on the receiver list, in fact!"
-        return msg
-  channels_kaguya.insert_one(channel_entry)
-  msg = "This text channel will receive notifications, I suppose!"
-  return msg
-  
-# add channel to oshi no ko notification list
-async def commands_add_channel_onk(id):
-  channel_entry = {
-    'id': id,
-  }
-  if channels_onk.count_documents(channel_entry, limit = 1) != 0:
-        msg = "This text channel is already on the receiver list, in fact!"
-        return msg
-  channels_onk.insert_one(channel_entry)
-  msg = "This text channel will receive notifications, I suppose!"
-  return msg
-  
-# remove channel from re zero notification list
-async def commands_remove_channel_rz(id):
-  channel_entry = {
-    'id': id,
-  }
-  if channels.count_documents(channel_entry, limit = 1) == 0:
-        msg = "This text channel is not on the receiver list, in fact!"
-        return msg
-  channels.find_one_and_delete(channel_entry)
-  msg = "This text channel will no longer receive notifications, I suppose!"
-  return msg
-  
-# remove channel from kaguya-sama notification list
-async def commands_remove_channel_kaguya(id):
-  channel_entry = {
-    'id': id,
-  }
-  if channels_kaguya.count_documents(channel_entry, limit = 1) == 0:
-        msg = "This text channel is not on the receiver list, in fact!"
-        return msg
-  channels_kaguya.find_one_and_delete(channel_entry)
-  msg = "This text channel will no longer receive notifications, I suppose!"
-  return msg
-  
-# remove channel from oshi no ko notification list
-async def commands_remove_channel_onk(id):
-  channel_entry = {
-    'id': id,
-  }
-  if channels_onk.count_documents(channel_entry, limit = 1) == 0:
-        msg = "This text channel is not on the receiver list, in fact!"
-        return msg
-  channels_onk.find_one_and_delete(channel_entry)
-  msg = "This text channel will no longer receive notifications, I suppose!"
-  return msg
-  
+  success_msg = "This text channel will no longer receive notifications, I suppose!"
+  failure_msg = "This text channel is not on the receiver list, in fact!"
+  is_in_list = channels.count_documents(channel_entry, limit = 1) != 0
+  is_in_kaguya_list = channels_kaguya.count_documents(channel_entry, limit = 1) != 0
+  is_in_onk_list = channels_onk.count_documents(channel_entry, limit = 1) != 0
+  if (series == "rz" or series == "rezero"):
+        if (is_in_list):
+          channels.find_one_and_delete(channel_entry)
+          return success_msg
+        else:
+          return failure_msg
+  elif (series == "kaguya" or series == "kaguya-sama" or series == "ks"):
+        if (is_in_kaguya_list):
+          channels_kaguya.find_one_and_delete(channel_entry)
+          return success_msg
+        else:
+          return failure_msg
+  elif (series == "onk" or series == "oshi-no-ko" or series == "oshi no ko"):
+        if (is_in_onk_list):
+          channels_onk.find_one_and_delete(channel_entry)
+          return success_msg
+        else:
+          return failure_msg
+  elif (series == "" or series == " "):
+        return "From what list do you want to remove this channel, in fact?!"
+  else:
+        return "What is that, I suppose?!"
+
 # task that removes non existing(deleted) channels every 10 seconds
 async def tasks_filter_channels(bot):
   for channel in channels.find():
@@ -185,7 +179,7 @@ async def tasks_check_chapter(bot):
       time_posted = li_element.find('time').text
 
       last_chapter = db_chapter.data.find_one()
-
+      
       if last_chapter['title'] != most_recent_post_str:
           db_chapter.data.find_one_and_update({'title':str(last_chapter['title'])}, { '$set': { "title" : most_recent_post_str} })
           for channel in channels.find():
