@@ -46,7 +46,7 @@ async def reverse_image_search(ctx, url=""):
   await commands_reverse_image_search(ctx, url)
 
 # play rock paper scissors
-@bot.command(aliases = ["scissors", "paper", "rock"])
+@bot.command()
 async def rps(ctx, choice):
   await commands_rps(ctx, choice)
 

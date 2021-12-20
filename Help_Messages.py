@@ -1,41 +1,37 @@
 messages = {
         '': "```Prefix is 'r.', in fact!\
-                 \nTo get help and to learn aliases for a specific command use r.help <command>, I suppose!\
+                 \nTo get help and to learn aliases for a specific command use r.help <command> (you can also use an alias), I suppose!\
                  \nAvailable commands are:\
-                 \n-add_channel\
-                 \n-remove_channel\
-                 \n-latest_chapter\
+                 \n-add_channel (alias: add)\
+                 \n-remove_channel (alias: remove)\
+                 \n-latest_chapter (aliases: latest, last, chp)\
                  \n-avatar\
                  \n-say\
-                 \n-clean\
-                 \n-kick\
+                 \n-clean (alias: clear)\
+                 \n-kick (aliases: yeet, yeeto)\
                  \n-ban\
                  \n-unban\
-                 \n-remind\
+                 \n-remind (aliases: remindme, remind_me)\
                  \n-roll\
                  \n-flip\
                  \n-pout\
                  \n-pat\
                  \n-smug\
-                 \n-coinflip\
-                 \n-reverse_image_search\
+                 \n-coinflip (alias: coin)\
+                 \n-reverse_image_search (aliases: ris, sauce, source)\
                  \n-rps, in fact!```",
                  
         'avatar': "```Betty will send a member's(author's if no member is passed) avatar image to the text channel, in fact!```",
         
-        'add_channel': "```Betty will add the text channel to the list of channels that will receive notifications of the preferred series, I suppose!\
-                         \nAn alias for this is 'add', in fact!```",
+        'add_channel': "```Betty will add the text channel to the list of channels that will receive notifications of the preferred series, I suppose!```",
                          
-        'remove_channel': "```Betty will remove the text channel from the list of channels that will receiv notifications of the preferred series, I suppose!\
-                            \nAn alias for this is 'remove', in fact!```",
+        'remove_channel': "```Betty will remove the text channel from the list of channels that will receiv notifications of the preferred series, I suppose!```",
                             
         'say': "```Betty will repeat what you say, I suppose!```",
         
-        'clean': "```Betty will clean up the text channel by the specified amount of messages, in fact!\
-                   \nAn alias for this is 'clear', in fact!```",
+        'clean': "```Betty will clean up the text channel by the specified amount of messages, in fact!```",
                    
-        'kick': "```Betty will use wind magic to kick a member, I suppose!\
-                  \nAliases for this are 'yeet' and 'yeeto', in fact!```",
+        'kick': "```Betty will use wind magic to kick a member, I suppose!```",
                   
         'ban': "```Betty will use yin magic to ban a member, I suppose!```",
         
@@ -56,17 +52,32 @@ messages = {
         'smug': "```Betty will send smug gifs from tenor gif, I suppose!```",
         
         'coinflip': "```Betty will flip a coin, I suppose!\
-                      \nAn alias for this is 'coin', in fact!\
                       \nThe format for this is 'coinflip for_heads(not required) for_tails(not required)' (ex. coinflip lol valo), in fact!```",
                       
-        'latest_chapter': "```Betty will tell you what the latest translated chapter is, I suppose!\
-                            \nAliases for this are 'chp', 'latest', and 'last' in fact!```",
+        'latest_chapter': "```Betty will tell you what the latest translated chapter is, I suppose!```",
                             
         'rps': "```Betty will play rock-paper-scissors with you, I suppose! Rejoice, in fact!\
                  \nThe format for this is 'rps choice' (ex. rps rock), in fact!```",
                  
         'reverse_image_search': "```Betty will reverse search for the image you want, I suppose!\
-                                  \nAliases for this are 'ris', 'sauce', and 'source' in fact!\
                                   \nThe format for this is 'reverse_image_search url', in fact!```",
                                   
+}
+
+aliases = {
+        'add': 'add_channel',
+        'remove': 'remove_channel',
+        'clear': 'clean',
+        'yeet': 'kick',
+        'yeeto': 'kick',
+        'remindme': 'remind',
+        'remind_me': 'remind',
+        'coin': 'coinflip',
+        'latest': 'latest_chapter',
+        'last': 'latest_chapter',
+        'chp': 'latest_chapter',
+        'ris': 'reverse_image_search',
+        'sauce': 'reverse_image_search',
+        'source': 'reverse_image_search',
+        
 }
