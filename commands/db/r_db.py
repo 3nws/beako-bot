@@ -143,16 +143,19 @@ async def tasks_check_chapter(bot):
     except requests.Timeout:
       print("WitchCultTranslation down!")
       is_wct_down = True
+      sleep(1)
     try:
       page_kaguya = requests.get('https://guya.moe/read/manga/Kaguya-Wants-To-Be-Confessed-To/', timeout=5)
     except requests.Timeout:
       print("Guya.Moe down!")
       is_guya_down = True
+      sleep(1)
     try:
       page_onk = requests.get('https://guya.moe/read/manga/Oshi-no-Ko/', timeout=5)
     except requests.Timeout:
       print("Guya.moe down!")
       is_guya_down = True
+      sleep(1)
 
     if (not is_wct_down):
       # web scraping for re zero
