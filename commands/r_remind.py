@@ -14,17 +14,17 @@ async def commands_remind(ctx, time, unit, reminder):
         time = time[:-1]
     seconds = 0
     if unit.lower().endswith("d"):
-        seconds += int(time) * 60 * 60 * 24
-        counter = f"{seconds // 60 // 60 // 24} days"
+        seconds += int(float(time)) * 60 * 60 * 24
+        counter = f"{time} days" if int(float(time)) != 1 else f"{time} day"
     if unit.lower().endswith("h"):
-        seconds += int(time) * 60 * 60
-        counter = f"{seconds // 60 // 60} hours"
+        seconds += int(float(time)) * 60 * 60
+        counter = f"{time} hours" if int(float(time)) != 1 else f"{time} hour"
     elif unit.lower().endswith("m"):
-        seconds += int(time) * 60
-        counter = f"{seconds // 60} minutes"
+        seconds += int(float(time) * 60)
+        counter = f"{time} minutes" if int(float(time)) != 1 else f"{time} minute"
     elif unit.lower().endswith("s"):
-        seconds += int(time)
-        counter = f"{seconds} seconds"
+        seconds += int(float(time))
+        counter = f"{time} seconds" if int(float(time)) != 1 else f"{time} second"
     if seconds == 0:
         embed.add_field(name='Warning', value="What is this, in fact?!")
     elif seconds > 7776000:
