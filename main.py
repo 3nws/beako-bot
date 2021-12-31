@@ -111,8 +111,8 @@ async def unban(ctx, *, member):
 # clears chat
 @bot.command(aliases = ["clear"])
 @commands.has_permissions(administrator=True)
-async def clean(ctx, limit: int):
-  await commands_clean(ctx, limit)
+async def clean(ctx, limit: int, msg_id=None):
+  await commands_clean(ctx, limit, msg_id)
 
 # beako will repeat what is passed in
 @bot.command()

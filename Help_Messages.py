@@ -29,7 +29,7 @@ messages = {
                             
         'say': "```Betty will repeat what you say, I suppose!```",
         
-        'clean': "```Betty will clean up the text channel by the specified amount of messages, in fact!```",
+        'clean': "```Betty will clean up the text channel by the specified amount of messages, in fact! If you like you can specify which message it will start from by passing its ID, I suppose!```",
                    
         'kick': "```Betty will use wind magic to kick a member, I suppose!```",
                   
