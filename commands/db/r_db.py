@@ -10,22 +10,37 @@ load_dotenv()
 
 client = pymongo.MongoClient(os.getenv('DB_URL'))
 
+# channels db
 db_channels = client.channel_id
 
+# chapter db
 db_chapter = client.chapter
 
+# chapters data
+data_rz = db_chapter.data
+data_kaguya = db_chapter.data_kaguya
+data_onk = db_chapter.data_onk
+
+# flip image urls db
 db_flips = client.flips
 
+# flip image urls data
 flips = db_flips.data
 
-# re zero
-channels = db_channels.data
-
-# kaguya-sama
+# channels data
+channels_rz = db_channels.data
 channels_kaguya = db_channels.data_kaguya
-
-# oshi no ko
 channels_onk = db_channels.data_onk
+
+async def send_messages(bot, channels, title, data, db_rec, anchor):
+  if db_rec['title'] != title:
+    data.find_one_and_update({'title':str(db_rec['title'])}, { '$set': { "title" : title} })
+    for channel in channels.find():
+          if bot.get_channel((channel['id'])):
+            try:
+              await (bot.get_channel(int(channel['id']))).send(f'Chapter {title} has been translated.\n{anchor}, I suppose!')
+            except Exception as e:
+              print(f"The channel with id {channel['id']} is private, I suppose!")
 
 # sends the latest english translated chapter
 async def commands_latest_chapter(ctx):
@@ -53,12 +68,12 @@ async def commands_add_channel(id, series):
   }
   success_msg = "This text channel will receive notifications, I suppose!"
   failure_msg = "This text channel is already on the receiver list, in fact!"
-  is_in_list = channels.count_documents(channel_entry, limit = 1) != 0
+  is_in_list = channels_rz.count_documents(channel_entry, limit = 1) != 0
   is_in_kaguya_list = channels_kaguya.count_documents(channel_entry, limit = 1) != 0
   is_in_onk_list = channels_onk.count_documents(channel_entry, limit = 1) != 0
   if (series == "rz" or series == "rezero"):
         if (not is_in_list):
-          channels.insert_one(channel_entry)
+          channels_rz.insert_one(channel_entry)
           return success_msg
         else:
           return failure_msg
@@ -86,12 +101,12 @@ async def commands_remove_channel(id, series):
   }
   success_msg = "This text channel will no longer receive notifications, I suppose!"
   failure_msg = "This text channel is not on the receiver list, in fact!"
-  is_in_list = channels.count_documents(channel_entry, limit = 1) != 0
+  is_in_list = channels_rz.count_documents(channel_entry, limit = 1) != 0
   is_in_kaguya_list = channels_kaguya.count_documents(channel_entry, limit = 1) != 0
   is_in_onk_list = channels_onk.count_documents(channel_entry, limit = 1) != 0
   if (series == "rz" or series == "rezero"):
         if (is_in_list):
-          channels.find_one_and_delete(channel_entry)
+          channels_rz.find_one_and_delete(channel_entry)
           return success_msg
         else:
           return failure_msg
@@ -114,12 +129,12 @@ async def commands_remove_channel(id, series):
 
 # task that removes non existing(deleted) channels every 10 seconds
 async def tasks_filter_channels(bot):
-  for channel in channels.find():
+  for channel in channels_rz.find():
     if not bot.get_channel((channel['id'])):
       channel_entry = {
         'id': channel['id'],
       }
-      channels.find_one_and_delete(channel_entry)
+      channels_rz.find_one_and_delete(channel_entry)
   for channel in channels_kaguya.find():
     if not bot.get_channel((channel['id'])):
       channel_entry = {
@@ -174,21 +189,13 @@ async def tasks_check_chapter(bot):
 
       most_recent_post_str = most_recent_post_str.strip()
 
-      li_element = soup.find_all('li', 'rpwe-li rpwe-clearfix')[0]
-
       if 'href' in post_link.attrs:
           latest_chapter_translated_link = post_link.get('href')
 
-      time_posted = li_element.find('time').text
-
       last_chapter = db_chapter.data.find_one()
       
-      if last_chapter['title'] != most_recent_post_str:
-          db_chapter.data.find_one_and_update({'title':str(last_chapter['title'])}, { '$set': { "title" : most_recent_post_str} })
-          for channel in channels.find():
-              if bot.get_channel((channel['id'])):
-                await (bot.get_channel(int(channel['id']))).send(f'{most_recent_post} has been translated {time_posted}.\n{latest_chapter_translated_link}, I suppose!')
-
+      await send_messages(bot, channels_rz, most_recent_post_str, data_rz, last_chapter, latest_chapter_translated_link)
+      
     if (not is_guya_down):
       # web scraping for kaguya-sama
       soup_kaguya = BeautifulSoup(page_kaguya.content, 'html.parser')
@@ -214,12 +221,8 @@ async def tasks_check_chapter(bot):
       most_recent_kaguya_chapter_str = most_recent_kaguya_chapter_str.strip()
   
       last_kaguya_chapter = db_chapter.data_kaguya.find_one()
-  
-      if last_kaguya_chapter['title'] != most_recent_kaguya_chapter_str:
-          db_chapter.data_kaguya.find_one_and_update({'title':str(last_kaguya_chapter['title'])}, { '$set': { "title" : most_recent_kaguya_chapter_str} })
-          for channel in channels_kaguya.find():
-              if bot.get_channel((channel['id'])):
-                await (bot.get_channel(int(channel['id']))).send(f'Chapter {most_recent_kaguya_chapter_str} has been translated.\n{kaguya_chapter_anchor}, I suppose!')
+      
+      await send_messages(bot, channels_kaguya, most_recent_kaguya_chapter_str, data_kaguya, last_kaguya_chapter, kaguya_chapter_anchor)
   
       # web scraping for oshi no ko
       soup_onk = BeautifulSoup(page_onk.content, 'html.parser')
@@ -245,11 +248,8 @@ async def tasks_check_chapter(bot):
   
       last_onk_chapter = db_chapter.data_onk.find_one()
   
-      if last_onk_chapter['title'] != most_recent_onk_chapter_str:
-          db_chapter.data_onk.find_one_and_update({'title':str(last_onk_chapter['title'])}, { '$set': { "title" : most_recent_onk_chapter_str} })
-          for channel in channels_onk.find():
-              if bot.get_channel((channel['id'])):
-                await (bot.get_channel(int(channel['id']))).send(f'Chapter {most_recent_onk_chapter_str} has been translated.\n{onk_chapter_anchor}, I suppose!')
+      await send_messages(bot, channels_onk, most_recent_onk_chapter_str, data_onk, last_onk_chapter, onk_chapter_anchor)
+      
   except:
       pass
   
