@@ -27,10 +27,16 @@ db_flips = client.flips
 # flip image urls data
 flips = db_flips.data
 
+# avatars path
+avatars = os.path.join(os.getcwd(), "avatars") 
+
 # channels data
 channels_rz = db_channels.data
 channels_kaguya = db_channels.data_kaguya
 channels_onk = db_channels.data_onk
+
+def select_random_image_path():
+    return os.path.join(avatars, random.choice(os.listdir(avatars)))
 
 async def send_messages(bot, channels, title, data, db_rec, anchor):
   if db_rec['title'] != title:
@@ -126,6 +132,16 @@ async def commands_remove_channel(id, series):
         return "From what list do you want to remove this channel, in fact?!"
   else:
         return "What is that, I suppose?!"
+
+# task sets a random avatar every day
+async def tasks_change_avatar(bot):
+  try:
+    file = open(select_random_image_path(), 'rb')
+    new_avatar = file.read()
+    await bot.user.edit(avatar=new_avatar)
+  except Exception as e:
+    print(e)
+    sleep(1)
 
 # task that removes non existing(deleted) channels every 10 seconds
 async def tasks_filter_channels(bot):

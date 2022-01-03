@@ -25,7 +25,7 @@ from commands.r_rps import commands_rps
 from commands.r_coinflip import commands_coinflip
 from commands.r_reverse_image_search import commands_reverse_image_search
 from commands.r_gif import commands_pat, commands_pout, commands_smug
-from commands.db.r_db import tasks_check_chapter, tasks_filter_channels, commands_flip, commands_latest_chapter
+from commands.db.r_db import tasks_check_chapter, tasks_filter_channels, tasks_change_avatar, commands_flip, commands_latest_chapter
 from commands.db.r_add_channel import commands_add_channel
 from commands.db.r_remove_channel import commands_remove_channel
 
@@ -141,6 +141,11 @@ async def remove_channel(ctx, *, series=''):
 @bot.command()
 async def help(ctx, *,  cmd=''):
   await commands_help(ctx, Help(cmd))
+  
+# task sets a random avatar every day
+@tasks.loop(days=1)
+async def change_avatar():
+  await tasks_change_avatar(bot)
 
 # task that removes non existing(deleted) channels every 10 seconds
 @tasks.loop(seconds=10)
@@ -164,5 +169,6 @@ async def on_ready():
   await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name="r.help and Songstress Liliana!"))
   check_chapter.start()
   filter_channels.start()
+  change_avatar.start()
 
 bot.run(os.getenv('TOKEN'))
