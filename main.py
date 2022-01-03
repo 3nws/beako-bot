@@ -143,7 +143,7 @@ async def help(ctx, *,  cmd=''):
   await commands_help(ctx, Help(cmd))
   
 # task sets a random avatar every day
-@tasks.loop(days=1)
+@tasks.loop(hours=24)
 async def change_avatar():
   await tasks_change_avatar(bot)
 
