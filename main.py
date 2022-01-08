@@ -22,11 +22,12 @@ from commands.r_clean import commands_clean
 from commands.r_avatar import commands_avatar
 from commands.r_roll import commands_roll
 from commands.r_rps import commands_rps
+from commands.r_series import commands_series
 from commands.r_coinflip import commands_coinflip
 from commands.r_reverse_image_search import commands_reverse_image_search
 from commands.r_gif import commands_pat, commands_pout, commands_smug
 from commands.db.r_db import tasks_check_chapter, tasks_filter_channels, tasks_change_avatar, commands_flip
-# from commands.db.r_db import commands_latest_chapter
+from commands.db.r_db import commands_latest_chapter
 from commands.db.r_add_channel import commands_add_channel
 from commands.db.r_remove_channel import commands_remove_channel
 
@@ -41,6 +42,11 @@ intents.guilds = True
 bot = commands.Bot(command_prefix='r.', intents=intents)
 bot.remove_command('help')
 
+# send available series
+@bot.command()
+async def series(ctx):
+  await commands_series(ctx)
+
 # reverse search image
 @bot.command(aliases= ["ris", "sauce", "source"])
 async def reverse_image_search(ctx, url=""):
@@ -52,9 +58,9 @@ async def rps(ctx, choice):
   await commands_rps(ctx, choice)
 
 # sends the latest english translated chapter
-# @bot.command(aliases = ["latest", "last", "chp"])
-# async def latest_chapter(ctx):
-#   await commands_latest_chapter(ctx)
+@bot.command(aliases = ["latest", "last", "chp"])
+async def latest_chapter(ctx, *, series=''):
+  await commands_latest_chapter(ctx, series)
 
 # coin flip
 @bot.command(aliases = ["coin"])

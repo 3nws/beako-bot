@@ -35,6 +35,93 @@ channels_rz = db_channels.data
 channels_kaguya = db_channels.data_kaguya
 channels_onk = db_channels.data_onk
 
+def scrape_rz():
+      try:
+        try:
+          page = requests.get('https://witchculttranslation.com/arc-7/', timeout=5)
+        except requests.Timeout:
+          print("WitchCultTranslation down!")
+        soup = BeautifulSoup(page.content, 'html.parser')
+        most_recent_post = soup.find_all('h3', 'rpwe-title')[0]
+
+        post_link = most_recent_post.find('a')
+
+        most_recent_post = most_recent_post.text
+        most_recent_post_array = most_recent_post.split()
+
+        title = ""
+
+        for i in range(0, 4):
+            title += most_recent_post_array[i] + " "
+
+        title = title.strip()
+
+        if 'href' in post_link.attrs:
+            anchor = post_link.get('href')
+
+        return f'Chapter {title} has been translated.\n{anchor}, I suppose!'
+      except Exception as e:
+        print(e)
+    
+def scrape_guya(series):
+      try:
+        if series == "kaguya":
+          try:
+            page_guya = requests.get('https://guya.moe/read/manga/Kaguya-Wants-To-Be-Confessed-To/', timeout=5)
+          except requests.Timeout:
+            print("Guya.Moe down!")
+        elif series == "onk":
+          try:
+            page_guya = requests.get('https://guya.moe/read/manga/Oshi-no-Ko/', timeout=5)
+          except requests.Timeout:
+            print("Guya.moe down!")
+        soup_guya = BeautifulSoup(page_guya.content, 'html.parser')
+
+        most_recent_kaguya_chapter = soup_guya.find_all('td', 'chapter-title')[0]
+
+        kaguya_chapter_link = most_recent_kaguya_chapter.find('a')
+
+        if 'href' in kaguya_chapter_link.attrs:
+          anchor = 'https://guya.moe'
+          anchor += kaguya_chapter_link.get('href')
+
+        most_recent_kaguya_chapter_title = kaguya_chapter_link.text
+
+        most_recent_kaguya_chapter_array = most_recent_kaguya_chapter_title.split()
+
+        title = ""
+
+        for i in range(0, len(most_recent_kaguya_chapter_array)):
+          title += most_recent_kaguya_chapter_array[i] + " "
+
+        title = title.strip()
+
+        return f'Chapter {title} has been translated.\n{anchor}, I suppose!'
+      except Exception as e:
+        print(e)
+
+aliases = {
+        'rezero': 'rz',
+        're:zero': 'rz',
+        'guya': 'kaguya',
+        'kaguya-sama': 'kaguya',
+        'kaguya_sama': 'kaguya',
+        'oshi no ko': 'onk',
+        'oshi': 'onk',
+        'oshi_no_ko': 'onk',
+}
+
+def last_chapter(series):
+    series = aliases[series] if series in aliases else series
+    if series == "rz":
+      return scrape_rz()
+    elif series == "kaguya":
+      return scrape_guya(series)
+    elif series == "onk":
+      return scrape_guya(series)
+    else:
+      return "What is that, I suppose?!"
+
 def select_random_image_path():
     return os.path.join(avatars, random.choice(os.listdir(avatars)))
 
@@ -49,23 +136,13 @@ async def send_messages(bot, channels, title, data, db_rec, anchor):
               print(f"The channel with id {channel['id']} is private, I suppose!")
 
 # sends the latest english translated chapter
-# async def commands_latest_chapter(ctx):
-#   page = requests.get('https://witchculttranslation.com/arc-7/')
-
-#   soup = BeautifulSoup(page.content, 'html.parser')
-
-#   most_recent_post = soup.find_all('h3', 'rpwe-title')[0]
-
-#   post_link = most_recent_post.find('a')
-
-#   try:
-#       if 'href' in post_link.attrs:
-#           latest_chapter_translated_link = post_link.get('href')
-#   except:
-#       pass
-
-#   title = most_recent_post.text
-#   await ctx.send(f'Latest translated chapter is {title}, I suppose!\n{latest_chapter_translated_link}')
+async def commands_latest_chapter(ctx, series):
+  if series == '':
+        message = "What series do you want to know about, in fact!"
+  else:
+        message = last_chapter(series)
+  
+  await ctx.send(message)
 
 # add the channel to the receiver list
 async def commands_add_channel(id, series):

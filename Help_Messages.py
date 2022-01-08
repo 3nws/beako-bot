@@ -17,6 +17,7 @@ messages = {
                  \n-pout\
                  \n-pat\
                  \n-smug\
+                 \n-series\
                  \n-coinflip (alias: coin)\
                  \n-reverse_image_search (aliases: ris, sauce, source)\
                  \n-rps, in fact!```",
@@ -51,10 +52,12 @@ messages = {
         
         'smug': "```Betty will send smug gifs from tenor gif, I suppose!```",
         
+        'series': "```Betty will tell you the series available in the database, I suppose!```",
+        
         'coinflip': "```Betty will flip a coin, I suppose!\
                       \nThe format for this is 'coinflip for_heads(not required) for_tails(not required)' (ex. coinflip lol valo), in fact!```",
                       
-        'latest_chapter': "```Betty will tell you what the latest translated chapter is, I suppose!```",
+        'latest_chapter': "```Betty will tell you what the latest translated chapter for the given series is, I suppose!```",
                             
         'rps': "```Betty will play rock-paper-scissors with you, I suppose! Rejoice, in fact!\
                  \nThe format for this is 'rps choice' (ex. rps rock), in fact!```",
