@@ -25,7 +25,7 @@ from commands.r_rps import commands_rps
 from commands.r_series import commands_series
 from commands.r_coinflip import commands_coinflip
 from commands.r_reverse_image_search import commands_reverse_image_search
-from commands.r_gif import commands_pat, commands_pout, commands_smug
+from commands.r_gif import commands_pat, commands_pout, commands_smug, commands_hug
 from commands.db.r_db import tasks_check_chapter, tasks_filter_channels, tasks_change_avatar, commands_flip
 from commands.db.r_db import commands_latest_chapter
 from commands.db.r_add_channel import commands_add_channel
@@ -75,7 +75,12 @@ async def smug(ctx):
 # pat uwu
 @bot.command()
 async def pat(ctx, user : discord.Member=None):
-  await commands_pat(ctx, user)
+  await commands_pat(ctx, bot, user)
+
+# hug uwu
+@bot.command()
+async def hug(ctx, user : discord.Member=None):
+  await commands_hug(ctx, bot, user)
 
 # pout uwu
 @bot.command()

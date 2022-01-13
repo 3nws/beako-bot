@@ -25,6 +25,7 @@ I use [pysaucenao](https://github.com/FujiMakoto/pysaucenao) for reverse image s
 - `r.flip` (sends a flip image)
 - `r.pout` (sends a pout gif from tenor api)
 - `r.pat member` (pat a member or yourself if you want)
+- `r.hug member` (hug a member or yourself if you so need)
 - `r.smug` (sends a smug gif from tenor api)
 - `r.series` (sends a list of series available for tracking)
 - `r.coinflip h t` (flip a coin h and t are not required), aliases: `r.coin`

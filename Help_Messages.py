@@ -15,6 +15,7 @@ messages = {
                  \n-roll\
                  \n-flip\
                  \n-pout\
+                 \n-hug\
                  \n-pat\
                  \n-smug\
                  \n-series\
@@ -47,6 +48,8 @@ messages = {
         'flip': "```Betty doesn't want to talk about it, in fact!```",
         
         'pout': "```Betty will send pout gifs from tenor gif, I suppose!```",
+        
+        'hug': "```Betty will send hugging gifs from tenor gif, I suppose!```",
         
         'pat': "```Pat a member or yourself(how pathetic, in fact!).```",
         
