@@ -45,7 +45,11 @@ async def commands_reverse_image_search(ctx, url):
             sauce_frame.add_field(name=f"Image posted by {twitter_result.author_name} with {str(twitter_result.similarity)} similarity",\
                              value=f"on [Twitter]({twitter_result.source_url})")
             sauce_frame.set_thumbnail(url=twitter_result.thumbnail)
-
-        await ctx.send(embed=sauce_frame)
+            
+        sauce_frame.set_footer(text=f"on {str(ctx.author)}'s request, I suppose!", icon_url=ctx.author.avatar_url)
+    
+        await ctx.send(embed=sauce_frame, reference=ctx.message)
     except:
-        await ctx.send("It's not Betty's fault. Something went wrong, in fact!")
+        await ctx.send("It's not Betty's fault. Something went wrong, in fact!", reference=ctx.message)
+    
+    await ctx.message.delete()
