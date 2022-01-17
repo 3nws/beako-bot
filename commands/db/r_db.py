@@ -4,6 +4,7 @@ import os
 import random
 import shutil
 
+from time import sleep
 from dotenv import load_dotenv
 from bs4 import BeautifulSoup
 
