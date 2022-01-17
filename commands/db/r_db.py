@@ -224,8 +224,8 @@ async def tasks_change_avatar(bot):
       res = requests.get(url, stream = True)
 
       if res.status_code == 200:
-          print(os.getcwd())
           file_exists = os.path.exists(file_name)
+          print(file_exists)
           if not file_exists:
               with open(file_name,'wb') as f:
                   shutil.copyfileobj(res.raw, f) 
