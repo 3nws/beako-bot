@@ -2,6 +2,7 @@ import pymongo
 import requests
 import os
 import random
+import shutil
 
 from dotenv import load_dotenv
 from bs4 import BeautifulSoup
@@ -24,11 +25,14 @@ data_onk = db_chapter.data_onk
 # flip image urls db
 db_flips = client.flips
 
+# avatars url db
+db_avatars = client.avatars.data
+
 # flip image urls data
 flips = db_flips.data
 
 # avatars path
-avatars = os.path.join(os.getcwd(), "avatars") 
+avatars = os.path.join(os.getcwd(), "avatars")
 
 # channels data
 channels_rz = db_channels.data
@@ -213,9 +217,27 @@ async def commands_remove_channel(id, series):
 # task sets a random avatar every day
 async def tasks_change_avatar(bot):
   try:
+    for image_record in db_avatars.find():
+      url = image_record["url"]
+      file_name = os.path.join(os.path.join(os.getcwd(), "avatars"), url.split("/")[-1])
+      res = requests.get(url, stream = True)
+
+      if res.status_code == 200:
+          file_exists = os.path.exists(file_name)
+          if not file_exists:
+              with open(file_name,'wb') as f:
+                  shutil.copyfileobj(res.raw, f) 
+              print('Image successfully downloaded: ',file_name)
+          else:
+              print("This image already exists!")
+      else:
+          print('Image Couldn\'t be retrieved')
+        
     file = open(select_random_image_path(), 'rb')
+    print(file)
     new_avatar = file.read()
     await bot.user.edit(avatar=new_avatar)
+    print("Avatar changed successfully!")
   except Exception as e:
     print(e)
     sleep(1)
