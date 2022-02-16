@@ -8,7 +8,7 @@ async def commands_alarm(ctx, time, reminder):
     try:
         embed = discord.Embed(color=discord.Colour.random(), timestamp=datetime.utcnow())
 
-        splitter = ":" if ":" in time.split() else "."
+        splitter = ":" if ":" in time else "."
 
         hour_now = datetime.now().hour
         minute_now = datetime.now().minute
