@@ -14,6 +14,7 @@ from Help import Help
 from commands.r_help import commands_help
 from commands.r_servers import commands_servers
 from commands.r_say import commands_say
+from commands.r_alarm import commands_alarm
 from commands.r_remind import commands_remind
 from commands.r_kick import commands_kick
 from commands.r_ban import commands_ban
@@ -41,6 +42,11 @@ intents.members = True
 intents.guilds = True
 bot = commands.Bot(command_prefix='r.', intents=intents)
 bot.remove_command('help')
+
+# sets an alarm for the user
+@bot.command()
+async def alarm(ctx, time='', *, reminder=""):
+  await commands_alarm(ctx, time, reminder)
 
 # send available series
 @bot.command()

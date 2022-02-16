@@ -20,6 +20,7 @@ I use [pysaucenao](https://github.com/FujiMakoto/pysaucenao) for reverse image s
 - `r.kick member` (kicks a member, needs kick permission), aliases: `r.yeet`, `r.yeeto`
 - `r.ban member` (bans a member, needs ban permission)
 - `r.unban member` (unbans a member, needs admin permissions)
+- `r.alarm time reason` (sets an alarm for you and pings you at that time, only works in the same day though, at least for now)
 - `r.remind time unit reason` (reminds the user after 'time' 'unit's (ex. 5 seconds) for 'reason' (not required), d: day(s), h: hour(s), m: minute(s), s: second(s))
 - `r.roll x` (rolls a random number between 1 and x(100 if no argument is passed))
 - `r.flip` (sends a flip image)
