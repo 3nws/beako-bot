@@ -8,6 +8,9 @@ from time import sleep
 from dotenv import load_dotenv
 from bs4 import BeautifulSoup
 
+from commands.db.classes.Re_zero import Re_zero
+from commands.db.classes.Guya_moe import Guya_moe
+
 load_dotenv()
 
 client = pymongo.MongoClient(os.getenv('DB_URL'))
@@ -40,71 +43,6 @@ channels_rz = db_channels.data
 channels_kaguya = db_channels.data_kaguya
 channels_onk = db_channels.data_onk
 
-def scrape_rz():
-      try:
-        try:
-          page = requests.get('https://witchculttranslation.com/arc-7/', timeout=5)
-        except requests.Timeout:
-          print("WitchCultTranslation down!")
-        soup = BeautifulSoup(page.content, 'html.parser')
-        most_recent_post = soup.find_all('h3', 'rpwe-title')[0]
-
-        post_link = most_recent_post.find('a')
-
-        most_recent_post = most_recent_post.text
-        most_recent_post_array = most_recent_post.split()
-
-        title = ""
-
-        for i in range(0, 4):
-            title += most_recent_post_array[i] + " "
-
-        title = title.strip()
-
-        if 'href' in post_link.attrs:
-            anchor = post_link.get('href')
-
-        return f'Chapter {title} has been translated.\n{anchor}, I suppose!'
-      except Exception as e:
-        print(e)
-    
-def scrape_guya(series):
-      try:
-        if series == "kaguya":
-          try:
-            page_guya = requests.get('https://guya.moe/read/manga/Kaguya-Wants-To-Be-Confessed-To/', timeout=5)
-          except requests.Timeout:
-            print("Guya.Moe down!")
-        elif series == "onk":
-          try:
-            page_guya = requests.get('https://guya.moe/read/manga/Oshi-no-Ko/', timeout=5)
-          except requests.Timeout:
-            print("Guya.moe down!")
-        soup_guya = BeautifulSoup(page_guya.content, 'html.parser')
-
-        most_recent_kaguya_chapter = soup_guya.find_all('td', 'chapter-title')[0]
-
-        kaguya_chapter_link = most_recent_kaguya_chapter.find('a')
-
-        if 'href' in kaguya_chapter_link.attrs:
-          anchor = 'https://guya.moe'
-          anchor += kaguya_chapter_link.get('href')
-
-        most_recent_kaguya_chapter_title = kaguya_chapter_link.text
-
-        most_recent_kaguya_chapter_array = most_recent_kaguya_chapter_title.split()
-
-        title = ""
-
-        for i in range(0, len(most_recent_kaguya_chapter_array)):
-          title += most_recent_kaguya_chapter_array[i] + " "
-
-        title = title.strip()
-
-        return f'Chapter {title} has been translated.\n{anchor}, I suppose!'
-      except Exception as e:
-        print(e)
-
 aliases = {
         'rezero': 'rz',
         're:zero': 'rz',
@@ -116,14 +54,18 @@ aliases = {
         'oshi_no_ko': 'onk',
 }
 
+rz_url = 'https://witchculttranslation.com/arc-7/'
+kaguya_url = 'https://guya.moe/read/manga/Kaguya-Wants-To-Be-Confessed-To/'
+onk_url = 'https://guya.moe/read/manga/Oshi-no-Ko/'
+
 def last_chapter(series):
     series = aliases[series] if series in aliases else series
     if series == "rz":
-      return scrape_rz()
+      return Re_zero(rz_url).latest_chapter()
     elif series == "kaguya":
-      return scrape_guya(series)
+      return Guya_moe(kaguya_url).latest_chapter()
     elif series == "onk":
-      return scrape_guya(series)
+      return Guya_moe(onk_url).latest_chapter()
     else:
       return "What is that, I suppose?!"
 
@@ -267,107 +209,38 @@ async def tasks_filter_channels(bot):
 # task that checks chapter every 10 seconds
 async def tasks_check_chapter(bot):
   try:
-    is_wct_down = False
-    is_guya_down = False
-    try:
-      page = requests.get('https://witchculttranslation.com/arc-7/', timeout=5)
-    except requests.Timeout:
-      print("WitchCultTranslation down!")
-      is_wct_down = True
-      sleep(1)
-    try:
-      page_kaguya = requests.get('https://guya.moe/read/manga/Kaguya-Wants-To-Be-Confessed-To/', timeout=5)
-    except requests.Timeout:
-      print("Guya.Moe down!")
-      is_guya_down = True
-      sleep(1)
-    try:
-      page_onk = requests.get('https://guya.moe/read/manga/Oshi-no-Ko/', timeout=5)
-    except requests.Timeout:
-      print("Guya.moe down!")
-      is_guya_down = True
-      sleep(1)
+    # for re zero
+    rz = Re_zero(rz_url)
+    
+    most_recent_post_str = rz.scrape()[0]
+    latest_chapter_translated_link = rz.scrape()[1]
 
-    if (not is_wct_down):
-      # web scraping for re zero
-      soup = BeautifulSoup(page.content, 'html.parser')
-      most_recent_post = soup.find_all('h3', 'rpwe-title')[0]
-
-      post_link = most_recent_post.find('a')
-
-      most_recent_post = most_recent_post.text
-      most_recent_post_array = most_recent_post.split()
-
-      most_recent_post_str = ""
-
-      for i in range(0, 4):
-          most_recent_post_str += most_recent_post_array[i] + " "
-
-      most_recent_post_str = most_recent_post_str.strip()
-
-      if 'href' in post_link.attrs:
-          latest_chapter_translated_link = post_link.get('href')
-
-      last_chapter = db_chapter.data.find_one()
+    last_chapter = db_chapter.data.find_one()
+    
+    await send_messages(bot, channels_rz, most_recent_post_str, data_rz, last_chapter, latest_chapter_translated_link)
       
-      await send_messages(bot, channels_rz, most_recent_post_str, data_rz, last_chapter, latest_chapter_translated_link)
+    # for kaguya-sama
+    kaguya = Guya_moe(kaguya_url)
+    
+    most_recent_post_str = kaguya.scrape()[0]
+    latest_chapter_translated_link = kaguya.scrape()[1]
+
+    last_chapter = db_chapter.data_kaguya.find_one()
+    
+    await send_messages(bot, channels_kaguya, most_recent_post_str, data_kaguya, last_chapter, latest_chapter_translated_link)
+
+    # for oshi no ko
+    onk = Guya_moe(onk_url)
+    
+    most_recent_post_str = onk.scrape()[0]
+    latest_chapter_translated_link = onk.scrape()[1]
+
+    last_chapter = db_chapter.data_onk.find_one()
+  
+    await send_messages(bot, channels_onk, most_recent_post_str, data_onk, last_chapter, latest_chapter_translated_link)
       
-    if (not is_guya_down):
-      # web scraping for kaguya-sama
-      soup_kaguya = BeautifulSoup(page_kaguya.content, 'html.parser')
-  
-      most_recent_kaguya_chapter = soup_kaguya.find_all('td', 'chapter-title')[0]
-  
-      kaguya_chapter_link = most_recent_kaguya_chapter.find('a')
-  
-      
-      if 'href' in post_link.attrs:
-        kaguya_chapter_anchor = 'https://guya.moe'
-        kaguya_chapter_anchor += kaguya_chapter_link.get('href')
-        
-      most_recent_kaguya_chapter_title = kaguya_chapter_link.text
-  
-      most_recent_kaguya_chapter_array = most_recent_kaguya_chapter_title.split()
-  
-      most_recent_kaguya_chapter_str = ""
-  
-      for i in range(0, len(most_recent_kaguya_chapter_array)):
-        most_recent_kaguya_chapter_str += most_recent_kaguya_chapter_array[i] + " "
-  
-      most_recent_kaguya_chapter_str = most_recent_kaguya_chapter_str.strip()
-  
-      last_kaguya_chapter = db_chapter.data_kaguya.find_one()
-      
-      await send_messages(bot, channels_kaguya, most_recent_kaguya_chapter_str, data_kaguya, last_kaguya_chapter, kaguya_chapter_anchor)
-  
-      # web scraping for oshi no ko
-      soup_onk = BeautifulSoup(page_onk.content, 'html.parser')
-  
-      most_recent_onk_chapter = soup_onk.find_all('td', 'chapter-title')[0]
-  
-      onk_chapter_link = most_recent_onk_chapter.find('a')
-  
-      if 'href' in post_link.attrs:
-        onk_chapter_anchor = 'https://guya.moe'
-        onk_chapter_anchor += onk_chapter_link.get('href')
-        
-      most_recent_onk_chapter_title = onk_chapter_link.text
-  
-      most_recent_onk_chapter_array = most_recent_onk_chapter_title.split()
-  
-      most_recent_onk_chapter_str = ""
-  
-      for i in range(0, len(most_recent_onk_chapter_array)):
-        most_recent_onk_chapter_str += most_recent_onk_chapter_array[i] + " "
-  
-      most_recent_onk_chapter_str = most_recent_onk_chapter_str.strip()
-  
-      last_onk_chapter = db_chapter.data_onk.find_one()
-  
-      await send_messages(bot, channels_onk, most_recent_onk_chapter_str, data_onk, last_onk_chapter, onk_chapter_anchor)
-      
-  except:
-      pass
+  except Exception as e:
+    print(e)
   
             
 # flip command        
