@@ -193,6 +193,6 @@ async def on_ready():
   await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name="r.help and Songstress Liliana!"))
   check_chapter.start()
   filter_channels.start()
-  # change_avatar.start()
+  change_avatar.start()
 
 bot.run(os.getenv('TOKEN'))
