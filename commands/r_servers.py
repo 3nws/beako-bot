@@ -1,4 +1,4 @@
-async def commands_servers(ctx,bot):
+async def commands_servers(ctx, bot):
     print(f'Logged in as: {bot.user.name}\n')
     print(f'Server List ({len(bot.guilds)})\n')
     server_counter = 1
