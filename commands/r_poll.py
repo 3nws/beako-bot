@@ -8,7 +8,7 @@ async def commands_poll(ctx, c1, c2, question):
     color = discord.Colour.random()
   )
   
-  embed.add_field(name=f"{question}", value=f":one: {c1}\n:two: {c2}\n")
+  embed.add_field(name=f"{question.upper()}", value=f":one: {c1}\n\n:two: {c2}\n")
   embed.set_footer(text=f"Poll created by {ctx.author.nick}", icon_url=ctx.author.avatar_url)
   
   msg = await ctx.send(embed=embed)
