@@ -28,7 +28,7 @@ async def commands_poll(ctx, c1, c2, question):
   
   reactions = {react.emoji: react.count for react in message_1.reactions}
   
-  results.add_field(name=f"Results", value=f"{c1}: {reactions[emojis[0]]}\n{c2}: {reactions[emojis[1]]}")
+  results.add_field(name=f"Results", value=f"{c1}: {reactions[emojis[0]]}\n\n{c2}: {reactions[emojis[1]]}")
   results.set_footer(text=f"For the poll '{question}'", icon_url=ctx.author.avatar_url)
   
   await ctx.send(embed=results)
