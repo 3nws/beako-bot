@@ -22,6 +22,7 @@ I use [pysaucenao](https://github.com/FujiMakoto/pysaucenao) for reverse image s
 - `r.unban member` (unbans a member, needs admin permissions)
 - `r.alarm time reason` (sets an alarm for you and pings you at that time, only works in the same day though, at least for now)
 - `r.remind time unit reason` (reminds the user after 'time' 'unit's (ex. 5 seconds) for 'reason' (not required), d: day(s), h: hour(s), m: minute(s), s: second(s))
+- `r.poll choice1 choice2 question` (creates a poll with the choices and the question, polls have a 3 minute timer before they are finished)
 - `r.roll x` (rolls a random number between 1 and x(100 if no argument is passed))
 - `r.flip` (sends a flip image)
 - `r.pout` (sends a pout gif from tenor api)

@@ -21,6 +21,7 @@ from commands.r_ban import commands_ban
 from commands.r_unban import commands_unban
 from commands.r_clean import commands_clean
 from commands.r_avatar import commands_avatar
+from commands.r_poll import commands_poll
 from commands.r_roll import commands_roll
 from commands.r_rps import commands_rps
 from commands.r_series import commands_series
@@ -42,6 +43,11 @@ intents.members = True
 intents.guilds = True
 bot = commands.Bot(command_prefix='r.', intents=intents)
 bot.remove_command('help')
+
+# creates a poll with two choices
+@bot.command()
+async def poll(ctx, c1, c2, *, question=""):
+  await commands_poll(ctx, c1, c2, question)
 
 # sets an alarm for the user
 @bot.command()
@@ -187,6 +193,6 @@ async def on_ready():
   await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name="r.help and Songstress Liliana!"))
   check_chapter.start()
   filter_channels.start()
-  change_avatar.start()
+  # change_avatar.start()
 
 bot.run(os.getenv('TOKEN'))

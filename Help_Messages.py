@@ -13,6 +13,7 @@ messages = {
                  \n-unban\
                  \n-alarm\
                  \n-remind (aliases: remindme, remind_me)\
+                 \n-poll\
                  \n-roll\
                  \n-flip\
                  \n-pout\
@@ -49,6 +50,10 @@ messages = {
                     \nThe format for this is 'remind time unit reason'\
                     \n(The unit can be concatenated with remind such as remind 5m coffee, s: seconds, m: minutes, h: hours, d: days, ex. remind 5 m coffee), in fact!```",
                     
+        'poll': "```Betty will create a poll for the server, I suppose!\
+                    \nThe format for this is 'poll choice1 choice2 question'\
+                    \nBetty will return the results in three minutes, in fact!```",
+        
         'roll': "```Betty will roll a number for the author between 0 and the specified number(100 if not), I suppose!```",
         
         'flip': "```Betty doesn't want to talk about it, in fact!```",
