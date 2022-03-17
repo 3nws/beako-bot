@@ -263,6 +263,15 @@ async def check_chapter():
     await tasks_check_chapter(bot)
 
 
+# catch command errors
+
+
+@bot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, discord.ext.commands.errors.CommandNotFound):
+        await ctx.send("What is that, I suppose?!\nTry `r.help`, in fact!")
+
+
 # runs everytime the bot comes online
 
 
