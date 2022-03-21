@@ -74,6 +74,6 @@ class Re_zero(Scrape_Series):
             if 'href' in post_link.attrs:
                 anchor = post_link.get('href')
 
-            return f'Chapter {title} has been translated.\n{anchor}, I suppose!'
+            return f"'{title}' has been translated.\n{anchor}, I suppose!"
         except Exception as e:
             print(e)

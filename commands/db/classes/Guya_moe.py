@@ -81,6 +81,6 @@ class Guya_moe(Scrape_Series):
 
             title = title.strip()
 
-            return f"Chapter {title} has been translated.\n{anchor}, I suppose!"
+            return f"'{title}' has been translated.\n{anchor}, I suppose!"
         except Exception as e:
             print(e)

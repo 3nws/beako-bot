@@ -84,7 +84,7 @@ async def send_messages(bot, channels, title, data, db_rec, anchor):
             if bot.get_channel((channel["id"])):
                 try:
                     await (bot.get_channel(int(channel["id"]))).send(
-                        f"Chapter {title} has been translated.\n{anchor}, I suppose!"
+                        f"'{title}' has been translated.\n{anchor}, I suppose!"
                     )
                 except Exception as e:
                     print(
