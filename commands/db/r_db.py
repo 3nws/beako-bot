@@ -10,6 +10,7 @@ from bs4 import BeautifulSoup
 
 from commands.db.classes.Re_zero import Re_zero
 from commands.db.classes.Guya_moe import Guya_moe
+from commands.db.classes.Grand_Blue import Grand_Blue
 
 load_dotenv()
 
@@ -25,6 +26,7 @@ db_chapter = client.chapter
 data_rz = db_chapter.data
 data_kaguya = db_chapter.data_kaguya
 data_onk = db_chapter.data_onk
+data_gb = db_chapter.data_gb
 
 # flip image urls db
 db_flips = client.flips
@@ -42,6 +44,7 @@ avatars = os.path.join(os.getcwd(), "avatars")
 channels_rz = db_channels.data
 channels_kaguya = db_channels.data_kaguya
 channels_onk = db_channels.data_onk
+channels_gb = db_channels.data_gb
 
 aliases = {
     "rezero": "rz",
@@ -52,11 +55,18 @@ aliases = {
     "oshi no ko": "onk",
     "oshi": "onk",
     "oshi_no_ko": "onk",
+    "grand_blue": "gb",
+    "grand blue": "gb",
+    "grand-blue": "gb",
+    "grand blue dreaming": "gb",
+    "grand_blue_dreaming": "gb",
+    "grand-blue-dreaming": "gb"
 }
 
 rz_url = "https://witchculttranslation.com/arc-7/"
 kaguya_url = "https://guya.moe/read/manga/Kaguya-Wants-To-Be-Confessed-To/"
 onk_url = "https://guya.moe/read/manga/Oshi-no-Ko/"
+gb_url = "https://mangareader.to/grand-blue-dreaming-8/"
 
 
 def last_chapter(series):
@@ -67,6 +77,8 @@ def last_chapter(series):
         return Guya_moe(kaguya_url).latest_chapter()
     elif series == "onk":
         return Guya_moe(onk_url).latest_chapter()
+    elif series == "gb":
+        return Grand_Blue(gb_url).latest_chapter()
     else:
         return "What is that, I suppose?!"
 
@@ -110,27 +122,35 @@ async def commands_add_channel(id, series):
     channel_entry = {
         "id": id,
     }
+    series = aliases[series] if series in aliases else series
     success_msg = "This text channel will receive notifications, I suppose!"
     failure_msg = "This text channel is already on the receiver list, in fact!"
     is_in_list = channels_rz.count_documents(channel_entry, limit=1) != 0
     is_in_kaguya_list = channels_kaguya.count_documents(
         channel_entry, limit=1) != 0
     is_in_onk_list = channels_onk.count_documents(channel_entry, limit=1) != 0
-    if series == "rz" or series == "rezero":
+    is_in_gb_list = channels_gb.count_documents(channel_entry, limit=1) != 0
+    if series == "rz":
         if not is_in_list:
             channels_rz.insert_one(channel_entry)
             return success_msg
         else:
             return failure_msg
-    elif series == "kaguya" or series == "kaguya-sama" or series == "ks":
+    elif series == "kaguya":
         if not is_in_kaguya_list:
             channels_kaguya.insert_one(channel_entry)
             return success_msg
         else:
             return failure_msg
-    elif series == "onk" or series == "oshi-no-ko" or series == "oshi no ko":
+    elif series == "onk":
         if not is_in_onk_list:
             channels_onk.insert_one(channel_entry)
+            return success_msg
+        else:
+            return failure_msg
+    elif series == "gb":
+        if not is_in_gb_list:
+            channels_gb.insert_one(channel_entry)
             return success_msg
         else:
             return failure_msg
@@ -147,27 +167,35 @@ async def commands_remove_channel(id, series):
     channel_entry = {
         "id": id,
     }
+    series = aliases[series] if series in aliases else series
     success_msg = "This text channel will no longer receive notifications, I suppose!"
     failure_msg = "This text channel is not on the receiver list, in fact!"
     is_in_list = channels_rz.count_documents(channel_entry, limit=1) != 0
     is_in_kaguya_list = channels_kaguya.count_documents(
         channel_entry, limit=1) != 0
     is_in_onk_list = channels_onk.count_documents(channel_entry, limit=1) != 0
-    if series == "rz" or series == "rezero":
+    is_in_gb_list = channels_gb.count_documents(channel_entry, limit=1) != 0
+    if series == "rz":
         if is_in_list:
             channels_rz.find_one_and_delete(channel_entry)
             return success_msg
         else:
             return failure_msg
-    elif series == "kaguya" or series == "kaguya-sama" or series == "ks":
+    elif series == "kaguya":
         if is_in_kaguya_list:
             channels_kaguya.find_one_and_delete(channel_entry)
             return success_msg
         else:
             return failure_msg
-    elif series == "onk" or series == "oshi-no-ko" or series == "oshi no ko":
+    elif series == "onk":
         if is_in_onk_list:
             channels_onk.find_one_and_delete(channel_entry)
+            return success_msg
+        else:
+            return failure_msg
+    elif series == "gb":
+        if is_in_gb_list:
+            channels_gb.find_one_and_delete(channel_entry)
             return success_msg
         else:
             return failure_msg
@@ -232,6 +260,12 @@ async def tasks_filter_channels(bot):
                 "id": channel["id"],
             }
             channels_onk.find_one_and_delete(channel_entry)
+    for channel in channels_gb.find():
+        if not bot.get_channel((channel["id"])):
+            channel_entry = {
+                "id": channel["id"],
+            }
+            channels_gb.find_one_and_delete(channel_entry)
 
 
 # task that checks chapter every 10 seconds
@@ -286,6 +320,23 @@ async def tasks_check_chapter(bot):
             channels_onk,
             most_recent_post_str,
             data_onk,
+            last_chapter,
+            latest_chapter_translated_link,
+        )
+        
+        # for grand blue
+        gb = Grand_Blue(gb_url)
+
+        most_recent_post_str = gb.scrape()[0]
+        latest_chapter_translated_link = gb.scrape()[1]
+
+        last_chapter = db_chapter.data_gb.find_one()
+
+        await send_messages(
+            bot,
+            channels_gb,
+            most_recent_post_str,
+            data_gb,
             last_chapter,
             latest_chapter_translated_link,
         )

@@ -1,8 +1,8 @@
-Notifies when new chapters of the Re:Zero web novel, Kaguya-sama manga, and Oshi No Ko manga are translated.
+Notifies when new chapters of the Re:Zero web novel, GrandBlue Dreaming manga, Kaguya-sama manga, and Oshi No Ko manga are translated.
 
 Checks every 10 seconds.
 
-I scrape the data from [WitchCultTranslation](https://witchculttranslation.com/) for Re:zero and [Guya.Moe](https://guya.moe) for Kaguya-sama and Oshi No Ko.
+I scrape the data from [WitchCultTranslation](https://witchculttranslation.com/) for Re:zero, [MangaReader](https://mangareader.to) for Grand Blue and [Guya.Moe](https://guya.moe) for Kaguya-sama and Oshi No Ko.
 
 I use [pysaucenao](https://github.com/FujiMakoto/pysaucenao) for reverse image searching.
 

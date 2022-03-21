@@ -14,12 +14,10 @@ class Re_zero(Scrape_Series):
     def scrape(self):
         try:
             # web scraping for re zero
-            is_wct_down = False
             try:
                 page = requests.get(self.url, timeout=5)
             except requests.Timeout:
                 print("WitchCultTranslation down!")
-                is_wct_down = True
                 sleep(1)
                 return
 
@@ -47,33 +45,9 @@ class Re_zero(Scrape_Series):
 
     def latest_chapter(self):
         try:
-            # web scraping for re zero
-            is_wct_down = False
-            try:
-                page = requests.get(self.url, timeout=5)
-            except requests.Timeout:
-                print("WitchCultTranslation down!")
-                is_wct_down = True
-                return
-
-            soup = BeautifulSoup(page.content, 'html.parser')
-            most_recent_post = soup.find_all('h3', 'rpwe-title')[0]
-
-            post_link = most_recent_post.find('a')
-
-            most_recent_post = most_recent_post.text
-            most_recent_post_array = most_recent_post.split()
-
-            title = ""
-
-            for i in range(0, 4):
-                title += most_recent_post_array[i] + " "
-
-            title = title.strip()
-
-            if 'href' in post_link.attrs:
-                anchor = post_link.get('href')
-
+            scrape_results = self.scrape()
+            title = scrape_results[0]
+            anchor = scrape_results[1]
             return f"'{title}' has been translated.\n{anchor}, I suppose!"
         except Exception as e:
             print(e)
