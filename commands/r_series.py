@@ -5,7 +5,8 @@ async def commands_series(ctx):
     series = [
         "Kaguya-sama: Love is War (kaguya)",
         "Oshi no Ko (onk)",
-        "Re:Zero (rz)"
+        "Re:Zero (rz)",
+        "Grand Blue Dreaming (gb)",
     ]
     frame = discord.Embed(
         color=discord.Colour.random()
