@@ -14,8 +14,6 @@ from Help import Help
 from commands.r_help import commands_help
 from commands.r_servers import commands_servers
 from commands.r_say import commands_say
-from commands.r_alarm import commands_alarm
-from commands.r_remind import commands_remind
 from commands.r_kick import commands_kick
 from commands.r_ban import commands_ban
 from commands.r_unban import commands_unban
@@ -50,6 +48,12 @@ intents.guilds = True
 bot = commands.Bot(command_prefix="r.", intents=intents)
 bot.remove_command("help")
 
+for filename in os.listdir('./cogs'):
+    if filename.endswith('.py'):
+        bot.load_extension(f'cogs.{filename[:-3]}')
+    else:
+        print(f'Unable to load {filename[:-3]}')
+
 # sends a message with the list of series a channel is following
 
 
@@ -65,12 +69,6 @@ async def poll(ctx, c1, c2, *, question=""):
     await commands_poll(ctx, c1, c2, question)
 
 
-# sets an alarm for the user
-
-
-@bot.command()
-async def alarm(ctx, time="", *, reminder=""):
-    await commands_alarm(ctx, time, reminder)
 
 
 # send available series
@@ -161,12 +159,8 @@ async def roll(ctx, num=""):
     await commands_roll(ctx, num)
 
 
-# reminds the user about anything after specified time
 
 
-@bot.command(case_insensitive=True, aliases=["remindme", "remind_me"])
-async def remind(ctx, time, unit=None, *, reminder=""):
-    await commands_remind(ctx, time, unit, reminder)
 
 
 # kicks user
@@ -298,7 +292,7 @@ async def on_ready():
     )
     check_chapter.start()
     filter_channels.start()
-    change_avatar.start()
+    # change_avatar.start()
 
 
 bot.run(os.getenv("TOKEN"))
