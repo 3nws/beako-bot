@@ -22,6 +22,26 @@ class Util(commands.Cog):
         # add 'db' parameter for specific databases
         self.saucenao = SauceNao(api_key=self.saucenao_api_key)
 
+    # send available series
+    @commands.command()
+    async def series(self, ctx):
+        series = [
+            "Kaguya-sama: Love is War (kaguya)",
+            "Oshi no Ko (onk)",
+            "Re:Zero (rz)",
+            "Grand Blue Dreaming (gb)",
+        ]
+        frame = discord.Embed(
+            color=discord.Colour.random()
+        )
+        counter = 1
+        desc = ""
+        for s in series:
+            desc += f"**{counter}.** {s}\n"
+            counter += 1
+        frame.description = desc
+        await ctx.send(embed=frame)
+
     # sends a user's avatar
     @commands.command()
     async def avatar(self, ctx, member: discord.Member = None):
@@ -38,8 +58,6 @@ class Util(commands.Cog):
             avatar_frame.set_image(url=f'{ctx.author.avatar_url}')
 
         await ctx.send(embed=avatar_frame)
-
-        
         
     # reverse search image
     @commands.command(aliases=["ris", "sauce", "source"])
@@ -83,8 +101,7 @@ class Util(commands.Cog):
                 await ctx.send("It's not Betty's fault. Something went wrong, in fact!", reference=ctx.message)
 
             await ctx.message.delete()
-        
-        
+             
     # creates a poll with two choices
     @commands.command()
     async def poll(self, ctx, c1, c2, *, question=""):
@@ -120,8 +137,6 @@ class Util(commands.Cog):
             text=f"For the poll '{question}'", icon_url=ctx.author.avatar_url)
 
         await ctx.send(embed=results)
-
-
 
 def setup(bot):
     bot.add_cog(Util(bot))

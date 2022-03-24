@@ -12,15 +12,14 @@ from Help import Help
 
 # commands import
 from commands.r_help import commands_help
-from commands.r_series import commands_series
 from commands.db.r_db import (
     tasks_check_chapter,
     tasks_filter_channels,
     tasks_change_avatar,
     commands_flip,
-    commands_following
+    commands_following,
+    commands_latest_chapter,
 )
-from commands.db.r_db import commands_latest_chapter
 from commands.db.r_add_channel import commands_add_channel
 from commands.db.r_remove_channel import commands_remove_channel
 
@@ -41,86 +40,56 @@ for filename in os.listdir('./cogs'):
     else:
         print(f'Unable to load {filename[:-3]}')
 
-# sends a message with the list of series a channel is following
-
-
-@bot.command(aliases=["watching", "fol", "follow"])
-async def following(ctx):
-    await commands_following(ctx, bot)
-
-
-
-# send available series
-
-
-@bot.command()
-async def series(ctx):
-    await commands_series(ctx)
-
-
-
-
-# sends the latest english translated chapter
-
-
-@bot.command(aliases=["latest", "last", "chp"])
-async def latest_chapter(ctx, *, series=""):
-    await commands_latest_chapter(ctx, series)
-
-
-# flip your friends off
-
-
-@bot.command()
-async def flip(ctx):
-    await commands_flip(ctx)
-
-
+# adds the channel to the notifications list
 @bot.command(aliases=["add"])
 async def add_channel(ctx, *, series=""):
     await commands_add_channel(ctx, ChannelList(series, ctx.channel.id))
 
-
+# removes the channel from the notifications list
 @bot.command(aliases=["remove"])
 async def remove_channel(ctx, *, series=""):
     await commands_remove_channel(ctx, ChannelList(series, ctx.channel.id))
 
+# sends a message with the list of series a channel is following
+@bot.command(aliases=["watching", "fol", "follow"])
+async def following(ctx):
+    await commands_following(ctx, bot)
+
+# sends the latest english translated chapter
+@bot.command(aliases=["latest", "last", "chp"])
+async def latest_chapter(ctx, *, series=""):
+    await commands_latest_chapter(ctx, series)
+    
+# flip your friends off
+@bot.command()
+async def flip(ctx):
+    await commands_flip(ctx)
 
 # help command
-
-
 @bot.command()
 async def help(ctx, *, cmd=""):
     await commands_help(ctx, Help(cmd))
 
 
 # task sets a random avatar every day
-
-
 @tasks.loop(hours=24)
 async def change_avatar():
     await tasks_change_avatar(bot)
 
 
 # task that removes non existing(deleted) channels every 10 seconds
-
-
 @tasks.loop(seconds=10)
 async def filter_channels():
     await tasks_filter_channels(bot)
 
 
 # task that checks chapter every 10 seconds
-
-
 @tasks.loop(seconds=10)
 async def check_chapter():
     await tasks_check_chapter(bot)
 
 
 # catch command errors
-
-
 @bot.event
 async def on_command_error(ctx, error):
     if isinstance(error, discord.ext.commands.errors.CommandNotFound):
@@ -128,8 +97,6 @@ async def on_command_error(ctx, error):
 
 
 # runs everytime the bot comes online
-
-
 @bot.event
 async def on_ready():
     print(f"Logged in as: {bot.user.name}\n")

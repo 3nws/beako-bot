@@ -31,7 +31,6 @@ class Fun(commands.Cog):
             number = random.randint(1, 100)
         await ctx.send(f"{ctx.message.author.name} Just rolled **{number}**, I suppose!")
 
-
     # play rock paper scissors
     @commands.command()
     async def rps(self, ctx, choice):
@@ -51,7 +50,6 @@ class Fun(commands.Cog):
         else:
             await ctx.send(f"Betty lost, I suppose! I knew I should have picked {counter}, in fact!")
             
-
     # coin flip
     @commands.command(aliases=["coin"])
     async def coinflip(self, ctx, heads=None, tails=None):
@@ -80,9 +78,6 @@ class Fun(commands.Cog):
                 embed = discord.Embed(
                     title="Coinflip", description=f"{ctx.author.mention} flipped a coin, and got **Tails** for **{tails}**, I suppose!")
                 await ctx.send(embed=embed)
-
-
-
 
 def setup(bot):
     bot.add_cog(Fun(bot))

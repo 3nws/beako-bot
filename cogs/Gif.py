@@ -57,7 +57,6 @@ class Gif(commands.Cog):
                         ['media'][0]['mediumgif']['url'])
         await ctx.send(embed=embed)
 
-
     # smug uwu
     @commands.command()
     async def smug(self, ctx):
