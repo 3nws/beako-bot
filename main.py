@@ -13,7 +13,6 @@ from Help import Help
 # commands import
 from commands.r_help import commands_help
 from commands.r_series import commands_series
-from commands.r_gif import commands_pat, commands_pout, commands_smug, commands_hug
 from commands.db.r_db import (
     tasks_check_chapter,
     tasks_filter_channels,
@@ -67,39 +66,6 @@ async def series(ctx):
 @bot.command(aliases=["latest", "last", "chp"])
 async def latest_chapter(ctx, *, series=""):
     await commands_latest_chapter(ctx, series)
-
-
-
-# smug uwu
-
-
-@bot.command()
-async def smug(ctx):
-    await commands_smug(ctx)
-
-
-# pat uwu
-
-
-@bot.command()
-async def pat(ctx, user: discord.Member = None):
-    await commands_pat(ctx, bot, user)
-
-
-# hug uwu
-
-
-@bot.command()
-async def hug(ctx, user: discord.Member = None):
-    await commands_hug(ctx, bot, user)
-
-
-# pout uwu
-
-
-@bot.command()
-async def pout(ctx):
-    await commands_pout(ctx)
 
 
 # flip your friends off
