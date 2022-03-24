@@ -5,7 +5,7 @@ from datetime import datetime
 from datetime import timedelta
 from discord.ext import commands
 
-class Timers(commands.Cog):
+class Timer(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         
@@ -95,4 +95,4 @@ class Timers(commands.Cog):
             await ctx.send("Something went wrong, in fact! Check the time format, I suppose!")
 
 def setup(bot):
-    bot.add_cog(Timers(bot))
+    bot.add_cog(Timer(bot))

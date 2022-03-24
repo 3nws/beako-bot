@@ -12,14 +12,7 @@ from Help import Help
 
 # commands import
 from commands.r_help import commands_help
-from commands.r_say import commands_say
-from commands.r_avatar import commands_avatar
-from commands.r_poll import commands_poll
-from commands.r_roll import commands_roll
-from commands.r_rps import commands_rps
 from commands.r_series import commands_series
-from commands.r_coinflip import commands_coinflip
-from commands.r_reverse_image_search import commands_reverse_image_search
 from commands.r_gif import commands_pat, commands_pout, commands_smug, commands_hug
 from commands.db.r_db import (
     tasks_check_chapter,
@@ -56,14 +49,6 @@ for filename in os.listdir('./cogs'):
 async def following(ctx):
     await commands_following(ctx, bot)
 
-# creates a poll with two choices
-
-
-@bot.command()
-async def poll(ctx, c1, c2, *, question=""):
-    await commands_poll(ctx, c1, c2, question)
-
-
 
 
 # send available series
@@ -74,20 +59,6 @@ async def series(ctx):
     await commands_series(ctx)
 
 
-# reverse search image
-
-
-@bot.command(aliases=["ris", "sauce", "source"])
-async def reverse_image_search(ctx, url=""):
-    await commands_reverse_image_search(ctx, url)
-
-
-# play rock paper scissors
-
-
-@bot.command()
-async def rps(ctx, choice):
-    await commands_rps(ctx, choice)
 
 
 # sends the latest english translated chapter
@@ -97,13 +68,6 @@ async def rps(ctx, choice):
 async def latest_chapter(ctx, *, series=""):
     await commands_latest_chapter(ctx, series)
 
-
-# coin flip
-
-
-@bot.command(aliases=["coin"])
-async def coinflip(ctx, heads=None, tails=None):
-    await commands_coinflip(ctx, heads, tails)
 
 
 # smug uwu
@@ -144,32 +108,6 @@ async def pout(ctx):
 @bot.command()
 async def flip(ctx):
     await commands_flip(ctx)
-
-
-# roll iq
-
-
-@bot.command()
-async def roll(ctx, num=""):
-    await commands_roll(ctx, num)
-
-
-
-
-# beako will repeat what is passed in
-
-
-@bot.command()
-async def say(ctx, *, msg=""):
-    await commands_say(ctx, msg)
-
-
-# sends a user's avatar
-
-
-@bot.command()
-async def avatar(ctx, member: discord.Member = None):
-    await commands_avatar(ctx, member)
 
 
 @bot.command(aliases=["add"])
