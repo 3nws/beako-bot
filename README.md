@@ -36,6 +36,6 @@ I use [pysaucenao](https://github.com/FujiMakoto/pysaucenao) for reverse image s
 - `r.reverse_image_search url` (search the image you want for the source), aliases: `r.ris`, `r.sauce`, `r.source`
 
 
-# TODOS
+### TODO
 
 - Create cogs for related commands
