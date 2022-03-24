@@ -34,3 +34,8 @@ I use [pysaucenao](https://github.com/FujiMakoto/pysaucenao) for reverse image s
 - `r.coinflip h t` (flip a coin h and t are not required), aliases: `r.coin`
 - `r.rps choice` (play rock-paper-scissors with Betty)
 - `r.reverse_image_search url` (search the image you want for the source), aliases: `r.ris`, `r.sauce`, `r.source`
+
+
+# TODOS
+
+- Create cogs for related commands
