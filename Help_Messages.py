@@ -6,6 +6,7 @@ messages = {
                  \n-remove_channel (alias: remove)\
                  \n-latest_chapter (aliases: latest, last, chp)\
                  \n-avatar\
+                 \n-following (aliases: follow, fol, watching)\
                  \n-say\
                  \n-clean (alias: clear)\
                  \n-kick (aliases: yeet, yeeto)\
@@ -30,6 +31,8 @@ messages = {
         'add_channel': "```Betty will add the text channel to the list of channels that will receive notifications of the preferred series, I suppose!```",
 
         'remove_channel': "```Betty will remove the text channel from the list of channels that will receiv notifications of the preferred series, I suppose!```",
+        
+        'following': "```Betty will send a list of series the text channel is following for, I suppose!```",
 
         'say': "```Betty will repeat what you say, I suppose!```",
 
@@ -96,5 +99,7 @@ aliases = {
     'ris': 'reverse_image_search',
     'sauce': 'reverse_image_search',
     'source': 'reverse_image_search',
-
+    'watching': 'following',
+    'follow': 'following',
+    'fol': 'following',
 }

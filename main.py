@@ -33,6 +33,7 @@ from commands.db.r_db import (
     tasks_filter_channels,
     tasks_change_avatar,
     commands_flip,
+    commands_following
 )
 from commands.db.r_db import commands_latest_chapter
 from commands.db.r_add_channel import commands_add_channel
@@ -48,6 +49,13 @@ intents.members = True
 intents.guilds = True
 bot = commands.Bot(command_prefix="r.", intents=intents)
 bot.remove_command("help")
+
+# sends a message with the list of series a channel is following
+
+
+@bot.command(aliases=["watching", "fol", "follow"])
+async def following(ctx):
+    await commands_following(ctx, bot)
 
 # creates a poll with two choices
 

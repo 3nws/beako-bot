@@ -3,6 +3,7 @@ import requests
 import os
 import random
 import shutil
+import discord
 
 from time import sleep
 from dotenv import load_dotenv
@@ -45,6 +46,15 @@ channels_rz = db_channels.data
 channels_kaguya = db_channels.data_kaguya
 channels_onk = db_channels.data_onk
 channels_gb = db_channels.data_gb
+
+all_channels = [collection['name'] for collection in db_channels.list_collections()]
+
+collection_aliases = {
+    "data": "Re:Zero",
+    "data_kaguya": "Kaguya-sama",
+    "data_onk": "Oshi No Ko",
+    "data_gb": "Grand Blue Dreaming",
+}
 
 aliases = {
     "rezero": "rz",
@@ -350,3 +360,26 @@ async def commands_flip(ctx):
     pipe = [{"$sample": {"size": 1}}]
     flip = list(flips.aggregate(pipeline=pipe))[0]["url"]
     await ctx.send(flip)
+
+
+async def commands_following(ctx, bot):
+    series = []
+    for channels in all_channels:
+        for channel in db_channels[channels].find():
+            if bot.get_channel(channel['id']) == ctx.channel:
+                series.append(collection_aliases[channels])
+
+    frame = discord.Embed(
+        color=discord.Colour.random(),
+        title="This channel is following the series below, in fact!" if len(series)>0 else "This channel is not following any series, I suppose!",
+        description="" if len(
+            series) > 0 else "Use `r.add <series>` to start following a series on this channel, in fact!"
+    )
+    if len(series)>0:
+        counter = 1
+        desc = ""
+        for s in series:
+            desc += f"**{counter}.** {s}\n"
+            counter += 1
+        frame.description = desc
+    await ctx.send(embed=frame)
