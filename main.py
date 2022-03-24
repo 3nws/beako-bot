@@ -112,7 +112,7 @@ async def on_ready():
     )
     check_chapter.start()
     filter_channels.start()
-    # change_avatar.start()
+    change_avatar.start()
 
 
 bot.run(os.getenv("TOKEN"))
