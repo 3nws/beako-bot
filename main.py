@@ -12,12 +12,7 @@ from Help import Help
 
 # commands import
 from commands.r_help import commands_help
-from commands.r_servers import commands_servers
 from commands.r_say import commands_say
-from commands.r_kick import commands_kick
-from commands.r_ban import commands_ban
-from commands.r_unban import commands_unban
-from commands.r_clean import commands_clean
 from commands.r_avatar import commands_avatar
 from commands.r_poll import commands_poll
 from commands.r_roll import commands_roll
@@ -161,58 +156,12 @@ async def roll(ctx, num=""):
 
 
 
-
-
-# kicks user
-
-
-@bot.command(aliases=["yeet", "yeeto"])
-@commands.has_permissions(kick_members=True)
-async def kick(ctx, user: discord.Member, *, reason=None):
-    await commands_kick(ctx, user, reason)
-
-
-# bans user
-
-
-@bot.command()
-@commands.has_permissions(ban_members=True)
-async def ban(ctx, user: discord.Member, *, reason=None):
-    await commands_ban(ctx, user, reason)
-
-
-# unbans user
-
-
-@bot.command()
-@commands.has_permissions(administrator=True)
-async def unban(ctx, *, member):
-    await commands_unban(ctx, member)
-
-
-# clears chat
-
-
-@bot.command(aliases=["clear"])
-@commands.has_permissions(administrator=True)
-async def clean(ctx, limit: int, msg_id=None):
-    await commands_clean(ctx, limit, msg_id)
-
-
 # beako will repeat what is passed in
 
 
 @bot.command()
 async def say(ctx, *, msg=""):
     await commands_say(ctx, msg)
-
-
-# print the joined servers in the logs
-
-
-@bot.command()
-async def servers(ctx):
-    await commands_servers(ctx, bot)
 
 
 # sends a user's avatar
