@@ -54,6 +54,7 @@ class Admin(commands.Cog):
 
     # print the joined servers in the logs
     @commands.command()
+    @commands.is_owner()
     async def servers(self, ctx):
         print(f'Logged in as: {self.bot.user.name}\n')
         print(f'Server List ({len(self.bot.guilds)})\n')
