@@ -60,7 +60,7 @@ class Admin(commands.Cog):
         print(f'Server List ({len(self.bot.guilds)})\n')
         server_counter = 1
         for guild in self.bot.guilds:
-            print(f"{server_counter}. {guild.name}")
+            print(f"{server_counter}. {guild.name}, owned by {guild.owner} with {guild.member_count} members")
             server_counter += 1
 
 
