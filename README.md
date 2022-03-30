@@ -17,7 +17,7 @@ I use [pysaucenao](https://github.com/FujiMakoto/pysaucenao) for reverse image s
 - `r.avatar member` (shows a member's avatar or the op's if no argument is passed)
 - `r.following` (sends a message with the list of series a channel is following), aliases: `r.follow`, `r.fol`, `r.watching`
 - `r.say message` (make the bot say something)
-- `r.clean n msg_id` (deletes the last n messages starting from message with the id msg_id (not required), needs admin permissions), aliases: `r.clear`
+- `r.clean n direction msg_id` (deletes the last n messages starting from message with the id msg_id (not required) in the direction you specify, needs admin permissions), aliases: `r.clear`
 - `r.kick member` (kicks a member, needs kick permission), aliases: `r.yeet`, `r.yeeto`
 - `r.ban member` (bans a member, needs ban permission)
 - `r.unban member` (unbans a member, needs admin permissions)

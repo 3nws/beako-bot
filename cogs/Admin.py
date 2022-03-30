@@ -6,6 +6,14 @@ from discord.ext import commands
 class Admin(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.dir_aliases = {
+            'b': 'before',
+            'up': 'before',
+            'u': 'before',
+            'a': 'after',
+            'down': 'after',
+            'd': 'after',
+        }
 
     # kicks member
     @commands.command(aliases=["yeet", "yeeto"])
@@ -39,12 +47,22 @@ class Admin(commands.Cog):
     # clears chat
     @commands.command(aliases=["clear"])
     @commands.has_permissions(administrator=True)
-    async def clean(self, ctx, limit: int, msg_id=None):
+    async def clean(self, ctx, limit: int, direction: str=None, msg_id: int=None):
         await ctx.message.delete()
+        direction = self.dir_aliases[direction] if direction in self.dir_aliases else direction
 
         if (msg_id):
             msg = await ctx.fetch_message(msg_id)
-            history = await ctx.channel.history(limit=limit, after=msg, oldest_first=True).flatten()
+            if direction == "after":
+                history = await ctx.channel.history(limit=limit, after=msg, oldest_first=True).flatten()
+            elif direction == "before":
+                history = await ctx.channel.history(limit=limit, before=msg, oldest_first=False).flatten()
+            for message in history:
+                await message.delete()
+        elif (direction == "after"):
+            return await ctx.send("I can't delete future messages, in fact! Tell me which message you want me to start deleting from, I suppose!")
+        elif (direction == "before"):
+            history = await ctx.channel.history(limit=limit, before=ctx.message, oldest_first=False).flatten()
             for message in history:
                 await message.delete()
         else:
