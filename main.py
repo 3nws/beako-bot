@@ -35,8 +35,9 @@ from commands.db.r_remove_channel import commands_remove_channel
 #     '%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 # logger.addHandler(handler)
 
-load_dotenv()
 
+
+load_dotenv()
 
 intents = discord.Intents.default()
 intents.members = True
