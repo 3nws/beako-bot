@@ -2,6 +2,8 @@ import discord
 import os
 import dns
 import asyncio
+import logging
+import threading
 
 from dotenv import load_dotenv
 from discord.ext import tasks, commands
@@ -23,7 +25,15 @@ from commands.db.r_db import (
 from commands.db.r_add_channel import commands_add_channel
 from commands.db.r_remove_channel import commands_remove_channel
 
-import threading
+# logging.basicConfig(level=logging.DEBUG)
+
+# logger = logging.getLogger('discord')
+# logger.setLevel(logging.DEBUG)
+# handler = logging.FileHandler(
+#     filename='discord.log', encoding='utf-8', mode='w')
+# handler.setFormatter(logging.Formatter(
+#     '%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+# logger.addHandler(handler)
 
 load_dotenv()
 
