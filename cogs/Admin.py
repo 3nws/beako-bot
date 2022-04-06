@@ -81,6 +81,13 @@ class Admin(commands.Cog):
             print(f"{server_counter}. {guild.name}, owned by {guild.owner} with {guild.member_count} members")
             server_counter += 1
 
+    # terminates the bot
+    @commands.command(aliases=["kill"])
+    @commands.is_owner()
+    async def terminate(self, ctx):
+        await ctx.send("Betty goes offline, I suppose!")
+        await self.bot.close()
+        
 
 
 def setup(bot):

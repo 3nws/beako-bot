@@ -87,14 +87,14 @@ async def change_avatar():
     await tasks_change_avatar(bot)
 
 
-# task that removes non existing(deleted) channels every 10 seconds
-@tasks.loop(seconds=10)
+# task that removes non existing(deleted) channels every 60 seconds
+@tasks.loop(seconds=60)
 async def filter_channels():
     await tasks_filter_channels(bot)
 
 
-# task that checks chapter every 10 seconds
-@tasks.loop(seconds=10)
+# task that checks chapter every 60 seconds
+@tasks.loop(seconds=60)
 async def check_chapter():
     await tasks_check_chapter(bot)
 
@@ -121,9 +121,10 @@ async def on_ready():
             type=discord.ActivityType.listening, name="r.help and Songstress Liliana!"
         )
     )
+    change_avatar.start()
+    await asyncio.sleep(60)
     check_chapter.start()
     filter_channels.start()
-    change_avatar.start()
 
 
 bot.run(os.getenv("TOKEN"))

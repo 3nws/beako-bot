@@ -1,7 +1,6 @@
 import requests
 
 from bs4 import BeautifulSoup
-from time import sleep
 
 from commands.db.classes.Scrape_Series import Scrape_Series
 
@@ -17,7 +16,6 @@ class Guya_moe(Scrape_Series):
                 page = requests.get(self.url, timeout=5)
             except requests.Timeout:
                 print("Guya.moe down!")
-                sleep(1)
                 return
 
             soup = BeautifulSoup(page.content, "html.parser")

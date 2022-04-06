@@ -5,7 +5,6 @@ import random
 import shutil
 import discord
 
-from time import sleep
 from dotenv import load_dotenv
 from bs4 import BeautifulSoup
 
@@ -245,7 +244,6 @@ async def tasks_change_avatar(bot):
         print("Avatar changed successfully!")
     except Exception as e:
         print(e)
-        sleep(1)
 
 
 # task that removes non existing(deleted) channels every 10 seconds
