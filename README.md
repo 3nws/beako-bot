@@ -1,6 +1,6 @@
 Notifies when new chapters of the Re:Zero web novel, Grand Blue Dreaming manga, Kaguya-sama manga, and Oshi No Ko manga are translated.
 
-Checks every 10 seconds.
+Checks every 60 seconds.
 
 I scrape the data from [WitchCultTranslation](https://witchculttranslation.com/) for Re:zero, [MangaReader](https://mangareader.to) for Grand Blue and [Guya.Moe](https://guya.moe) for Kaguya-sama and Oshi No Ko.
 
