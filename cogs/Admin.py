@@ -88,6 +88,19 @@ class Admin(commands.Cog):
         await ctx.send("Betty goes offline, I suppose!")
         await self.bot.close()
         
+    # toggles commands
+    @commands.command()
+    @commands.is_owner()
+    async def toggle(self, ctx, cmd):
+        cmd = self.bot.get_command(cmd)
+
+        if ctx.command == cmd:
+            await ctx.reply("Wait, that's illegal, I suppose!")
+        else:
+            cmd.enabled = not cmd.enabled
+            status = "enabled" if cmd.enabled else "disabled"
+            await ctx.send(f"I have {status} the `{cmd.qualified_name}` command, in fact!")
+        
 
 
 def setup(bot):
