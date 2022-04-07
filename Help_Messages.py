@@ -50,7 +50,7 @@ messages = {
         'alarm': "```Betty will set an alarm for you, I suppose!\
                    \nThe format for this is 'alarm time reason'\
                    \nTime needs to be in this format: '<hour>:<minute>' in 24 hour format of course, '.' can be used instead of ':'\
-                   \n(I will only remind you if your alarm is on the same day, I suppose!```",
+                   \n(I will only remind you if your alarm is on the same day, I suppose!)```",
 
         'remind': "```Betty will remind the author after specified time by pinging them, I suppose!\
                     \nThe format for this is 'remind time unit reason'\
