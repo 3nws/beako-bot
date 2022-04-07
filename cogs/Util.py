@@ -1,6 +1,7 @@
 import discord
 import asyncio
 import os
+import requests
 
 from datetime import datetime
 from discord.ext import commands
@@ -18,6 +19,7 @@ class Util(commands.Cog):
         self.bot = bot
         self.TwitterSource = pysaucenao.containers.TwitterSource
         self.saucenao_api_key = os.getenv('SAUCENAO_API_KEY')
+        self.TOKEN = os.getenv('TOKEN')
 
         # add 'db' parameter for specific databases
         self.saucenao = SauceNao(api_key=self.saucenao_api_key)
@@ -58,6 +60,43 @@ class Util(commands.Cog):
             avatar_frame.set_image(url=f'{ctx.author.avatar_url}')
 
         await ctx.send(embed=avatar_frame)
+        
+    # sends a user's banner
+    @commands.command()
+    async def banner(self, ctx, member: discord.Member = None):
+        embed = discord.Embed(
+            color=discord.Colour.random()
+        )
+        image_size = '?size=1024'
+        member = ctx.author if not member else member
+        base_url = 'https://discord.com/api'
+        users_endpoint = f'/users/{member.id}'
+        headers = {'Authorization': f'Bot {self.TOKEN}'}
+        s = requests.Session()
+        r = s.get(f'{base_url}{users_endpoint}', headers=headers)
+        banner_hash = r.json()['banner']
+        if banner_hash:
+            animated = banner_hash.startswith('a_')
+            file_extension = 'gif' if animated else 'png'
+        else:
+            file_extension = 'png'
+        image_base_url = 'https://cdn.discordapp.com/'
+        banners_endpoint = f'banners/{member.id}/{banner_hash}.{file_extension}'
+        r = f'{image_base_url}{banners_endpoint}{image_size}'
+        
+        if f'None.{file_extension}' in r:
+            embed.add_field(name=str(
+                ctx.author)+" requested", value=member.mention+"'s banner, I suppose! Shame they don't have any, in fact!")
+        elif member != ctx.author:
+            embed.add_field(name=str(
+                ctx.author)+" requested", value=member.mention+"'s banner, I suppose!")
+            embed.set_image(url=f'{r}')
+        else:
+            embed.add_field(
+                name=str(ctx.author)+" requested", value=" their own banner, I suppose!")
+            embed.set_image(url=f'{r}')
+            
+        await ctx.send(embed=embed)
         
     # reverse search image
     @commands.command(aliases=["ris", "sauce", "source"])

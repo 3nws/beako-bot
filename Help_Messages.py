@@ -6,6 +6,7 @@ messages = {
                  \n-remove_channel (alias: remove)\
                  \n-latest_chapter (aliases: latest, last, chp)\
                  \n-avatar\
+                 \n-banner\
                  \n-following (aliases: follow, fol, watching)\
                  \n-say\
                  \n-clean (alias: clear)\
@@ -26,7 +27,9 @@ messages = {
                  \n-reverse_image_search (aliases: ris, sauce, source)\
                  \n-rps, in fact!```",
 
-        'avatar': "```Betty will send a member's(author's if no member is passed) avatar image to the text channel, in fact!```",
+        'avatar': "```Betty will send a member's(author's if no member is passed) avatar to the text channel, in fact!```",
+        
+        'banner': "```Betty will send a member's(author's if no member is passed) banner to the text channel, in fact!```",
 
         'add_channel': "```Betty will add the text channel to the list of channels that will receive notifications of the preferred series, I suppose!```",
 

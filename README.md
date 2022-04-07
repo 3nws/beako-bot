@@ -15,6 +15,7 @@ I use [pysaucenao](https://github.com/FujiMakoto/pysaucenao) for reverse image s
 - `r.remove_channel series` (remove the text channel from the list that will receive notifications), aliases: `r.remove`
 - `r.latest_chapter series` (informs of the latest translated chapter of given series), aliases: `r.chp`, `r.latest`, `r.last`
 - `r.avatar member` (shows a member's avatar or the op's if no argument is passed)
+- `r.banner member` (shows a member's banner or the op's if no argument is passed)
 - `r.following` (sends a message with the list of series a channel is following), aliases: `r.follow`, `r.fol`, `r.watching`
 - `r.say message` (make the bot say something)
 - `r.clean n direction msg_id` (deletes the last n messages starting from message with the id msg_id (not required) in the direction you specify, needs admin permissions), aliases: `r.clear`
