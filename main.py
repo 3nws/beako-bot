@@ -113,7 +113,7 @@ async def on_ready():
     print(f'Logged in as: {bot.user.name}\n')
     print(f'Server List ({len(bot.guilds)})\n')
     server_counter = 1
-    for guild in bot.guilds:
+    for guild in set(bot.guilds):
         print(
             f"{server_counter}. {guild.name}, owned by {guild.owner} with {guild.member_count} members")
         server_counter += 1

@@ -36,7 +36,7 @@ class Admin(commands.Cog):
         banned_users = await ctx.guild.bans()
         member_name, member_discriminator = member.split('#')
 
-        for ban_entry in banned_users:
+        for ban_entry in set(banned_users):
             user = ban_entry.user
 
         if (user.name, user.discriminator) == (member_name, member_discriminator):
@@ -57,13 +57,13 @@ class Admin(commands.Cog):
                 history = await ctx.channel.history(limit=limit, after=msg, oldest_first=True).flatten()
             elif direction == "before":
                 history = await ctx.channel.history(limit=limit, before=msg, oldest_first=False).flatten()
-            for message in history:
+            for message in set(history):
                 await message.delete()
         elif (direction == "after"):
             return await ctx.send("I can't delete future messages, in fact! Tell me which message you want me to start deleting from, I suppose!")
         elif (direction == "before"):
             history = await ctx.channel.history(limit=limit, before=ctx.message, oldest_first=False).flatten()
-            for message in history:
+            for message in set(history):
                 await message.delete()
         else:
             await ctx.channel.purge(limit=limit)
@@ -77,7 +77,7 @@ class Admin(commands.Cog):
         print(f'Logged in as: {self.bot.user.name}\n')
         print(f'Server List ({len(self.bot.guilds)})\n')
         server_counter = 1
-        for guild in self.bot.guilds:
+        for guild in set(self.bot.guilds):
             print(f"{server_counter}. {guild.name}, owned by {guild.owner} with {guild.member_count} members")
             server_counter += 1
 
