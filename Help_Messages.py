@@ -10,6 +10,7 @@ messages = {
                  \n-following (aliases: follow, fol, watching)\
                  \n-say\
                  \n-clean (alias: clear)\
+                 \n-purge (alias: cleanse)\
                  \n-kick (aliases: yeet, yeeto)\
                  \n-ban\
                  \n-unban\
@@ -40,6 +41,8 @@ messages = {
         'say': "```Betty will repeat what you say, I suppose!```",
 
         'clean': "```Betty will clean up the text channel by the specified amount of messages, in fact! If you like you can specify which message it will start from by passing its ID and a direction, I suppose!```",
+
+        'purge': "```Betty will delete all messages of the given member from the current text channel, I suppose!```",
 
         'kick': "```Betty will use wind magic to kick a member, I suppose!```",
 
@@ -105,4 +108,5 @@ aliases = {
     'watching': 'following',
     'follow': 'following',
     'fol': 'following',
+    'cleanse': 'purge'
 }

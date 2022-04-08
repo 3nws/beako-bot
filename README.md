@@ -11,14 +11,15 @@ I use [pysaucenao](https://github.com/FujiMakoto/pysaucenao) for reverse image s
 ## Commands
 
 - `r.help cmd` (sends detailed information about the command or just general information if no argument is passed)
-- `r.add_channel series` (adds the text channel to the list that will receive notifications), aliases: `r.add`
+- `r.add_channel series` (adds the text channel to the list that will receive notifications), alias: `r.add`
 - `r.remove_channel series` (remove the text channel from the list that will receive notifications), aliases: `r.remove`
 - `r.latest_chapter series` (informs of the latest translated chapter of given series), aliases: `r.chp`, `r.latest`, `r.last`
 - `r.avatar member` (shows a member's avatar or the op's if no argument is passed)
 - `r.banner member` (shows a member's banner or the op's if no argument is passed)
 - `r.following` (sends a message with the list of series a channel is following), aliases: `r.follow`, `r.fol`, `r.watching`
 - `r.say message` (make the bot say something)
-- `r.clean n direction msg_id` (deletes the last n messages starting from message with the id msg_id (not required) in the direction you specify, needs admin permissions), aliases: `r.clear`
+- `r.clean n direction msg_id` (deletes the last n messages starting from message with the id msg_id (not required) in the direction you specify, needs admin permissions), alias: `r.clear`
+- `r.purge member` (deletes all the messages of the given member from the current text channel, needs admin permissions), alias: `r.cleanse`
 - `r.kick member` (kicks a member, needs kick permission), aliases: `r.yeet`, `r.yeeto`
 - `r.ban member` (bans a member, needs ban permission)
 - `r.unban member` (unbans a member, needs admin permissions)
@@ -32,6 +33,6 @@ I use [pysaucenao](https://github.com/FujiMakoto/pysaucenao) for reverse image s
 - `r.hug member` (hug a member or yourself if you so need)
 - `r.smug` (sends a smug gif from tenor api)
 - `r.series` (sends a list of series available for tracking)
-- `r.coinflip h t` (flip a coin h and t are not required), aliases: `r.coin`
+- `r.coinflip h t` (flip a coin h and t are not required), alias: `r.coin`
 - `r.rps choice` (play rock-paper-scissors with Betty)
 - `r.reverse_image_search url` (search the image you want for the source), aliases: `r.ris`, `r.sauce`, `r.source`
