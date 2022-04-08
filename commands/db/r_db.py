@@ -11,6 +11,7 @@ from bs4 import BeautifulSoup
 from commands.db.classes.Re_zero import Re_zero
 from commands.db.classes.Guya_moe import Guya_moe
 from commands.db.classes.Grand_Blue import Grand_Blue
+from commands.db.classes.MangaDex import MangaDex
 
 load_dotenv()
 
@@ -348,6 +349,10 @@ async def tasks_check_chapter(bot):
             last_chapter,
             latest_chapter_translated_link,
         )
+        
+        # for mangadex
+        md = MangaDex()
+        md.get_latest("4b81a058-d052-408a-a26b-e3b53921f68c")
 
     except Exception as e:
         print(e)
