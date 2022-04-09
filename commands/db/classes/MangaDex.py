@@ -17,7 +17,7 @@ class MangaDex:
         r = s.get(url)
         r = (r.json())['data']
         embed = discord.Embed(
-            title = f"Pick one of the results for {query}, I suppose!",
+            title = f"Pick one of the results for '{query}', I suppose!",
             color = discord.Colour.random(),
         )
         
@@ -42,10 +42,10 @@ class MangaDex:
         url = self.base_manga_url+id+'/aggregate'
         r = s.get(url)
         r = r.json()
-        chapters = ((r['volumes'])['none'])['chapters']
-        chp_count = len(chapters)
-        last_chp = chapters[str(chp_count-1)]
-        last_chp_id = last_chp['id']
+        latest_volume_num = str(list(r['volumes'])[0])
+        chapters = ((r['volumes'])[latest_volume_num])['chapters']
+        last_chp = list(chapters)[0]
+        last_chp_id = (chapters[last_chp])['id']
         url = self.base_chapter_url+last_chp_id
         r = s.get(url)
         r = r.json()

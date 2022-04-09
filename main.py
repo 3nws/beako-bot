@@ -26,7 +26,7 @@ from commands.db.r_db import (
 from commands.db.r_add_channel import commands_add_channel
 from commands.db.r_remove_channel import commands_remove_channel
 
-# logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.DEBUG)
 
 # logger = logging.getLogger('discord')
 # logger.setLevel(logging.DEBUG)

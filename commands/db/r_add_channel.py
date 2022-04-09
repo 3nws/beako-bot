@@ -1,5 +1,6 @@
 import pymongo
 import os
+import asyncio
 
 from dotenv import load_dotenv
 from commands.db.classes.MangaDex import MangaDex
@@ -29,8 +30,8 @@ async def commands_add_channel(bot, ctx, series_obj):
     def check(reaction, user):
             return user == ctx.author
         
-    try:
-        reaction, user = await bot.wait_for('reaction_add', timeout=60.0, check=check)
+    while True:
+        reaction, user = await bot.wait_for('reaction_add', check=check)
         channel_exists = True if channels_md.find_one({"channel_id": str(ctx.channel.id)}) else False
         if not channel_exists:
             channels_md.insert_one({
@@ -59,8 +60,6 @@ async def commands_add_channel(bot, ctx, series_obj):
                 )
                 await ctx.channel.send(f"This channel will receive notifications on new chapters of {titles[idx]}, I suppose!")
             else:
-                await ctx.channel.send('This channel is already on the receiver list, in fact!')
-    except asyncio.TimeoutError:
-        await ctx.channel.send('You took too long to pick one, in fact!')
-    else:
-        print("else block in add_channel")
+                ## THE FUCK?!
+                # await ctx.channel.send('This channel is already on the receiver list, in fact!')
+                pass
