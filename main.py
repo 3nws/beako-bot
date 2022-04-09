@@ -21,6 +21,7 @@ from commands.db.r_db import (
     commands_flip,
     commands_following,
     commands_latest_chapter,
+    commands_add_channel
 )
 from commands.db.r_add_channel import commands_add_channel
 from commands.db.r_remove_channel import commands_remove_channel
@@ -42,6 +43,7 @@ load_dotenv()
 intents = discord.Intents.default()
 intents.members = True
 intents.guilds = True
+intents.messages = True
 bot = commands.Bot(command_prefix="r.", intents=intents)
 bot.remove_command("help")
 
@@ -54,7 +56,7 @@ for filename in os.listdir('./cogs'):
 # adds the channel to the notifications list
 @bot.command(aliases=["add"])
 async def add_channel(ctx, *, series=""):
-    await commands_add_channel(ctx, ChannelList(series, ctx.channel.id))
+    await commands_add_channel(bot, ctx, ChannelList(series, ctx.channel.id))
 
 # removes the channel from the notifications list
 @bot.command(aliases=["remove"])

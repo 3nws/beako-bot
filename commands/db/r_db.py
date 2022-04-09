@@ -42,6 +42,8 @@ flips = db_flips.data
 avatars = os.path.join(os.getcwd(), "avatars")
 
 # channels data
+channels_md = db_chapter.data_mangadex
+
 channels_rz = db_channels.data
 channels_kaguya = db_channels.data_kaguya
 channels_onk = db_channels.data_onk
@@ -167,7 +169,9 @@ async def commands_add_channel(id, series):
     elif series == "" or series == " ":
         return "To what list do you want to add this channel, in fact?!"
     else:
-        return "What is that, I suppose?!"
+        md = MangaDex()
+        results = md.search(series)
+        return results
 
 
 # remove the channel from the receiver list
@@ -281,81 +285,85 @@ async def tasks_filter_channels(bot):
 
 
 async def tasks_check_chapter(bot):
-    try:
+    # try:
         # for re zero
-        rz = Re_zero(rz_url)
+        # rz = Re_zero(rz_url)
 
-        most_recent_post_str = rz.scrape()[0]
-        latest_chapter_translated_link = rz.scrape()[1]
+        # most_recent_post_str = rz.scrape()[0]
+        # latest_chapter_translated_link = rz.scrape()[1]
 
-        last_chapter = db_chapter.data.find_one()
+        # last_chapter = db_chapter.data.find_one()
 
-        await send_messages(
-            bot,
-            channels_rz,
-            most_recent_post_str,
-            data_rz,
-            last_chapter,
-            latest_chapter_translated_link,
-        )
+        # await send_messages(
+        #     bot,
+        #     channels_rz,
+        #     most_recent_post_str,
+        #     data_rz,
+        #     last_chapter,
+        #     latest_chapter_translated_link,
+        # )
 
-        # for kaguya-sama
-        kaguya = Guya_moe(kaguya_url)
+        # # for kaguya-sama
+        # kaguya = Guya_moe(kaguya_url)
 
-        most_recent_post_str = kaguya.scrape()[0]
-        latest_chapter_translated_link = kaguya.scrape()[1]
+        # most_recent_post_str = kaguya.scrape()[0]
+        # latest_chapter_translated_link = kaguya.scrape()[1]
 
-        last_chapter = db_chapter.data_kaguya.find_one()
+        # last_chapter = db_chapter.data_kaguya.find_one()
 
-        await send_messages(
-            bot,
-            channels_kaguya,
-            most_recent_post_str,
-            data_kaguya,
-            last_chapter,
-            latest_chapter_translated_link,
-        )
+        # await send_messages(
+        #     bot,
+        #     channels_kaguya,
+        #     most_recent_post_str,
+        #     data_kaguya,
+        #     last_chapter,
+        #     latest_chapter_translated_link,
+        # )
 
-        # for oshi no ko
-        onk = Guya_moe(onk_url)
+        # # for oshi no ko
+        # onk = Guya_moe(onk_url)
 
-        most_recent_post_str = onk.scrape()[0]
-        latest_chapter_translated_link = onk.scrape()[1]
+        # most_recent_post_str = onk.scrape()[0]
+        # latest_chapter_translated_link = onk.scrape()[1]
 
-        last_chapter = db_chapter.data_onk.find_one()
+        # last_chapter = db_chapter.data_onk.find_one()
 
-        await send_messages(
-            bot,
-            channels_onk,
-            most_recent_post_str,
-            data_onk,
-            last_chapter,
-            latest_chapter_translated_link,
-        )
+        # await send_messages(
+        #     bot,
+        #     channels_onk,
+        #     most_recent_post_str,
+        #     data_onk,
+        #     last_chapter,
+        #     latest_chapter_translated_link,
+        # )
         
-        # for grand blue
-        gb = Grand_Blue(gb_url)
+        # # for grand blue
+        # gb = Grand_Blue(gb_url)
 
-        most_recent_post_str = gb.scrape()[0]
-        latest_chapter_translated_link = gb.scrape()[1]
+        # most_recent_post_str = gb.scrape()[0]
+        # latest_chapter_translated_link = gb.scrape()[1]
 
-        last_chapter = db_chapter.data_gb.find_one()
+        # last_chapter = db_chapter.data_gb.find_one()
 
-        await send_messages(
-            bot,
-            channels_gb,
-            most_recent_post_str,
-            data_gb,
-            last_chapter,
-            latest_chapter_translated_link,
-        )
+        # await send_messages(
+        #     bot,
+        #     channels_gb,
+        #     most_recent_post_str,
+        #     data_gb,
+        #     last_chapter,
+        #     latest_chapter_translated_link,
+        # )
         
         # for mangadex
         md = MangaDex()
-        md.get_latest("4b81a058-d052-408a-a26b-e3b53921f68c")
+        md.get_latest("428ad84a-69c6-426d-8ed4-b423c4929756")
+        mangas_on_channel = eval((channels_md.find_one())['mangas'])
+        for manga in mangas_on_channel:
+            chapter = mangas_on_channel[manga]
+            print(manga, chapter)
 
-    except Exception as e:
-        print(e)
+    # except Exception as e:
+    #     print(e)
 
 
 # flip command
