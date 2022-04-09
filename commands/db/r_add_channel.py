@@ -43,6 +43,7 @@ async def commands_add_channel(bot, ctx, series_obj):
         for i, emoji in enumerate(emojis):
             if emoji == str(reaction):
                 idx = i
+                break
         if str(reaction) == emojis[idx]:
             if titles[idx] not in mangas_dict:
                 last_chp = md.get_latest(manga_ids[idx])

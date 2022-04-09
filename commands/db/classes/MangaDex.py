@@ -12,7 +12,7 @@ class MangaDex:
         
     def search(self, query):
         url = self.base_manga_url+f'?limit=5&title={query}'
-
+        
         s = requests.session()
         r = s.get(url)
         r = (r.json())['data']
@@ -20,6 +20,7 @@ class MangaDex:
             title = f"Pick one of the results for {query}, I suppose!",
             color = discord.Colour.random(),
         )
+        
         titles = []
         manga_ids = []
         for i, rs in enumerate(r):
@@ -41,8 +42,8 @@ class MangaDex:
         url = self.base_manga_url+id+'/aggregate'
         r = s.get(url)
         r = r.json()
-        chp_count = ((r['volumes'])['none'])['count']
         chapters = ((r['volumes'])['none'])['chapters']
+        chp_count = len(chapters)
         last_chp = chapters[str(chp_count-1)]
         last_chp_id = last_chp['id']
         url = self.base_chapter_url+last_chp_id

@@ -356,7 +356,7 @@ async def tasks_check_chapter(bot):
         
         # for mangadex
         md = MangaDex()
-        md.get_latest("428ad84a-69c6-426d-8ed4-b423c4929756")
+        # md.get_latest("428ad84a-69c6-426d-8ed4-b423c4929756")
         # mangas_on_channel = eval((channels_md.find_one())['mangas'])
         # for manga in mangas_on_channel:
         #     chapter = mangas_on_channel[manga]
