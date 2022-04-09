@@ -23,8 +23,8 @@ async def commands_add_channel(bot, ctx, series_obj):
         manga_ids = msg[3]
         msg = msg[1]
     msg = await ctx.send(embed=msg)
-    for emoji in emojis:
-        await msg.add_reaction(emoji)
+    for i in range(len(manga_ids)):
+        await msg.add_reaction(emojis[i])
         
     def check(reaction, user):
             return user == ctx.author
@@ -57,7 +57,9 @@ async def commands_add_channel(bot, ctx, series_obj):
                     return_document=pymongo.ReturnDocument.AFTER
                 )
                 await ctx.channel.send(f"This channel will receive notifications on new chapters of {titles[idx]}, I suppose!")
+            else:
+                await ctx.channel.send('This channel is already on the receiver list, in fact!')
     except asyncio.TimeoutError:
         await ctx.channel.send('You took too long to pick one, in fact!')
     else:
-        await ctx.channel.send('This channel is already on the receiver list, in fact!')
+        print("else block in add_channel")

@@ -11,7 +11,7 @@ class MangaDex:
         self.emojis = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣']
         
     def search(self, query):
-        url = self.base_manga_url+f'?limit=5&title={query}&includedTagsMode=AND&excludedTagsMode=OR&availableTranslatedLanguage%5B%5D=en&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&order%5BlatestUploadedChapter%5D=desc'
+        url = self.base_manga_url+f'?limit=5&title={query}'
 
         s = requests.session()
         r = s.get(url)
@@ -31,7 +31,7 @@ class MangaDex:
             link = self.base_manga_info_url+rs['id']
             desc = f"on [MangaDex]({link})\n"
             desc += (info['description'])['en']
-            embed.add_field(name=title, value=desc[:500]+'...', inline=False)
+            embed.add_field(name=title, value=desc[:300]+'...', inline=False)
         
         
         return [self.emojis, embed, titles, manga_ids]
