@@ -130,7 +130,7 @@ async def commands_latest_chapter(ctx, series):
 # add the channel to the receiver list
 
 
-async def commands_add_channel(id, series):
+async def commands_add_channel(bot, ctx, id, series):
     channel_entry = {
         "id": id,
     }
