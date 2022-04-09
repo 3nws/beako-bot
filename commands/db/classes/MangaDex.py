@@ -38,7 +38,7 @@ class MangaDex:
         
     def get_latest(self, id):
         s = requests.session()
-        url = self.base_manga_url+id +'/aggregate'
+        url = self.base_manga_url+id+'/aggregate'
         r = s.get(url)
         r = r.json()
         chp_count = ((r['volumes'])['none'])['count']
@@ -53,7 +53,7 @@ class MangaDex:
         translated_lang = ((r['data'])['attributes'])['translatedLanguage']
         num_of_pages = ((r['data'])['attributes'])['pages']
         chapter_link = self.base_read_url+last_chp_id+'/1'
-        print(chapter_title, chapter_num, translated_lang, num_of_pages, chapter_link)
+        return chapter_title
         if chapter_title==None:
             # add only the chapter num to the embed
             # else add title with chapter num

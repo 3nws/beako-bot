@@ -30,19 +30,34 @@ async def commands_add_channel(bot, ctx, series_obj):
             return user == ctx.author
         
     try:
-        channel_id = ctx.channel.id,
         reaction, user = await bot.wait_for('reaction_add', timeout=60.0, check=check)
+        channel_exists = True if channels_md.find_one({"channel_id": str(ctx.channel.id)}) else False
+        if not channel_exists:
+            channels_md.insert_one({
+                'channel_id': str(ctx.channel.id),
+                'mangas': '{}',
+            })
         mangas_on_channel = (channels_md.find_one({"channel_id": str(ctx.channel.id)}))['mangas']
-        print(mangas_on_channel)
         mangas_dict = eval(mangas_on_channel)
-        # is_in_md_list = channels_md.count_documents(channel_entry, limit=1) != 0 gotta find an alternative
-        if reaction == emojis[0]:
-            # if not is_in_md_list:
-                mangas_dict.update({f"{titles[0]}": {md.get_latest(manga_ids[0])}})
-                channels_md.update_one({"channel_id": id}, {"$set": {"mangas": str(mangas_dict)}})
-                print("added")
-
+        idx = 0
+        for i, emoji in enumerate(emojis):
+            if emoji == str(reaction):
+                idx = i
+        if str(reaction) == emojis[idx]:
+            if titles[idx] not in mangas_dict:
+                last_chp = md.get_latest(manga_ids[idx])
+                mangas_dict.update({f"{titles[idx]}": str(last_chp)})
+                new_doc = channels_md.find_one_and_update(
+                    {'channel_id': str(ctx.channel.id)}, 
+                    {
+                        '$set': {
+                            'mangas': str(mangas_dict)
+                        }
+                    },
+                    return_document=pymongo.ReturnDocument.AFTER
+                )
+                await ctx.channel.send(f"This channel will receive notifications on new chapters of {titles[idx]}, I suppose!")
     except asyncio.TimeoutError:
-        await channel.send('You took too long to pick one, in fact!')
+        await ctx.channel.send('You took too long to pick one, in fact!')
     else:
-        print("Add channel else block on wait_for()")
+        await ctx.channel.send('This channel is already on the receiver list, in fact!')
