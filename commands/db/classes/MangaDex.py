@@ -20,15 +20,21 @@ class MangaDex:
             title = f"Pick one of the results for {query}, I suppose!",
             color = discord.Colour.random(),
         )
+        titles = []
+        manga_ids = []
         for i, rs in enumerate(r):
+            manga_ids.append(rs['id'])
             info = rs['attributes']
-            title = (info['title'])['en'] + f' {self.emojis[i]}'
+            title = (info['title'])['en']
+            titles.append(title)
+            title += f' {self.emojis[i]}'
             link = self.base_manga_info_url+rs['id']
             desc = f"on [MangaDex]({link})\n"
             desc += (info['description'])['en']
             embed.add_field(name=title, value=desc[:500]+'...', inline=False)
-            
-        return [self.emojis, embed]
+        
+        
+        return [self.emojis, embed, titles, manga_ids]
         
     def get_latest(self, id):
         s = requests.session()
