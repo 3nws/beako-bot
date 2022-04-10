@@ -170,7 +170,7 @@ async def commands_add_channel(bot, ctx, id, series):
         return "To what list do you want to add this channel, in fact?!"
     else:
         md = MangaDex()
-        results = md.search(series)
+        results = md.search(series, 5)
         return results
 
 
@@ -356,11 +356,24 @@ async def tasks_check_chapter(bot):
         
         # for mangadex
         md = MangaDex()
-        # md.get_latest("428ad84a-69c6-426d-8ed4-b423c4929756")
-        # mangas_on_channel = eval((channels_md.find_one())['mangas'])
-        # for manga in mangas_on_channel:
-        #     chapter = mangas_on_channel[manga]
-        #     print(manga, chapter)
+        record_exists = channels_md.find_one() # will need to switch to find()
+        if record_exists:
+            mangas_on_channel = eval((record_exists)['mangas'])
+            print(mangas_on_channel, type(mangas_on_channel))
+            for title in mangas_on_channel:
+                chapter = mangas_on_channel[title]
+                print(title, chapter)
+                latest = md.get_latest(md.get_id(title))
+                # print(latest)
+                if latest != chapter:
+                    # print(chapter)
+                    print("Different")
+                else:
+                    print("same")
+            # md.get_latest("428ad84a-69c6-426d-8ed4-b423c4929756")
+            # for manga in mangas_on_channel:
+            #     chapter = mangas_on_channel[manga]
+            #     print(manga, chapter)
 
     # except Exception as e:
     #     print(e)

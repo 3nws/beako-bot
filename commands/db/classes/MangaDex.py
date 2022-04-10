@@ -10,9 +10,9 @@ class MangaDex:
         self.base_manga_info_url = 'https://mangadex.org/manga/'
         self.emojis = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣']
         
-    def search(self, query):
+    def search(self, query, limit):
         url = self.base_manga_url + \
-            f'?limit=5&title={query}&availableTranslatedLanguage%5B%5D=en'
+            f'?limit={limit}&title={query}&availableTranslatedLanguage%5B%5D=en'
         
         s = requests.session()
         r = s.get(url)
@@ -38,7 +38,11 @@ class MangaDex:
         
         
         return [self.emojis, embed, titles, manga_ids]
-        
+       
+    def get_id(self, title):
+        manga_id = self.search(title, 1)[-1][0]
+        return manga_id
+     
     def get_latest(self, id):
         s = requests.session()
         url = self.base_chapter_url+'?limit=5&manga='+id + \
