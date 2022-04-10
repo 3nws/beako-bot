@@ -5,13 +5,14 @@ class MangaDex:
     
     def __init__(self):
         self.base_manga_url = 'https://api.mangadex.org/manga/'
-        self.base_chapter_url = 'https://api.mangadex.org/chapter/'
+        self.base_chapter_url = 'https://api.mangadex.org/chapter'
         self.base_read_url = 'https://mangadex.org/chapter/'
         self.base_manga_info_url = 'https://mangadex.org/manga/'
         self.emojis = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣']
         
     def search(self, query):
-        url = self.base_manga_url+f'?limit=5&title={query}'
+        url = self.base_manga_url + \
+            f'?limit=5&title={query}&availableTranslatedLanguage%5B%5D=en'
         
         s = requests.session()
         r = s.get(url)
@@ -31,7 +32,8 @@ class MangaDex:
             title += f' {self.emojis[i]}'
             link = self.base_manga_info_url+rs['id']
             desc = f"on [MangaDex]({link})\n"
-            desc += (info['description'])['en']
+            if info['description']:
+                desc += (info['description'])['en']
             embed.add_field(name=title, value=desc[:300]+'...', inline=False)
         
         
@@ -39,21 +41,17 @@ class MangaDex:
         
     def get_latest(self, id):
         s = requests.session()
-        url = self.base_manga_url+id+'/aggregate'
+        url = self.base_chapter_url+'?limit=5&manga='+id + \
+            '&translatedLanguage%5B%5D=en&order%5Bvolume%5D=desc&order%5Bchapter%5D=desc'
         r = s.get(url)
         r = r.json()
-        latest_volume_num = str(list(r['volumes'])[0])
-        chapters = ((r['volumes'])[latest_volume_num])['chapters']
-        last_chp = list(chapters)[0]
-        last_chp_id = (chapters[last_chp])['id']
-        url = self.base_chapter_url+last_chp_id
-        r = s.get(url)
-        r = r.json()
-        chapter_title = ((r['data'])['attributes'])['title']
-        chapter_num = ((r['data'])['attributes'])['chapter']
-        translated_lang = ((r['data'])['attributes'])['translatedLanguage']
-        num_of_pages = ((r['data'])['attributes'])['pages']
-        chapter_link = self.base_read_url+last_chp_id+'/1'
+        data = r['data']
+        attrs = data[0]['attributes']
+        chapter_title = attrs['title']
+        chapter_num = attrs['chapter']
+        translated_lang = attrs['translatedLanguage']
+        num_of_pages = attrs['pages']
+        chapter_link = self.base_read_url+data[0]['id']+'/1'
         return chapter_title
         if chapter_title==None:
             # add only the chapter num to the embed
