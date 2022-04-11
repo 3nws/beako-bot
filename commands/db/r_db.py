@@ -177,7 +177,8 @@ async def commands_add_channel(bot, ctx, id, series):
 # remove the channel from the receiver list
 
 
-async def commands_remove_channel(id, series):
+async def commands_remove_channel(bot, ctx, id, series):
+    md = MangaDex()
     channel_entry = {
         "id": id,
     }
@@ -213,10 +214,33 @@ async def commands_remove_channel(id, series):
             return success_msg
         else:
             return failure_msg
-    elif series == "" or series == " ":
-        return "From what list do you want to remove this channel, in fact?!"
     else:
-        return "What is that, I suppose?!"
+        channel_exists = True if channels_md.find_one(
+            {"channel_id": str(ctx.channel.id)}) else False
+        if not channel_exists:
+            print("test")
+            return "This channel is not on any receiver list, in fact!"
+
+        mangas_on_channel = (channels_md.find_one(
+            {"channel_id": str(ctx.channel.id)}))['mangas']
+        mangas_dict = eval(mangas_on_channel)
+
+        embed = discord.Embed(
+            title=f"Pick one of the series you wish to unfollow, I suppose!",
+            color=discord.Colour.random(),
+        )
+
+        titles = []
+        manga_ids = []
+        emojis = md.emojis
+        for i, rs in enumerate(mangas_dict):
+            manga_ids.append(rs)
+            title = md.get_manga_title(rs)
+            titles.append(title)
+            title += f' {emojis[i]}'
+            embed.add_field(name=title, value='\u200b', inline=False)
+
+        return [embed, manga_ids, titles, emojis]
 
 
 # task sets a random avatar every day

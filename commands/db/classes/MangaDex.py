@@ -57,6 +57,9 @@ class MangaDex:
         
         return [self.emojis, embed, titles, manga_ids]
      
+    def get_following(self, channel_id):
+        pass
+     
     def get_manga_title(self, id):
         url = self.base_manga_url+id
         s = requests.session()

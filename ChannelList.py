@@ -10,6 +10,6 @@ class ChannelList:
         res = await commands_add_channel(bot, ctx, self.channel_id, self.series)
         return res
 
-    async def remove_channel(self):
-        res = await commands_remove_channel(self.channel_id, self.series)
+    async def remove_channel(self, bot, ctx):
+        res = await commands_remove_channel(bot, ctx, self.channel_id, self.series)
         return res

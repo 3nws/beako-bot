@@ -21,7 +21,6 @@ from commands.db.r_db import (
     commands_flip,
     commands_following,
     commands_latest_chapter,
-    commands_add_channel
 )
 from commands.db.r_add_channel import commands_add_channel
 from commands.db.r_remove_channel import commands_remove_channel
@@ -61,7 +60,7 @@ async def add_channel(ctx, *, series=""):
 # removes the channel from the notifications list
 @bot.command(aliases=["remove"])
 async def remove_channel(ctx, *, series=""):
-    await commands_remove_channel(ctx, ChannelList(series, ctx.channel.id))
+    await commands_remove_channel(bot, ctx, ChannelList(series, ctx.channel.id))
 
 # sends a message with the list of series a channel is following
 @bot.command(aliases=["watching", "fol", "follow"])
