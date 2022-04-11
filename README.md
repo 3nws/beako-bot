@@ -1,8 +1,8 @@
-Notifies when new chapters of the Re:Zero web novel, Grand Blue Dreaming manga, Kaguya-sama manga, and Oshi No Ko manga are translated.
+Notifies text channels when new chapters of the series they follow are translated on [MangaDex](https://mangadex.org). For Re:Zero web novel, Grand Blue Dreaming manga, Kaguya-sama manga, and Oshi No Ko manga I use beautifulsoup because I like them on specific websites mentioned below.
 
 Checks every 60 seconds.
 
-I scrape the data from [WitchCultTranslation](https://witchculttranslation.com/) for Re:zero, [MangaReader](https://mangareader.to) for Grand Blue and [Guya.Moe](https://guya.moe) for Kaguya-sama and Oshi No Ko.
+I scrape the data from [WitchCultTranslation](https://witchculttranslation.com/) for Re:zero, [MangaReader](https://mangareader.to) for Grand Blue, and [Guya.Moe](https://guya.moe) for Kaguya-sama and Oshi No Ko.
 
 Now also supports (hopefully) any series on [MangaDex](https://mangadex.org) with a search function and everything. Pretty cool [API](https://api.mangadex.org/swagger.html#/) they got there. Nice.
 
