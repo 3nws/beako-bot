@@ -359,14 +359,10 @@ async def tasks_check_chapter(bot):
         record_exists = channels_md.find_one() # will need to switch to find()
         if record_exists:
             mangas_on_channel = eval((record_exists)['mangas'])
-            print(mangas_on_channel, type(mangas_on_channel))
-            for title in mangas_on_channel:
-                chapter = mangas_on_channel[title]
-                print(title, chapter)
-                latest = md.get_latest(md.get_id(title))
-                # print(latest)
+            for manga_id in mangas_on_channel:
+                chapter = mangas_on_channel[manga_id]  # 'None'
+                latest = md.get_latest(manga_id).get_title()
                 if latest != chapter:
-                    # print(chapter)
                     print("Different")
                 else:
                     print("same")

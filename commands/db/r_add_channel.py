@@ -48,9 +48,9 @@ async def commands_add_channel(bot, ctx, series_obj):
                 idx = i
                 break
         if str(reaction) == emojis[idx]:
-            if titles[idx] not in mangas_dict:
-                last_chp = md.get_latest(manga_ids[idx])
-                mangas_dict.update({f"{titles[idx]}": str(last_chp)})
+            if manga_ids[idx] not in mangas_dict:
+                last_chp = md.get_latest(manga_ids[idx]).get_title()
+                mangas_dict.update({f"{manga_ids[idx]}": str(last_chp)})
                 new_doc = channels_md.find_one_and_update(
                     {'channel_id': str(ctx.channel.id)}, 
                     {

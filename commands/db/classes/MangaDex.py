@@ -1,6 +1,19 @@
 import requests
 import discord
 
+class Chapter:
+    
+    def __init__(self, id, title, num, lang, pages, link):
+        self.id = id
+        self.title = title
+        self.num = num
+        self.lang = lang
+        self.pages = pages
+        self.link = link
+
+    def get_title(self):
+        return self.title if self.title != None else self.id
+
 class MangaDex:
     
     def __init__(self):
@@ -38,10 +51,6 @@ class MangaDex:
         
         
         return [self.emojis, embed, titles, manga_ids]
-       
-    def get_id(self, title):
-        manga_id = self.search(title, 1)[-1][0]
-        return manga_id
      
     def get_latest(self, id):
         s = requests.session()
@@ -51,17 +60,15 @@ class MangaDex:
         r = r.json()
         data = r['data']
         attrs = data[0]['attributes']
+        chapter_id = data[0]['id']
         chapter_title = attrs['title']
         chapter_num = attrs['chapter']
         translated_lang = attrs['translatedLanguage']
         num_of_pages = attrs['pages']
         chapter_link = self.base_read_url+data[0]['id']+'/1'
-        return chapter_title
-        if chapter_title==None:
-            # add only the chapter num to the embed
-            # else add title with chapter num
-            pass
-        
+        chapter = Chapter(chapter_id, chapter_title,
+                          chapter_num, translated_lang, num_of_pages, chapter_link)
+        return chapter
         
         
         
