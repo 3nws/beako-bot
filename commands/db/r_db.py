@@ -218,7 +218,6 @@ async def commands_remove_channel(bot, ctx, id, series):
         channel_exists = True if channels_md.find_one(
             {"channel_id": str(ctx.channel.id)}) else False
         if not channel_exists:
-            print("test")
             return "This channel is not on any receiver list, in fact!"
 
         mangas_on_channel = (channels_md.find_one(
