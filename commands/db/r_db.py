@@ -302,6 +302,12 @@ async def tasks_filter_channels(bot):
                 "id": channel["id"],
             }
             channels_gb.find_one_and_delete(channel_entry)
+    for channel in channels_md.find():
+        if not bot.get_channel((channel["channel_id"])):
+            channel_entry = {
+                "channel_id": channel["channel_id"],
+            }
+            channels_gb.find_one_and_delete(channel_entry)
 
 
 # task that checks chapter every 10 seconds
