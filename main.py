@@ -96,7 +96,7 @@ async def filter_channels():
 
 
 # task that checks chapter every 60 seconds
-@tasks.loop(seconds=10)
+@tasks.loop(seconds=60)
 async def check_chapter():
     await tasks_check_chapter(bot)
 
