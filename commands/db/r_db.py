@@ -380,35 +380,36 @@ async def tasks_check_chapter(bot):
         
         # for mangadex
         md = MangaDex()
-        record_exists = channels_md.find_one() # will need to switch to find()
-        if record_exists:
-            mangas_on_channel = (record_exists)['mangas']
-            mangas_dict = eval(mangas_on_channel)
-            for manga_id in mangas_dict:
-                chapter = mangas_dict[manga_id]  # 'None'
-                chapter_response = md.get_latest(manga_id)
-                title_response = chapter_response.get_title()
-                latest = title_response[0]
-                is_title = title_response[1]
-                chapter_link = chapter_response.get_link()
-                if latest != chapter:
-                    mangas_dict.update({f"{manga_id}": str(latest)})
-                    new_doc = channels_md.find_one_and_update(
-                        {'channel_id': str(record_exists['channel_id'])},
-                        {
-                            '$set': {
-                                'mangas': str(mangas_dict)
-                            }
-                        },
-                        return_document=pymongo.ReturnDocument.AFTER
-                    )
-                    channel = int(record_exists['channel_id'])
-                    if is_title:
-                        chp_title = md.get_manga_title(manga_id)
-                        await bot.get_channel(channel).send(f"'{chp_title} - {latest}' has been translated, I suppose \n{chapter_link}")
-                    else:
-                        chp_title = md.get_manga_title(manga_id)
-                        await bot.get_channel(channel).send(f"A new chapter of '{chp_title}' has been translated, I suppose \n{chapter_link}")
+        records_exist = channels_md.find() # will need to switch to find()
+        if records_exist:
+            for record in records_exist:
+                mangas_on_channel = (record)['mangas']
+                mangas_dict = eval(mangas_on_channel)
+                for manga_id in mangas_dict:
+                    chapter = mangas_dict[manga_id]  # 'None'
+                    chapter_response = md.get_latest(manga_id)
+                    title_response = chapter_response.get_title()
+                    latest = title_response[0]
+                    is_title = title_response[1]
+                    chapter_link = chapter_response.get_link()
+                    if latest == chapter:
+                        mangas_dict.update({f"{manga_id}": str(latest)})
+                        new_doc = channels_md.find_one_and_update(
+                            {'channel_id': str(record['channel_id'])},
+                            {
+                                '$set': {
+                                    'mangas': str(mangas_dict)
+                                }
+                            },
+                            return_document=pymongo.ReturnDocument.AFTER
+                        )
+                        channel = int(record['channel_id'])
+                        if is_title:
+                            chp_title = md.get_manga_title(manga_id)
+                            await bot.get_channel(channel).send(f"'{chp_title} - {latest}' has been translated, I suppose \n{chapter_link}")
+                        else:
+                            chp_title = md.get_manga_title(manga_id)
+                            await bot.get_channel(channel).send(f"A new chapter of '{chp_title}' has been translated, I suppose \n{chapter_link}")
 
     # except Exception as e:
     #     print(e)
