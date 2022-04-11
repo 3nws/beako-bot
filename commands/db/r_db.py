@@ -225,7 +225,7 @@ async def commands_remove_channel(bot, ctx, id, series):
         mangas_dict = eval(mangas_on_channel)
 
         embed = discord.Embed(
-            title=f"Pick one of the series you wish to unfollow, I suppose!",
+            title=f"Pick one of the series you wish to unfollow, I suppose!" if len(mangas_dict)>0 else "This channel is not following any series, in fact!\n Use `r.add <manga_title>` to pick some series to start, I suppose!",
             color=discord.Colour.random(),
         )
 
