@@ -12,7 +12,12 @@ class Chapter:
         self.link = link
 
     def get_title(self):
-        return self.title if self.title != None else self.id
+        title = self.title if self.title != None else self.id
+        is_title = title != self.id
+        return [title, is_title]
+    
+    def get_link(self):
+        return self.link
 
 class MangaDex:
     
@@ -51,6 +56,13 @@ class MangaDex:
         
         
         return [self.emojis, embed, titles, manga_ids]
+     
+    def get_manga_title(self, id):
+        url = self.base_manga_url+id
+        s = requests.session()
+        r = s.get(url)
+        r = (r.json())['data']
+        return r['attributes']['title']['en']
      
     def get_latest(self, id):
         s = requests.session()
