@@ -65,6 +65,3 @@ async def commands_add_channel(bot, ctx, series_obj):
                     return_document=pymongo.ReturnDocument.AFTER
                 )
                 await ctx.channel.send(f"This channel will receive notifications on new chapters of {titles[idx]}, I suppose!")
-            else:
-                ## THE FUCK?!
-                await ctx.channel.send('This channel is may already be on the receiver list, in fact! I don\'t know, my dev is lazy, in fact!')
