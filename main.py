@@ -42,6 +42,7 @@ load_dotenv()
 intents = discord.Intents.default()
 intents.members = True
 intents.guilds = True
+intents.messages = True
 bot = commands.Bot(command_prefix="r.", intents=intents)
 bot.remove_command("help")
 
@@ -54,12 +55,12 @@ for filename in os.listdir('./cogs'):
 # adds the channel to the notifications list
 @bot.command(aliases=["add"])
 async def add_channel(ctx, *, series=""):
-    await commands_add_channel(ctx, ChannelList(series, ctx.channel.id))
+    await commands_add_channel(bot, ctx, ChannelList(series, ctx.channel.id))
 
 # removes the channel from the notifications list
 @bot.command(aliases=["remove"])
 async def remove_channel(ctx, *, series=""):
-    await commands_remove_channel(ctx, ChannelList(series, ctx.channel.id))
+    await commands_remove_channel(bot, ctx, ChannelList(series, ctx.channel.id))
 
 # sends a message with the list of series a channel is following
 @bot.command(aliases=["watching", "fol", "follow"])
@@ -95,7 +96,7 @@ async def filter_channels():
 
 
 # task that checks chapter every 60 seconds
-@tasks.loop(seconds=60)
+@tasks.loop(seconds=10)
 async def check_chapter():
     await tasks_check_chapter(bot)
 

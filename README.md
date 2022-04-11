@@ -4,6 +4,8 @@ Checks every 60 seconds.
 
 I scrape the data from [WitchCultTranslation](https://witchculttranslation.com/) for Re:zero, [MangaReader](https://mangareader.to) for Grand Blue and [Guya.Moe](https://guya.moe) for Kaguya-sama and Oshi No Ko.
 
+Now also supports (hopefully) any series on [MangaDex](https://mangadex.org) with a search function and everything. Pretty cool [API](https://api.mangadex.org/swagger.html#/) they got there. Nice.
+
 I use [pysaucenao](https://github.com/FujiMakoto/pysaucenao) for reverse image searching.
 
 [Here's the invite link](https://discord.com/api/oauth2/authorize?client_id=834692619392385074&permissions=2148002822&scope=bot).
@@ -11,8 +13,8 @@ I use [pysaucenao](https://github.com/FujiMakoto/pysaucenao) for reverse image s
 ## Commands
 
 - `r.help cmd` (sends detailed information about the command or just general information if no argument is passed)
-- `r.add_channel series` (adds the text channel to the list that will receive notifications), alias: `r.add`
-- `r.remove_channel series` (remove the text channel from the list that will receive notifications), aliases: `r.remove`
+- `r.add_channel series` (adds the text channel to the list that will receive notifications, if the series is not one of the four mentioned above it will search on mangadex and add them instead), alias: `r.add`
+- `r.remove_channel series` (remove the text channel from the list that will receive notifications, if no series argument is passed it will show the series followed on mangadex by the text channel), aliases: `r.remove`
 - `r.latest_chapter series` (informs of the latest translated chapter of given series), aliases: `r.chp`, `r.latest`, `r.last`
 - `r.avatar member` (shows a member's avatar or the op's if no argument is passed)
 - `r.banner member` (shows a member's banner or the op's if no argument is passed)

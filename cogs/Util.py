@@ -155,7 +155,7 @@ class Util(commands.Cog):
 
         msg = await ctx.send(embed=embed)
 
-        emojis = {'1️⃣', '2️⃣'}
+        emojis = ['1️⃣', '2️⃣']
 
         for emoji in emojis:
             await msg.add_reaction(emoji)
