@@ -428,6 +428,16 @@ async def commands_following(ctx, bot):
             if bot.get_channel(channel['id']) == ctx.channel:
                 series.append(collection_aliases[channels])
 
+    channel_exists = channels_md.find_one(
+        {"channel_id": str(ctx.channel.id)}) if channels_md.find_one(
+        {"channel_id": str(ctx.channel.id)}) else False
+    if channel_exists:
+        md = MangaDex()
+        mangas_on_channel = (channel_exists)['mangas']
+        mangas_dict = eval(mangas_on_channel)
+        for manga_id in mangas_dict:
+            series.append(md.get_manga_title(manga_id))
+    
     frame = discord.Embed(
         color=discord.Colour.random(),
         title="This channel is following the series below, in fact!" if len(series)>0 else "This channel is not following any series, I suppose!",
