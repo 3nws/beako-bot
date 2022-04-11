@@ -397,7 +397,7 @@ async def tasks_check_chapter(bot):
                     latest = title_response[0]
                     is_title = title_response[1]
                     chapter_link = chapter_response.get_link()
-                    if latest == chapter:
+                    if latest != chapter:
                         mangas_dict.update({f"{manga_id}": str(latest)})
                         new_doc = channels_md.find_one_and_update(
                             {'channel_id': str(record['channel_id'])},
