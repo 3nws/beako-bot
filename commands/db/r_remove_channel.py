@@ -56,7 +56,3 @@ async def commands_remove_channel(bot, ctx, series_obj):
                 )
                 title = titles[idx]
                 await ctx.channel.send(f"This channel will no longer receive notifications on new chapters of {title}, I suppose!")
-            else:
-                ## THE FUCK?!
-                # await ctx.channel.send('This channel is already on the receiver list, in fact!')
-                pass

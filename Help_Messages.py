@@ -34,7 +34,7 @@ messages = {
 
         'add_channel': "```Betty will add the text channel to the list of channels that will receive notifications of the preferred series, I suppose!```",
 
-        'remove_channel': "```Betty will remove the text channel from the list of channels that will receiv notifications of the preferred series, I suppose!```",
+        'remove_channel': "```Betty will remove the text channel from the list of channels that will receive notifications of the preferred series, I suppose! No need to name any series if its on MangaDex, in fact!```",
         
         'following': "```Betty will send a list of series the text channel is following for, I suppose!```",
 
