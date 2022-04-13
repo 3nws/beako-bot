@@ -7,7 +7,7 @@ messages = {
                  \n-latest_chapter (aliases: latest, last, chp)\
                  \n-avatar\
                  \n-banner\
-                 \n-following (aliases: follow, fol, watching)\
+                 \n-following (aliases: follow, fol, watching, follows)\
                  \n-say\
                  \n-clean (alias: clear)\
                  \n-purge (alias: cleanse)\
@@ -108,5 +108,6 @@ aliases = {
     'watching': 'following',
     'follow': 'following',
     'fol': 'following',
+    'follows': 'following',
     'cleanse': 'purge'
 }

@@ -33,26 +33,31 @@ async def commands_remove_channel(bot, ctx, series_obj):
         return user == ctx.author
 
     while True:
-        reaction, user = await bot.wait_for('reaction_add', check=check)
-        mangas_on_channel = (channels_md.find_one(
-            {"channel_id": str(ctx.channel.id)}))['mangas']
-        mangas_dict = eval(mangas_on_channel)
-        idx = 0
-        for i, emoji in enumerate(emojis):
-            if emoji == str(reaction):
-                idx = i
-                break
-        if str(reaction) == emojis[idx]:
-            if manga_ids[idx] in mangas_dict:
-                mangas_dict.pop(manga_ids[idx])
-                new_doc = channels_md.find_one_and_update(
-                    {'channel_id': str(ctx.channel.id)},
-                    {
-                        '$set': {
-                            'mangas': str(mangas_dict)
-                        }
-                    },
-                    return_document=pymongo.ReturnDocument.AFTER
-                )
-                title = titles[idx]
-                await ctx.channel.send(f"This channel will no longer receive notifications on new chapters of {title}, I suppose!")
+        try:
+            reaction, user = await bot.wait_for('reaction_add', check=check, timeout=60.0)
+            mangas_on_channel = (channels_md.find_one(
+                {"channel_id": str(ctx.channel.id)}))['mangas']
+            mangas_dict = eval(mangas_on_channel)
+            idx = 0
+            for i, emoji in enumerate(emojis):
+                if emoji == str(reaction):
+                    idx = i
+                    break
+            if str(reaction) == emojis[idx]:
+                if manga_ids[idx] in mangas_dict:
+                    mangas_dict.pop(manga_ids[idx])
+                    new_doc = channels_md.find_one_and_update(
+                        {'channel_id': str(ctx.channel.id)},
+                        {
+                            '$set': {
+                                'mangas': str(mangas_dict)
+                            }
+                        },
+                        return_document=pymongo.ReturnDocument.AFTER
+                    )
+                    title = titles[idx]
+                    await ctx.channel.send(f"This channel will no longer receive notifications on new chapters of {title}, I suppose!")
+        except asyncio.TimeoutError:
+            await msg.clear_reactions()
+            await msg.reply("I'm not accepting any unfollow requests anymore, in fact!")
+            break

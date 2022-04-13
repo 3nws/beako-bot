@@ -65,7 +65,7 @@ async def remove_channel(ctx, *, series=""):
     await commands_remove_channel(bot, ctx, ChannelList(series, ctx.channel.id))
 
 # sends a message with the list of series a channel is following
-@bot.command(aliases=["watching", "fol", "follow"])
+@bot.command(aliases=["watching", "fol", "follow", "follows"])
 async def following(ctx):
     await commands_following(ctx, bot)
 
@@ -125,10 +125,10 @@ async def on_ready():
             type=discord.ActivityType.listening, name="r.help and Songstress Liliana!"
         )
     )
-    # change_avatar.start()
-    # await asyncio.sleep(60)
-    # check_chapter.start()
-    # filter_channels.start()
+    change_avatar.start()
+    await asyncio.sleep(60)
+    check_chapter.start()
+    filter_channels.start()
 
 
 bot.run(os.getenv("TOKEN"))

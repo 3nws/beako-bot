@@ -33,35 +33,42 @@ async def commands_add_channel(bot, ctx, series_obj):
             return user == ctx.author
         
     while True:
-        reaction, user = await bot.wait_for('reaction_add', check=check)
-        channel_exists = True if channels_md.find_one({"channel_id": str(ctx.channel.id)}) else False
-        if not channel_exists:
-            channels_md.insert_one({
-                'channel_id': str(ctx.channel.id),
-                'mangas': '{}',
-            })
-        mangas_on_channel = (channels_md.find_one({"channel_id": str(ctx.channel.id)}))['mangas']
-        mangas_dict = eval(mangas_on_channel)
-        idx = 0
-        for i, emoji in enumerate(emojis):
-            if emoji == str(reaction):
-                idx = i
-                break
-        if str(reaction) == emojis[idx]:
-            if manga_ids[idx] not in mangas_dict:
-                chapter_response = md.get_latest(manga_ids[idx])
-                title_response = chapter_response.get_title()
-                latest = title_response[0]
-                is_title = title_response[1]
-                chapter_link = chapter_response.get_link()
-                mangas_dict.update({f"{manga_ids[idx]}": str(latest)})
-                new_doc = channels_md.find_one_and_update(
-                    {'channel_id': str(ctx.channel.id)}, 
-                    {
-                        '$set': {
-                            'mangas': str(mangas_dict)
-                        }
-                    },
-                    return_document=pymongo.ReturnDocument.AFTER
-                )
-                await ctx.channel.send(f"This channel will receive notifications on new chapters of {titles[idx]}, I suppose!")
+        try:
+            reaction, user = await bot.wait_for('reaction_add', check=check, timeout=60.0)
+            channel_exists = True if channels_md.find_one({"channel_id": str(ctx.channel.id)}) else False
+            if not channel_exists:
+                channels_md.insert_one({
+                    'channel_id': str(ctx.channel.id),
+                    'mangas': '{}',
+                })
+            mangas_on_channel = (channels_md.find_one({"channel_id": str(ctx.channel.id)}))['mangas']
+            mangas_dict = eval(mangas_on_channel)
+            idx = 0
+            for i, emoji in enumerate(emojis):
+                if emoji == str(reaction):
+                    idx = i
+                    break
+            if str(reaction) == emojis[idx]:
+                if manga_ids[idx] not in mangas_dict:
+                    chapter_response = md.get_latest(manga_ids[idx])
+                    title_response = chapter_response.get_title()
+                    latest = title_response[0]
+                    is_title = title_response[1]
+                    chapter_link = chapter_response.get_link()
+                    mangas_dict.update({f"{manga_ids[idx]}": str(latest)})
+                    new_doc = channels_md.find_one_and_update(
+                        {'channel_id': str(ctx.channel.id)}, 
+                        {
+                            '$set': {
+                                'mangas': str(mangas_dict)
+                            }
+                        },
+                        return_document=pymongo.ReturnDocument.AFTER
+                    )
+                    await ctx.channel.send(f"This channel will receive notifications on new chapters of {titles[idx]}, I suppose!")
+                else:
+                    await ctx.channel.send(f"This channel is already on the receiver list for the new chapters of {titles[idx]}, I suppose!")
+        except asyncio.TimeoutError:
+            await msg.clear_reactions()
+            await msg.reply("I'm not accepting any follow requests anymore, in fact!")
+            break
