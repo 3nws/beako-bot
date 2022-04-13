@@ -6,6 +6,7 @@ from commands.db.classes.Scrape_Series import Scrape_Series
 
 
 class Re_zero(Scrape_Series):
+
     def __init__(self, url):
         self.url = url
 
@@ -18,10 +19,10 @@ class Re_zero(Scrape_Series):
                 print("WitchCultTranslation down!")
                 return
 
-            soup = BeautifulSoup(page.content, "html.parser")
-            most_recent_post = soup.find_all("h3", "rpwe-title")[0]
+            soup = BeautifulSoup(page.content, 'html.parser')
+            most_recent_post = soup.find_all('h3', 'rpwe-title')[0]
 
-            post_link = most_recent_post.find("a")
+            post_link = most_recent_post.find('a')
 
             most_recent_post = most_recent_post.text
             most_recent_post_array = most_recent_post.split()
@@ -33,8 +34,8 @@ class Re_zero(Scrape_Series):
 
             most_recent_post_str = most_recent_post_str.strip()
 
-            if "href" in post_link.attrs:
-                chapter_link = post_link.get("href")
+            if 'href' in post_link.attrs:
+                chapter_link = post_link.get('href')
 
             return [most_recent_post_str, chapter_link]
         except Exception as e:

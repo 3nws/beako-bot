@@ -20,18 +20,17 @@ class Grand_Blue(Scrape_Series):
 
             soup = BeautifulSoup(page.content, "html.parser")
 
-            most_recent_chapter = soup.find_all("li", "item reading-item chapter-item")[
-                0
-            ]
-
+            most_recent_chapter = soup.find_all(
+                "li", "item reading-item chapter-item")[0]
+            
             chapter_link = most_recent_chapter.find("a")
-
+            
             if "href" in chapter_link.attrs:
                 chapter_anchor = "https://mangareader.to"
                 chapter_anchor += chapter_link.get("href")
-
-            most_recent_chapter_title = chapter_link.get("title")
-
+                
+            most_recent_chapter_title = chapter_link.get('title')
+            
             return [most_recent_chapter_title, chapter_anchor]
 
         except Exception as e:

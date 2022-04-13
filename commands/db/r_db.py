@@ -49,7 +49,7 @@ channels_kaguya = db_channels.data_kaguya
 channels_onk = db_channels.data_onk
 channels_gb = db_channels.data_gb
 
-all_channels = [collection["name"] for collection in db_channels.list_collections()]
+all_channels = [collection['name'] for collection in db_channels.list_collections()]
 
 collection_aliases = {
     "data": "Re:Zero",
@@ -72,7 +72,7 @@ aliases = {
     "grand-blue": "gb",
     "grand blue dreaming": "gb",
     "grand_blue_dreaming": "gb",
-    "grand-blue-dreaming": "gb",
+    "grand-blue-dreaming": "gb"
 }
 
 rz_url = "https://witchculttranslation.com/arc-7/"
@@ -111,10 +111,13 @@ async def send_messages(bot, channels, title, data, db_rec, anchor):
                         f"'{title}' has been translated.\n{anchor}, I suppose!"
                     )
                 except Exception as e:
-                    print(f"The channel with id {channel['id']} is private, I suppose!")
+                    print(
+                        f"The channel with id {channel['id']} is private, I suppose!")
 
 
 # sends the latest english translated chapter
+
+
 async def commands_latest_chapter(ctx, series):
     if series == "":
         message = "What series do you want to know about, in fact!"
@@ -125,6 +128,8 @@ async def commands_latest_chapter(ctx, series):
 
 
 # add the channel to the receiver list
+
+
 async def commands_add_channel(bot, ctx, id, series):
     channel_entry = {
         "id": id,
@@ -133,7 +138,8 @@ async def commands_add_channel(bot, ctx, id, series):
     success_msg = "This text channel will receive notifications, I suppose!"
     failure_msg = "This text channel is already on the receiver list, in fact!"
     is_in_list = channels_rz.count_documents(channel_entry, limit=1) != 0
-    is_in_kaguya_list = channels_kaguya.count_documents(channel_entry, limit=1) != 0
+    is_in_kaguya_list = channels_kaguya.count_documents(
+        channel_entry, limit=1) != 0
     is_in_onk_list = channels_onk.count_documents(channel_entry, limit=1) != 0
     is_in_gb_list = channels_gb.count_documents(channel_entry, limit=1) != 0
     if series == "rz":
@@ -169,6 +175,8 @@ async def commands_add_channel(bot, ctx, id, series):
 
 
 # remove the channel from the receiver list
+
+
 async def commands_remove_channel(bot, ctx, id, series):
     md = MangaDex()
     channel_entry = {
@@ -178,7 +186,8 @@ async def commands_remove_channel(bot, ctx, id, series):
     success_msg = "This text channel will no longer receive notifications, I suppose!"
     failure_msg = "This text channel is not on the receiver list, in fact!"
     is_in_list = channels_rz.count_documents(channel_entry, limit=1) != 0
-    is_in_kaguya_list = channels_kaguya.count_documents(channel_entry, limit=1) != 0
+    is_in_kaguya_list = channels_kaguya.count_documents(
+        channel_entry, limit=1) != 0
     is_in_onk_list = channels_onk.count_documents(channel_entry, limit=1) != 0
     is_in_gb_list = channels_gb.count_documents(channel_entry, limit=1) != 0
     if series == "rz":
@@ -206,21 +215,17 @@ async def commands_remove_channel(bot, ctx, id, series):
         else:
             return failure_msg
     else:
-        channel_exists = (
-            True if channels_md.find_one({"channel_id": str(ctx.channel.id)}) else False
-        )
+        channel_exists = True if channels_md.find_one(
+            {"channel_id": str(ctx.channel.id)}) else False
         if not channel_exists:
             return "This channel is not on any receiver list, in fact!"
 
-        mangas_on_channel = (channels_md.find_one({"channel_id": str(ctx.channel.id)}))[
-            "mangas"
-        ]
+        mangas_on_channel = (channels_md.find_one(
+            {"channel_id": str(ctx.channel.id)}))['mangas']
         mangas_dict = eval(mangas_on_channel)
 
         embed = discord.Embed(
-            title=f"Pick one of the series you wish to unfollow, I suppose!"
-            if len(mangas_dict) > 0
-            else "This channel is not following any series, in fact!\n Use `r.add <manga_title>` to pick some series to start, I suppose!",
+            title=f"Pick one of the series you wish to unfollow, I suppose!" if len(mangas_dict)>0 else "This channel is not following any series, in fact!\n Use `r.add <manga_title>` to pick some series to start, I suppose!",
             color=discord.Colour.random(),
         )
 
@@ -231,13 +236,15 @@ async def commands_remove_channel(bot, ctx, id, series):
             manga_ids.append(rs)
             title = md.get_manga_title(rs)
             titles.append(title)
-            title += f" {emojis[i]}"
-            embed.add_field(name=title, value="\u200b", inline=False)
+            title += f' {emojis[i]}'
+            embed.add_field(name=title, value='\u200b', inline=False)
 
         return [embed, manga_ids, titles, emojis]
 
 
 # task sets a random avatar every day
+
+
 async def tasks_change_avatar(bot):
     try:
         for image_record in db_avatars.find():
@@ -268,6 +275,8 @@ async def tasks_change_avatar(bot):
 
 
 # task that removes non existing(deleted) channels every 10 seconds
+
+
 async def tasks_filter_channels(bot):
     for channel in channels_rz.find():
         if not bot.get_channel((channel["id"])):
@@ -302,6 +311,8 @@ async def tasks_filter_channels(bot):
 
 
 # task that checks chapter every 10 seconds
+
+
 async def tasks_check_chapter(bot):
     try:
         # for re zero
@@ -354,7 +365,7 @@ async def tasks_check_chapter(bot):
             last_chapter,
             latest_chapter_translated_link,
         )
-
+        
         # for grand blue
         gb = Grand_Blue(gb_url)
 
@@ -371,13 +382,13 @@ async def tasks_check_chapter(bot):
             last_chapter,
             latest_chapter_translated_link,
         )
-
+        
         # for mangadex
         md = MangaDex()
         records_exist = channels_md.find()
         if records_exist:
             for record in records_exist:
-                mangas_on_channel = (record)["mangas"]
+                mangas_on_channel = (record)['mangas']
                 mangas_dict = eval(mangas_on_channel)
                 for manga_id in mangas_dict:
                     chapter = mangas_dict[manga_id]  # 'None'
@@ -389,21 +400,21 @@ async def tasks_check_chapter(bot):
                     if latest != chapter:
                         mangas_dict.update({f"{manga_id}": str(latest)})
                         new_doc = channels_md.find_one_and_update(
-                            {"channel_id": str(record["channel_id"])},
-                            {"$set": {"mangas": str(mangas_dict)}},
-                            return_document=pymongo.ReturnDocument.AFTER,
+                            {'channel_id': str(record['channel_id'])},
+                            {
+                                '$set': {
+                                    'mangas': str(mangas_dict)
+                                }
+                            },
+                            return_document=pymongo.ReturnDocument.AFTER
                         )
-                        channel = int(record["channel_id"])
+                        channel = int(record['channel_id'])
                         if is_title:
                             chp_title = md.get_manga_title(manga_id)
-                            await bot.get_channel(channel).send(
-                                f"'{chp_title} - {latest}' has been translated, I suppose \n{chapter_link}"
-                            )
+                            await bot.get_channel(channel).send(f"'{chp_title} - {latest}' has been translated, I suppose \n{chapter_link}")
                         else:
                             chp_title = md.get_manga_title(manga_id)
-                            await bot.get_channel(channel).send(
-                                f"A new chapter of '{chp_title}' has been translated, I suppose \n{chapter_link}"
-                            )
+                            await bot.get_channel(channel).send(f"A new chapter of '{chp_title}' has been translated, I suppose \n{chapter_link}")
 
     except Exception as e:
         print(e)
@@ -415,36 +426,31 @@ async def commands_flip(ctx):
     flip = list(flips.aggregate(pipeline=pipe))[0]["url"]
     await ctx.send(flip)
 
-# following command
+
 async def commands_following(ctx, bot):
     series = []
     for channels in all_channels:
         for channel in db_channels[channels].find():
-            if bot.get_channel(channel["id"]) == ctx.channel:
+            if bot.get_channel(channel['id']) == ctx.channel:
                 series.append(collection_aliases[channels])
 
-    channel_exists = (
-        channels_md.find_one({"channel_id": str(ctx.channel.id)})
-        if channels_md.find_one({"channel_id": str(ctx.channel.id)})
-        else False
-    )
+    channel_exists = channels_md.find_one(
+        {"channel_id": str(ctx.channel.id)}) if channels_md.find_one(
+        {"channel_id": str(ctx.channel.id)}) else False
     if channel_exists:
         md = MangaDex()
-        mangas_on_channel = (channel_exists)["mangas"]
+        mangas_on_channel = (channel_exists)['mangas']
         mangas_dict = eval(mangas_on_channel)
         for manga_id in mangas_dict:
             series.append(md.get_manga_title(manga_id))
-
+    
     frame = discord.Embed(
         color=discord.Colour.random(),
-        title="This channel is following the series below, in fact!"
-        if len(series) > 0
-        else "This channel is not following any series, I suppose!",
-        description=""
-        if len(series) > 0
-        else "Use `r.add <series>` to start following a series on this channel, in fact!",
+        title="This channel is following the series below, in fact!" if len(series)>0 else "This channel is not following any series, I suppose!",
+        description="" if len(
+            series) > 0 else "Use `r.add <series>` to start following a series on this channel, in fact!"
     )
-    if len(series) > 0:
+    if len(series)>0:
         counter = 1
         desc = ""
         for s in series:
