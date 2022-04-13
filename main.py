@@ -36,7 +36,6 @@ from commands.db.r_remove_channel import commands_remove_channel
 # logger.addHandler(handler)
 
 
-
 load_dotenv()
 
 intents = discord.Intents.default()
@@ -46,11 +45,11 @@ intents.messages = True
 bot = commands.Bot(command_prefix="r.", intents=intents)
 bot.remove_command("help")
 
-for filename in os.listdir('./cogs'):
-    if filename.endswith('.py'):
-        bot.load_extension(f'cogs.{filename[:-3]}')
+for filename in os.listdir("./cogs"):
+    if filename.endswith(".py"):
+        bot.load_extension(f"cogs.{filename[:-3]}")
     else:
-        print(f'Unable to load {filename[:-3]}')
+        print(f"Unable to load {filename[:-3]}")
 
 # adds the channel to the notifications list
 @bot.command(aliases=["add"])
@@ -58,26 +57,31 @@ for filename in os.listdir('./cogs'):
 async def add_channel(ctx, *, series=""):
     await commands_add_channel(bot, ctx, ChannelList(series, ctx.channel.id))
 
+
 # removes the channel from the notifications list
 @bot.command(aliases=["remove"])
 @bot.has_permissions(manage_channels=True)
 async def remove_channel(ctx, *, series=""):
     await commands_remove_channel(bot, ctx, ChannelList(series, ctx.channel.id))
 
+
 # sends a message with the list of series a channel is following
 @bot.command(aliases=["watching", "fol", "follow"])
 async def following(ctx):
     await commands_following(ctx, bot)
 
+
 # sends the latest english translated chapter
 @bot.command(aliases=["latest", "last", "chp"])
 async def latest_chapter(ctx, *, series=""):
     await commands_latest_chapter(ctx, series)
-    
+
+
 # flip your friends off
 @bot.command()
 async def flip(ctx):
     await commands_flip(ctx)
+
 
 # help command
 @bot.command()
@@ -113,22 +117,23 @@ async def on_command_error(ctx, error):
 # runs everytime the bot comes online
 @bot.event
 async def on_ready():
-    print(f'Logged in as: {bot.user.name}\n')
-    print(f'Server List ({len(bot.guilds)})\n')
+    print(f"Logged in as: {bot.user.name}\n")
+    print(f"Server List ({len(bot.guilds)})\n")
     server_counter = 1
     for guild in set(bot.guilds):
         print(
-            f"{server_counter}. {guild.name}, owned by {guild.owner} with {guild.member_count} members")
+            f"{server_counter}. {guild.name}, owned by {guild.owner} with {guild.member_count} members"
+        )
         server_counter += 1
     await bot.change_presence(
         activity=discord.Activity(
             type=discord.ActivityType.listening, name="r.help and Songstress Liliana!"
         )
     )
-    # change_avatar.start()
-    # await asyncio.sleep(60)
-    # check_chapter.start()
-    # filter_channels.start()
+    change_avatar.start()
+    await asyncio.sleep(60)
+    check_chapter.start()
+    filter_channels.start()
 
 
 bot.run(os.getenv("TOKEN"))
