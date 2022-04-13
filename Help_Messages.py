@@ -4,6 +4,7 @@ messages = {
                  \nAvailable commands are:\
                  \n-add_channel (alias: add)\
                  \n-remove_channel (alias: remove)\
+                 \n-manga (alias: info)\
                  \n-latest_chapter (aliases: latest, last, chp)\
                  \n-avatar\
                  \n-banner\
@@ -35,6 +36,8 @@ messages = {
         'add_channel': "```Betty will add the text channel to the list of channels that will receive notifications of the preferred series, I suppose!```",
 
         'remove_channel': "```Betty will remove the text channel from the list of channels that will receive notifications of the preferred series, I suppose! No need to name any series if its on MangaDex, in fact!```",
+
+        'manga': "```Betty will give information about the manga you want, in fact!```",
         
         'following': "```Betty will send a list of series the text channel is following for, I suppose!```",
 
@@ -109,5 +112,6 @@ aliases = {
     'follow': 'following',
     'fol': 'following',
     'follows': 'following',
-    'cleanse': 'purge'
+    'cleanse': 'purge',
+    'info': 'manga'
 }

@@ -116,8 +116,6 @@ async def send_messages(bot, channels, title, data, db_rec, anchor):
 
 
 # sends the latest english translated chapter
-
-
 async def commands_latest_chapter(ctx, series):
     if series == "":
         message = "What series do you want to know about, in fact!"
@@ -126,10 +124,13 @@ async def commands_latest_chapter(ctx, series):
 
     await ctx.send(message)
 
+# send manga info
+async def commands_get_manga_info(ctx, series):
+    md = MangaDex()
+    embed = md.get_info(series)
+    await ctx.send(embed=embed)
 
 # add the channel to the receiver list
-
-
 async def commands_add_channel(bot, ctx, id, series):
     channel_entry = {
         "id": id,
@@ -175,8 +176,6 @@ async def commands_add_channel(bot, ctx, id, series):
 
 
 # remove the channel from the receiver list
-
-
 async def commands_remove_channel(bot, ctx, id, series):
     md = MangaDex()
     channel_entry = {
@@ -243,8 +242,6 @@ async def commands_remove_channel(bot, ctx, id, series):
 
 
 # task sets a random avatar every day
-
-
 async def tasks_change_avatar(bot):
     try:
         for image_record in db_avatars.find():
@@ -275,8 +272,6 @@ async def tasks_change_avatar(bot):
 
 
 # task that removes non existing(deleted) channels every 10 seconds
-
-
 async def tasks_filter_channels(bot):
     for channel in channels_rz.find():
         if not bot.get_channel((channel["id"])):
@@ -311,8 +306,6 @@ async def tasks_filter_channels(bot):
 
 
 # task that checks chapter every 10 seconds
-
-
 async def tasks_check_chapter(bot):
     try:
         # for re zero
@@ -426,7 +419,7 @@ async def commands_flip(ctx):
     flip = list(flips.aggregate(pipeline=pipe))[0]["url"]
     await ctx.send(flip)
 
-
+# send a list of followed series of a channel
 async def commands_following(ctx, bot):
     series = []
     for channels in all_channels:

@@ -21,6 +21,7 @@ from commands.db.r_db import (
     commands_flip,
     commands_following,
     commands_latest_chapter,
+    commands_get_manga_info
 )
 from commands.db.r_add_channel import commands_add_channel
 from commands.db.r_remove_channel import commands_remove_channel
@@ -51,6 +52,11 @@ for filename in os.listdir('./cogs'):
         bot.load_extension(f'cogs.{filename[:-3]}')
     else:
         print(f'Unable to load {filename[:-3]}')
+        
+# get manga info
+@bot.command(aliases=["info"])
+async def manga(ctx, *, series=""):
+    await commands_get_manga_info(ctx, series)
 
 # adds the channel to the notifications list
 @bot.command(aliases=["add"])

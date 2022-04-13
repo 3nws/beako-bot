@@ -15,6 +15,7 @@ I use [pysaucenao](https://github.com/FujiMakoto/pysaucenao) for reverse image s
 - `r.help cmd` (sends detailed information about the command or just general information if no argument is passed)
 - `r.add_channel series` (adds the text channel to the list that will receive notifications, if the series is not one of the four mentioned above it will search on mangadex and add them instead), alias: `r.add`
 - `r.remove_channel series` (remove the text channel from the list that will receive notifications, if no series argument is passed it will show the series followed on mangadex by the text channel), aliases: `r.remove`
+- `r.manga series` (gives information about the given manga series), alias: `r.info`
 - `r.latest_chapter series` (informs of the latest translated chapter of given series), aliases: `r.chp`, `r.latest`, `r.last`
 - `r.avatar member` (shows a member's avatar or the op's if no argument is passed)
 - `r.banner member` (shows a member's banner or the op's if no argument is passed)
