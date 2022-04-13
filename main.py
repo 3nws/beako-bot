@@ -54,11 +54,13 @@ for filename in os.listdir('./cogs'):
 
 # adds the channel to the notifications list
 @bot.command(aliases=["add"])
+@bot.has_permissions(manage_channels=True)
 async def add_channel(ctx, *, series=""):
     await commands_add_channel(bot, ctx, ChannelList(series, ctx.channel.id))
 
 # removes the channel from the notifications list
 @bot.command(aliases=["remove"])
+@bot.has_permissions(manage_channels=True)
 async def remove_channel(ctx, *, series=""):
     await commands_remove_channel(bot, ctx, ChannelList(series, ctx.channel.id))
 
@@ -123,10 +125,10 @@ async def on_ready():
             type=discord.ActivityType.listening, name="r.help and Songstress Liliana!"
         )
     )
-    change_avatar.start()
-    await asyncio.sleep(60)
-    check_chapter.start()
-    filter_channels.start()
+    # change_avatar.start()
+    # await asyncio.sleep(60)
+    # check_chapter.start()
+    # filter_channels.start()
 
 
 bot.run(os.getenv("TOKEN"))
