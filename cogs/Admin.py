@@ -1,7 +1,7 @@
 import discord
 
 from discord.ext import commands
-
+from discord import Permissions
 
 class Admin(commands.Cog):
     def __init__(self, bot):
@@ -19,15 +19,29 @@ class Admin(commands.Cog):
     @commands.command(aliases=["yeet", "yeeto"])
     @commands.has_permissions(kick_members=True)
     async def kick(self, ctx, user: discord.Member, *, reason=None):
+        if user.top_role > ctx.author.top_role:
+            return await ctx.send(f"You can't kick this person, I suppose!")
         await user.kick(reason=reason)
-        await ctx.send(f"{user} has been yeeted, I suppose!")
+        return await ctx.send(f"{user} has been yeeted, I suppose!")
     
     # bans member
     @commands.command()
     @commands.has_permissions(ban_members=True)
     async def ban(self, ctx, user: discord.Member, *, reason=None):
+        if user.top_role > ctx.author.top_role:
+            return await ctx.send(f"You can't ban this person, I suppose!")
         await user.ban(reason=reason)
         await ctx.send(f"{user} has been yeeted forever, I suppose!")
+
+    @kick.error
+    async def kick_error(error, ctx):
+        if isinstance(error, MissingPermissions):
+            await ctx.send("You don't have permission to do that, I suppose!")
+            
+    @ban.error
+    async def ban_error(error, ctx):
+        if isinstance(error, MissingPermissions):
+            await ctx.send("You don't have permission to do that, I suppose!")
 
     # unbans user
     @commands.command()
@@ -43,6 +57,11 @@ class Admin(commands.Cog):
             await ctx.guild.unban(user)
             await ctx.send(f"{user} has been unbanned, I suppose!")
             return
+        
+    @unban.error
+    async def unban_error(error, ctx):
+        if isinstance(error, MissingPermissions):
+            await ctx.send("You don't have permission to do that, I suppose!")
 
     # clears chat
     @commands.command(aliases=["clear"])
