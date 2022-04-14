@@ -34,12 +34,12 @@ class Admin(commands.Cog):
         await ctx.send(f"{user} has been yeeted forever, I suppose!")
 
     @kick.error
-    async def kick_error(error, ctx):
+    async def kick_error(self, error, ctx):
         if isinstance(error, MissingPermissions):
             await ctx.send("You don't have permission to do that, I suppose!")
             
     @ban.error
-    async def ban_error(error, ctx):
+    async def ban_error(self, error, ctx):
         if isinstance(error, MissingPermissions):
             await ctx.send("You don't have permission to do that, I suppose!")
 
@@ -59,7 +59,7 @@ class Admin(commands.Cog):
             return
         
     @unban.error
-    async def unban_error(error, ctx):
+    async def unban_error(self, error, ctx):
         if isinstance(error, MissingPermissions):
             await ctx.send("You don't have permission to do that, I suppose!")
 
