@@ -263,10 +263,11 @@ class Osu(commands.Cog):
                 mods = score['enabled_mods']
                 date = score['date']
                 rank = score['rank']
+                pp = score['pp'].split('.')[0]
                 link = f"{self.base_beatmap_set_url}{set_id}#{stripped_game_mode}/{bm_id}"
                 new_desc += f"[{map_info['title']}]({link})\n\
                                 {points}, {c_300}/{c_100}/{c_50}/{c_miss} :redTick:, {m_combo}x {rank}\n\
-                                {mods}\n\
+                                {mods}, {pp} PP\n\
                                 {date}\n\
                                 \n"
             new_embed = discord.Embed(
