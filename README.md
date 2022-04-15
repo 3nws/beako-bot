@@ -63,3 +63,9 @@ I use [pysaucenao](https://github.com/FujiMakoto/pysaucenao) for reverse image s
 
 - `r.alarm time reason` (sets an alarm for you and pings you at that time, only works in the same day though, at least for now)
 - `r.remind time unit reason` (reminds the user after 'time' 'unit's (ex. 5 seconds) for 'reason' (not required), d: day(s), h: hour(s), m: minute(s), s: second(s))
+
+
+### TODOS
+
+- Add more osu! functionality
+- Make the results prettier, they look awful
