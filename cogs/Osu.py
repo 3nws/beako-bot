@@ -97,33 +97,37 @@ class Osu(commands.Cog):
         if player_name is None:
             return await ctx.send("Who, in fact?!")
         msg = await ctx.send("Loading, I suppose")
-        player = await self.get_user(player_name, mode)
-        game_mode = self.game_modes[mode]
-        embed = discord.Embed(
-            colour=discord.Colour.random(),
-            title=f"**{player.username} Lvl. {player.lvl} ({player.progress}) {game_mode}**",
-            url=f"{self.base_profile_url}{player.userid}",
-            description=player.desc,
-        )
-        embed.set_thumbnail(url=player.avatar_url)
-        select = Select(options=self.game_mode_options,
-                        placeholder="Select a game mode.")
-        async def select_callback(i):
-            mode = (i.data['values'])[0]
+        try:
             player = await self.get_user(player_name, mode)
             game_mode = self.game_modes[mode]
-            new_embed = discord.Embed(
+            embed = discord.Embed(
                 colour=discord.Colour.random(),
                 title=f"**{player.username} Lvl. {player.lvl} ({player.progress}) {game_mode}**",
                 url=f"{self.base_profile_url}{player.userid}",
                 description=player.desc,
             )
-            new_embed.set_thumbnail(url=player.avatar_url)
-            await i.response.edit_message(embed=new_embed)
-        
-        select.callback = select_callback
-        view = View().add_item(select)
-        msg = await msg.edit(content='', embed=embed, view=view)
+            embed.set_thumbnail(url=player.avatar_url)
+            select = Select(options=self.game_mode_options,
+                            placeholder="Select a game mode.")
+            async def select_callback(i):
+                mode = (i.data['values'])[0]
+                player = await self.get_user(player_name, mode)
+                game_mode = self.game_modes[mode]
+                new_embed = discord.Embed(
+                    colour=discord.Colour.random(),
+                    title=f"**{player.username} Lvl. {player.lvl} ({player.progress}) {game_mode}**",
+                    url=f"{self.base_profile_url}{player.userid}",
+                    description=player.desc,
+                )
+                new_embed.set_thumbnail(url=player.avatar_url)
+                await i.response.edit_message(embed=new_embed)
+            
+            select.callback = select_callback
+            view = View().add_item(select)
+            msg = await msg.edit(content='', embed=embed, view=view)
+        except Exception as e:
+            print(e)
+            await msg.edit("Something went wrong, in fact!")
         
     @commands.command(aliases=['rc', 'rs'])
     async def recent(self, ctx, player_name=None):
@@ -131,49 +135,13 @@ class Osu(commands.Cog):
         if player_name is None:
             return await ctx.send("Who, in fact?!")
         msg = await ctx.send("Loading, I suppose")
-        scores = await self.get_user_recent(player_name, mode, 5)
-        player = await self.get_user(player_name, mode)
-        game_mode = self.game_modes[mode]
-        stripped_game_mode = self.stripped_game_modes[mode]
-        
-        desc = ""
-        for score in scores:
-            map_info = score['beatmap']
-            set_id = map_info['beatmapset_id']
-            bm_id = map_info['beatmap_id']
-            points = score['score']
-            m_combo = score['maxcombo']
-            c_50 = score['count50']
-            c_100 = score['count100']
-            c_300 = score['count300']
-            c_miss = score['countmiss']
-            mods = score['enabled_mods']
-            date = score['date']
-            rank = score['rank']
-            link = f"{self.base_beatmap_set_url}{set_id}#{stripped_game_mode}/{bm_id}"
-            desc += f"[{map_info['title']}]({link})\n\
-                                {points}, {c_300}/{c_100}/{c_50}/{c_miss} :redTick:, {m_combo}x {rank}\n\
-                                {mods}\n\
-                                {date}\n\
-                                \n"
-        
-        embed = discord.Embed(
-            colour=discord.Colour.random(),
-            title=f"**{player.username} Lvl. {player.lvl} ({player.progress}) {game_mode}**",
-            url=f"{self.base_profile_url}{player.userid}",
-            description=desc,
-        )
-        embed.set_thumbnail(url=player.avatar_url)
-        
-        select = Select(options=self.game_mode_options,
-                        placeholder="Select a game mode.")
-
-        async def select_callback(i):
-            mode = (i.data['values'])[0]
+        try:
             scores = await self.get_user_recent(player_name, mode, 5)
             player = await self.get_user(player_name, mode)
             game_mode = self.game_modes[mode]
-            new_desc = ""
+            stripped_game_mode = self.stripped_game_modes[mode]
+            
+            desc = ""
             for score in scores:
                 map_info = score['beatmap']
                 set_id = map_info['beatmapset_id']
@@ -188,23 +156,63 @@ class Osu(commands.Cog):
                 date = score['date']
                 rank = score['rank']
                 link = f"{self.base_beatmap_set_url}{set_id}#{stripped_game_mode}/{bm_id}"
-                new_desc += f"[{map_info['title']}]({link})\n\
-                                {points}, {c_300}/{c_100}/{c_50}/{c_miss} :redTick:, {m_combo}x {rank}\n\
-                                {mods}\n\
-                                {date}\n\
-                                \n"
-            new_embed = discord.Embed(
+                desc += f"[{map_info['title']}]({link})\n\
+                                    {points}, {c_300}/{c_100}/{c_50}/{c_miss} :redTick:, {m_combo}x {rank}\n\
+                                    {mods}\n\
+                                    {date}\n\
+                                    \n"
+            
+            embed = discord.Embed(
                 colour=discord.Colour.random(),
                 title=f"**{player.username} Lvl. {player.lvl} ({player.progress}) {game_mode}**",
                 url=f"{self.base_profile_url}{player.userid}",
-                description=new_desc,
+                description=desc,
             )
-            new_embed.set_thumbnail(url=player.avatar_url)
-            await i.response.edit_message(embed=new_embed)
+            embed.set_thumbnail(url=player.avatar_url)
+            
+            select = Select(options=self.game_mode_options,
+                            placeholder="Select a game mode.")
 
-        select.callback = select_callback
-        view = View().add_item(select)
-        msg = await msg.edit(content='', embed=embed, view=view)
+            async def select_callback(i):
+                mode = (i.data['values'])[0]
+                scores = await self.get_user_recent(player_name, mode, 5)
+                player = await self.get_user(player_name, mode)
+                game_mode = self.game_modes[mode]
+                new_desc = ""
+                for score in scores:
+                    map_info = score['beatmap']
+                    set_id = map_info['beatmapset_id']
+                    bm_id = map_info['beatmap_id']
+                    points = score['score']
+                    m_combo = score['maxcombo']
+                    c_50 = score['count50']
+                    c_100 = score['count100']
+                    c_300 = score['count300']
+                    c_miss = score['countmiss']
+                    mods = score['enabled_mods']
+                    date = score['date']
+                    rank = score['rank']
+                    link = f"{self.base_beatmap_set_url}{set_id}#{stripped_game_mode}/{bm_id}"
+                    new_desc += f"[{map_info['title']}]({link})\n\
+                                    {points}, {c_300}/{c_100}/{c_50}/{c_miss} :redTick:, {m_combo}x {rank}\n\
+                                    {mods}\n\
+                                    {date}\n\
+                                    \n"
+                new_embed = discord.Embed(
+                    colour=discord.Colour.random(),
+                    title=f"**{player.username} Lvl. {player.lvl} ({player.progress}) {game_mode}**",
+                    url=f"{self.base_profile_url}{player.userid}",
+                    description=new_desc,
+                )
+                new_embed.set_thumbnail(url=player.avatar_url)
+                await i.response.edit_message(embed=new_embed)
+
+            select.callback = select_callback
+            view = View().add_item(select)
+            msg = await msg.edit(content='', embed=embed, view=view)
+        except Exception as e:
+            print(e)
+            await msg.edit("Something went wrong, in fact!")
         
     @commands.command(aliases=['top', 'best'])
     async def osutop(self, ctx, player_name=None):
@@ -212,48 +220,12 @@ class Osu(commands.Cog):
         if player_name is None:
             return await ctx.send("Who, in fact?!")
         msg = await ctx.send("Loading, I suppose")
-        player = await self.get_user(player_name, mode)
-        best_scores = await self.get_best(player_name, mode, 5)
-        game_mode = self.game_modes[mode]
-        stripped_game_mode = self.stripped_game_modes[mode]
-        desc = ""
-        for score in best_scores:
-            map_info = score['beatmap']
-            set_id = map_info['beatmapset_id']
-            bm_id = map_info['beatmap_id']
-            points = score['score']
-            m_combo = score['maxcombo']
-            c_50 = score['count50']
-            c_100 = score['count100']
-            c_300 = score['count300']
-            c_miss = score['countmiss']
-            mods = score['enabled_mods']
-            date = score['date']
-            rank = score['rank']
-            pp = score['pp'].split('.')[0]
-            link = f"{self.base_beatmap_set_url}{set_id}#{stripped_game_mode}/{bm_id}"
-            desc += f"[{map_info['title']}]({link})\n\
-                        {points}, {c_300}/{c_100}/{c_50}/{c_miss} :redTick:, {m_combo}x {rank}\n\
-                        {mods}, {pp} PP\n\
-                        {date}\n\
-                        \n"
-        embed = discord.Embed(
-            colour=discord.Colour.random(),
-            title=f"**{player.username} Lvl. {player.lvl} ({player.progress}) {game_mode}**",
-            url=f"{self.base_profile_url}{player.userid}",
-            description=desc,
-        )
-        embed.set_thumbnail(url=player.avatar_url)
-        
-        select = Select(options=self.game_mode_options,
-                        placeholder="Select a game mode.")
-
-        async def select_callback(i):
-            mode = (i.data['values'])[0]
+        try:
             player = await self.get_user(player_name, mode)
             best_scores = await self.get_best(player_name, mode, 5)
             game_mode = self.game_modes[mode]
-            new_desc = ""
+            stripped_game_mode = self.stripped_game_modes[mode]
+            desc = ""
             for score in best_scores:
                 map_info = score['beatmap']
                 set_id = map_info['beatmapset_id']
@@ -269,23 +241,63 @@ class Osu(commands.Cog):
                 rank = score['rank']
                 pp = score['pp'].split('.')[0]
                 link = f"{self.base_beatmap_set_url}{set_id}#{stripped_game_mode}/{bm_id}"
-                new_desc += f"[{map_info['title']}]({link})\n\
-                                {points}, {c_300}/{c_100}/{c_50}/{c_miss} :redTick:, {m_combo}x {rank}\n\
-                                {mods}, {pp} PP\n\
-                                {date}\n\
-                                \n"
-            new_embed = discord.Embed(
+                desc += f"[{map_info['title']}]({link})\n\
+                            {points}, {c_300}/{c_100}/{c_50}/{c_miss} :redTick:, {m_combo}x {rank}\n\
+                            {mods}, {pp} PP\n\
+                            {date}\n\
+                            \n"
+            embed = discord.Embed(
                 colour=discord.Colour.random(),
                 title=f"**{player.username} Lvl. {player.lvl} ({player.progress}) {game_mode}**",
                 url=f"{self.base_profile_url}{player.userid}",
-                description=new_desc,
+                description=desc,
             )
-            new_embed.set_thumbnail(url=player.avatar_url)
-            await i.response.edit_message(embed=new_embed)
+            embed.set_thumbnail(url=player.avatar_url)
+            
+            select = Select(options=self.game_mode_options,
+                            placeholder="Select a game mode.")
 
-        select.callback = select_callback
-        view = View().add_item(select)
-        msg = await msg.edit(content='', embed=embed, view=view)
+            async def select_callback(i):
+                mode = (i.data['values'])[0]
+                player = await self.get_user(player_name, mode)
+                best_scores = await self.get_best(player_name, mode, 5)
+                game_mode = self.game_modes[mode]
+                new_desc = ""
+                for score in best_scores:
+                    map_info = score['beatmap']
+                    set_id = map_info['beatmapset_id']
+                    bm_id = map_info['beatmap_id']
+                    points = score['score']
+                    m_combo = score['maxcombo']
+                    c_50 = score['count50']
+                    c_100 = score['count100']
+                    c_300 = score['count300']
+                    c_miss = score['countmiss']
+                    mods = score['enabled_mods']
+                    date = score['date']
+                    rank = score['rank']
+                    pp = score['pp'].split('.')[0]
+                    link = f"{self.base_beatmap_set_url}{set_id}#{stripped_game_mode}/{bm_id}"
+                    new_desc += f"[{map_info['title']}]({link})\n\
+                                    {points}, {c_300}/{c_100}/{c_50}/{c_miss} :redTick:, {m_combo}x {rank}\n\
+                                    {mods}, {pp} PP\n\
+                                    {date}\n\
+                                    \n"
+                new_embed = discord.Embed(
+                    colour=discord.Colour.random(),
+                    title=f"**{player.username} Lvl. {player.lvl} ({player.progress}) {game_mode}**",
+                    url=f"{self.base_profile_url}{player.userid}",
+                    description=new_desc,
+                )
+                new_embed.set_thumbnail(url=player.avatar_url)
+                await i.response.edit_message(embed=new_embed)
+
+            select.callback = select_callback
+            view = View().add_item(select)
+            msg = await msg.edit(content='', embed=embed, view=view)
+        except Exception as e:
+            print(e)
+            await msg.edit("Something went wrong, in fact!")
         
         
 
