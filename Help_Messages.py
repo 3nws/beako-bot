@@ -15,6 +15,9 @@ messages = {
                  \n-kick (aliases: yeet, yeeto)\
                  \n-ban\
                  \n-unban\
+                 \n-osu (aliases: u, user)\
+                 \n-osutop (aliases: top, best)\
+                 \n-recent (aliases: rs, rc)\
                  \n-alarm\
                  \n-remind (aliases: remindme, remind_me)\
                  \n-poll\
@@ -30,7 +33,7 @@ messages = {
                  \n-rps, in fact!```",
 
         'avatar': "```Betty will send a member's(author's if no member is passed) avatar to the text channel, in fact!```",
-        
+
         'banner': "```Betty will send a member's(author's if no member is passed) banner to the text channel, in fact!```",
 
         'add_channel': "```Betty will add the text channel to the list of channels that will receive notifications of the preferred series, I suppose!```",
@@ -38,7 +41,7 @@ messages = {
         'remove_channel': "```Betty will remove the text channel from the list of channels that will receive notifications of the preferred series, I suppose! No need to name any series if its on MangaDex, in fact!```",
 
         'manga': "```Betty will give information about the manga you want, in fact!```",
-        
+
         'following': "```Betty will send a list of series the text channel is following for, I suppose!```",
 
         'say': "```Betty will repeat what you say, I suppose!```",
@@ -52,6 +55,15 @@ messages = {
         'ban': "```Betty will use yin magic to ban a member, I suppose!```",
 
         'unban': "```Betty will forgive a member and remove their ban, I suppose!```",
+
+        'osu': "```Betty will give information about a player, I suppose!\
+                    \nThe format for this is 'osu player', in fact!```",
+
+        'osutop': "```Betty will tell you a player's top scores, I suppose!\
+                    \nThe format for this is 'osutop player', in fact!```",
+
+        'recent': "```Betty will tell you a player's 5 most recent plays, I suppose!\
+                    \nThe format for this is 'recent player', in fact!```",
 
         'alarm': "```Betty will set an alarm for you, I suppose!\
                    \nThe format for this is 'alarm time reason'\
@@ -113,5 +125,11 @@ aliases = {
     'fol': 'following',
     'follows': 'following',
     'cleanse': 'purge',
-    'info': 'manga'
+    'info': 'manga',
+    'user': 'osu',
+    'u': 'osu',
+    'best': 'osutop',
+    'top': 'osutop',
+    'rs': 'recent',
+    'rc': 'recent',
 }
