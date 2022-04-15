@@ -7,6 +7,7 @@ from discord.ui import View, Select
 from discord.ext import commands
 from dotenv import load_dotenv
 from cogs.classes.Player import Player
+from OsuMods import num_to_mod
 
 load_dotenv()
 
@@ -153,12 +154,17 @@ class Osu(commands.Cog):
                 c_300 = score['count300']
                 c_miss = score['countmiss']
                 mods = score['enabled_mods']
+                mods = num_to_mod(int(mods))
+                mods_str = ""
+                for mod in mods:
+                    mods_str += mod
+                mods_str = mods_str if len(mods) > 0 else "NO MOD"
                 date = score['date']
                 rank = score['rank']
                 link = f"{self.base_beatmap_set_url}{set_id}#{stripped_game_mode}/{bm_id}"
                 desc += f"[{map_info['title']}]({link})\n\
                                     {points}, {c_300}/{c_100}/{c_50}/{c_miss} :redTick:, {m_combo}x {rank}\n\
-                                    {mods}\n\
+                                    {mods_str}\n\
                                     {date}\n\
                                     \n"
             
@@ -190,12 +196,17 @@ class Osu(commands.Cog):
                     c_300 = score['count300']
                     c_miss = score['countmiss']
                     mods = score['enabled_mods']
+                    mods = num_to_mod(int(mods))
+                    mods_str = ""
+                    for mod in mods:
+                        mods_str += mod
+                    mods_str = mods_str if len(mods) > 0 else "NO MOD"
                     date = score['date']
                     rank = score['rank']
                     link = f"{self.base_beatmap_set_url}{set_id}#{stripped_game_mode}/{bm_id}"
                     new_desc += f"[{map_info['title']}]({link})\n\
                                     {points}, {c_300}/{c_100}/{c_50}/{c_miss} :redTick:, {m_combo}x {rank}\n\
-                                    {mods}\n\
+                                    {mods_str}\n\
                                     {date}\n\
                                     \n"
                 new_embed = discord.Embed(
@@ -237,13 +248,18 @@ class Osu(commands.Cog):
                 c_300 = score['count300']
                 c_miss = score['countmiss']
                 mods = score['enabled_mods']
+                mods = num_to_mod(int(mods))
+                mods_str = ""
+                for mod in mods:
+                    mods_str += mod
+                mods_str = mods_str if len(mods) > 0 else "NO MOD"
                 date = score['date']
                 rank = score['rank']
                 pp = score['pp'].split('.')[0]
                 link = f"{self.base_beatmap_set_url}{set_id}#{stripped_game_mode}/{bm_id}"
                 desc += f"[{map_info['title']}]({link})\n\
                             {points}, {c_300}/{c_100}/{c_50}/{c_miss} :redTick:, {m_combo}x {rank}\n\
-                            {mods}, {pp} PP\n\
+                            {mods_str}, {pp} PP\n\
                             {date}\n\
                             \n"
             embed = discord.Embed(
@@ -274,13 +290,18 @@ class Osu(commands.Cog):
                     c_300 = score['count300']
                     c_miss = score['countmiss']
                     mods = score['enabled_mods']
+                    mods = num_to_mod(int(mods))
+                    mods_str = ""
+                    for mod in mods:
+                        mods_str += mod
+                    mods_str = mods_str if len(mods) > 0 else "NO MOD"
                     date = score['date']
                     rank = score['rank']
                     pp = score['pp'].split('.')[0]
                     link = f"{self.base_beatmap_set_url}{set_id}#{stripped_game_mode}/{bm_id}"
                     new_desc += f"[{map_info['title']}]({link})\n\
                                     {points}, {c_300}/{c_100}/{c_50}/{c_miss} :redTick:, {m_combo}x {rank}\n\
-                                    {mods}, {pp} PP\n\
+                                    {mods_str}, {pp} PP\n\
                                     {date}\n\
                                     \n"
                 new_embed = discord.Embed(
