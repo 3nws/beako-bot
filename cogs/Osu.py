@@ -96,6 +96,7 @@ class Osu(commands.Cog):
         mode = "0"
         if player_name is None:
             return await ctx.send("Who, in fact?!")
+        msg = await ctx.send("Loading, I suppose")
         player = await self.get_user(player_name, mode)
         game_mode = self.game_modes[mode]
         embed = discord.Embed(
@@ -122,13 +123,14 @@ class Osu(commands.Cog):
         
         select.callback = select_callback
         view = View().add_item(select)
-        msg = await ctx.send(embed=embed, view=view)
+        msg = await msg.edit(content='', embed=embed, view=view)
         
     @commands.command(aliases=['rc', 'rs'])
     async def recent(self, ctx, player_name=None):
         mode = "0"
         if player_name is None:
             return await ctx.send("Who, in fact?!")
+        msg = await ctx.send("Loading, I suppose")
         scores = await self.get_user_recent(player_name, mode, 5)
         player = await self.get_user(player_name, mode)
         game_mode = self.game_modes[mode]
@@ -202,13 +204,14 @@ class Osu(commands.Cog):
 
         select.callback = select_callback
         view = View().add_item(select)
-        msg = await ctx.send(embed=embed, view=view)
+        msg = await msg.edit(content='', embed=embed, view=view)
         
     @commands.command(aliases=['top', 'best'])
     async def osutop(self, ctx, player_name=None):
         mode = "0"
         if player_name is None:
             return await ctx.send("Who, in fact?!")
+        msg = await ctx.send("Loading, I suppose")
         player = await self.get_user(player_name, mode)
         best_scores = await self.get_best(player_name, mode, 5)
         game_mode = self.game_modes[mode]
@@ -248,6 +251,7 @@ class Osu(commands.Cog):
         async def select_callback(i):
             mode = (i.data['values'])[0]
             player = await self.get_user(player_name, mode)
+            best_scores = await self.get_best(player_name, mode, 5)
             game_mode = self.game_modes[mode]
             new_desc = ""
             for score in best_scores:
@@ -281,7 +285,7 @@ class Osu(commands.Cog):
 
         select.callback = select_callback
         view = View().add_item(select)
-        msg = await ctx.send(embed=embed, view=view)
+        msg = await msg.edit(content='', embed=embed, view=view)
         
         
 
