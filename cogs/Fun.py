@@ -79,5 +79,5 @@ class Fun(commands.Cog):
                     title="Coinflip", description=f"{ctx.author.mention} flipped a coin, and got **Tails** for **{tails}**, I suppose!")
                 await ctx.send(embed=embed)
 
-def setup(bot):
-    bot.add_cog(Fun(bot))
+async def setup(bot):
+    await bot.add_cog(Fun(bot))

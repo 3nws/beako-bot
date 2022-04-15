@@ -94,5 +94,5 @@ class Timer(commands.Cog):
             print(e)
             await ctx.send("Something went wrong, in fact! Check the time format, I suppose!")
 
-def setup(bot):
-    bot.add_cog(Timer(bot))
+async def setup(bot):
+    await bot.add_cog(Timer(bot))

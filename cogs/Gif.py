@@ -99,5 +99,5 @@ class Gif(commands.Cog):
                         ['media'][0]['mediumgif']['url'])
         await ctx.send(embed=embed)
 
-def setup(bot):
-    bot.add_cog(Gif(bot))
+async def setup(bot):
+    await bot.add_cog(Gif(bot))

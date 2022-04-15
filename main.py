@@ -44,14 +44,16 @@ intents = discord.Intents.default()
 intents.members = True
 intents.guilds = True
 intents.messages = True
+intents.message_content = True
 bot = commands.Bot(command_prefix="r.", intents=intents)
 bot.remove_command("help")
 
-for filename in os.listdir('./cogs'):
-    if filename.endswith('.py'):
-        bot.load_extension(f'cogs.{filename[:-3]}')
-    else:
-        print(f'Unable to load {filename[:-3]}')
+async def load_cogs():
+    for filename in os.listdir('./cogs'):
+        if filename.endswith('.py'):
+            await bot.load_extension(f'cogs.{filename[:-3]}')
+        else:
+            print(f'Unable to load {filename[:-3]}')
         
 # get manga info
 @bot.command(aliases=["info"])
@@ -136,5 +138,9 @@ async def on_ready():
     check_chapter.start()
     filter_channels.start()
 
+async def main():
+    async with bot:
+        await load_cogs()
+        await bot.start(os.getenv("TOKEN"))
 
-bot.run(os.getenv("TOKEN"))
+asyncio.run(main())
