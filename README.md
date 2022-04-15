@@ -64,6 +64,11 @@ I use [pysaucenao](https://github.com/FujiMakoto/pysaucenao) for reverse image s
 - `r.alarm time reason` (sets an alarm for you and pings you at that time, only works in the same day though, at least for now)
 - `r.remind time unit reason` (reminds the user after 'time' 'unit's (ex. 5 seconds) for 'reason' (not required), d: day(s), h: hour(s), m: minute(s), s: second(s))
 
+## Tasks
+
+- `change_avatar()` (changes avatar everyday, selecting randomly from db)
+- `check_chapter()` (checks the latest chapters of the followed series every minute and notifies)
+- `filter_channels()` (filters out the channels that no longer exists from the db)
 
 ### TODOS
 
