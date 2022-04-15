@@ -133,10 +133,10 @@ async def on_ready():
             type=discord.ActivityType.listening, name="r.help and Songstress Liliana!"
         )
     )
-    # change_avatar.start()
-    # await asyncio.sleep(60)
-    # check_chapter.start()
-    # filter_channels.start()
+    change_avatar.start()
+    await asyncio.sleep(60)
+    check_chapter.start()
+    filter_channels.start()
 
 async def main():
     async with bot:
