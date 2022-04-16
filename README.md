@@ -8,8 +8,6 @@ Now also supports (hopefully) any series on [MangaDex](https://mangadex.org) wit
 
 I use [pysaucenao](https://github.com/FujiMakoto/pysaucenao) for reverse image searching.
 
-[Here's the invite link](https://discord.com/api/oauth2/authorize?client_id=834692619392385074&permissions=2148002822&scope=bot).
-
 ## Series tracking and database action commands and the help command
 
 - `r.help cmd` (sends detailed information about the command or just general information if no argument is passed)
@@ -74,3 +72,4 @@ I use [pysaucenao](https://github.com/FujiMakoto/pysaucenao) for reverse image s
 
 - Add more osu! functionality
 - Make the results prettier, they look awful
+- Maybe migrate to slash commands, idk
