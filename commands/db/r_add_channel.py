@@ -30,7 +30,7 @@ async def commands_add_channel(bot, ctx, series_obj):
         await msg.add_reaction(emojis[i])
         
     def check(reaction, user):
-            return user == ctx.author
+            return user == ctx.author and reaction.message == msg
         
     while True:
         try:
