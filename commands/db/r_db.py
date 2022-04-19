@@ -311,8 +311,9 @@ async def tasks_check_chapter(bot):
         # for re zero
         rz = Re_zero(rz_url)
 
-        most_recent_post_str = rz.scrape()[0]
-        latest_chapter_translated_link = rz.scrape()[1]
+        scrapes = await rz.scrape()
+        most_recent_post_str = scrapes[0]
+        latest_chapter_translated_link = scrapes[1]
 
         last_chapter = db_chapter.data.find_one()
 
@@ -328,8 +329,9 @@ async def tasks_check_chapter(bot):
         # for kaguya-sama
         kaguya = Guya_moe(kaguya_url)
 
-        most_recent_post_str = kaguya.scrape()[0]
-        latest_chapter_translated_link = kaguya.scrape()[1]
+        scrapes = await kaguya.scrape()
+        most_recent_post_str = scrapes[0]
+        latest_chapter_translated_link = scrapes[1]
 
         last_chapter = db_chapter.data_kaguya.find_one()
 
@@ -345,8 +347,9 @@ async def tasks_check_chapter(bot):
         # for oshi no ko
         onk = Guya_moe(onk_url)
 
-        most_recent_post_str = onk.scrape()[0]
-        latest_chapter_translated_link = onk.scrape()[1]
+        scrapes = await onk.scrape()
+        most_recent_post_str = scrapes[0]
+        latest_chapter_translated_link = scrapes[1]
 
         last_chapter = db_chapter.data_onk.find_one()
 
@@ -362,8 +365,9 @@ async def tasks_check_chapter(bot):
         # for grand blue
         gb = Grand_Blue(gb_url)
 
-        most_recent_post_str = gb.scrape()[0]
-        latest_chapter_translated_link = gb.scrape()[1]
+        scrapes = await gb.scrape()
+        most_recent_post_str = scrapes[0]
+        latest_chapter_translated_link = scrapes[1]
 
         last_chapter = db_chapter.data_gb.find_one()
 

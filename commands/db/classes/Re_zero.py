@@ -1,4 +1,5 @@
-import requests
+import aiohttp
+import html5lib
 
 from bs4 import BeautifulSoup
 
@@ -10,16 +11,19 @@ class Re_zero(Scrape_Series):
     def __init__(self, url):
         self.url = url
 
-    def scrape(self):
+    async def scrape(self):
         try:
             # web scraping for re zero
-            try:
-                page = requests.get(self.url, timeout=5)
-            except requests.Timeout:
-                print("WitchCultTranslation down!")
-                return
+            async with aiohttp.ClientSession() as session:
+                async with session.get(self.url) as r:
+                    if r.status == 200:
+                        page = await r.read()
+                    else:
+                        print("WitchCultTranslation down!")
+                        return
 
-            soup = BeautifulSoup(page.content, 'html.parser')
+            soup = BeautifulSoup(page.decode('utf-8'), "html5lib")
+            
             most_recent_post = soup.find_all('h3', 'rpwe-title')[0]
 
             post_link = most_recent_post.find('a')
