@@ -3,6 +3,7 @@ import discord
 from discord.ext import commands
 from discord import Permissions
 
+
 class Admin(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -23,7 +24,7 @@ class Admin(commands.Cog):
             return await ctx.send(f"You can't kick this person, I suppose!")
         await user.kick(reason=reason)
         return await ctx.send(f"{user} has been yeeted, I suppose!")
-    
+
     # bans member
     @commands.command()
     @commands.has_permissions(ban_members=True)
@@ -37,7 +38,7 @@ class Admin(commands.Cog):
     async def kick_error(self, error, ctx):
         if isinstance(error, MissingPermissions):
             await ctx.send("You don't have permission to do that, I suppose!")
-            
+
     @ban.error
     async def ban_error(self, error, ctx):
         if isinstance(error, MissingPermissions):
@@ -53,11 +54,12 @@ class Admin(commands.Cog):
         for ban_entry in set(banned_users):
             user = ban_entry.user
 
-        if (user.name, user.discriminator) == (member_name, member_discriminator):
+        if (user.name, user.discriminator) == (
+                member_name, member_discriminator):
             await ctx.guild.unban(user)
             await ctx.send(f"{user} has been unbanned, I suppose!")
             return
-        
+
     @unban.error
     async def unban_error(self, error, ctx):
         if isinstance(error, MissingPermissions):
@@ -66,7 +68,7 @@ class Admin(commands.Cog):
     # clears chat
     @commands.command(aliases=["clear"])
     @commands.has_permissions(administrator=True)
-    async def clean(self, ctx, limit: int, direction: str=None, msg_id: int=None):
+    async def clean(self, ctx, limit: int, direction: str = None, msg_id: int = None):
         await ctx.message.delete()
         direction = self.dir_aliases[direction] if direction in self.dir_aliases else direction
 
@@ -88,11 +90,11 @@ class Admin(commands.Cog):
             await ctx.channel.purge(limit=limit)
 
         await ctx.send('Cleared by {}, I suppose!'.format(ctx.author.mention))
-        
+
     # deletes a member's all messages
     @commands.command(aliases=["cleanse"])
     @commands.has_permissions(administrator=True)
-    async def purge(self, ctx, member: discord.Member=None):
+    async def purge(self, ctx, member: discord.Member = None):
         if member == self.bot.user:
             await ctx.send("Nope, in fact!")
         elif member:
@@ -111,7 +113,8 @@ class Admin(commands.Cog):
         print(f'Server List ({len(self.bot.guilds)})\n')
         server_counter = 1
         for guild in set(self.bot.guilds):
-            print(f"{server_counter}. {guild.name}, owned by {guild.owner} with {guild.member_count} members")
+            print(
+                f"{server_counter}. {guild.name}, owned by {guild.owner} with {guild.member_count} members")
             server_counter += 1
 
     # terminates the bot
@@ -120,7 +123,7 @@ class Admin(commands.Cog):
     async def terminate(self, ctx):
         await ctx.send("Betty goes offline, I suppose!")
         await self.bot.close()
-        
+
     # toggles commands
     @commands.command()
     @commands.is_owner()
@@ -133,7 +136,6 @@ class Admin(commands.Cog):
             cmd.enabled = not cmd.enabled
             status = "enabled" if cmd.enabled else "disabled"
             await ctx.send(f"I have {status} the `{cmd.qualified_name}` command, in fact!")
-        
 
 
 async def setup(bot):

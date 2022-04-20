@@ -25,23 +25,23 @@ class Grand_Blue(Scrape_Series):
 
             most_recent_chapter = soup.find_all(
                 "li", "item reading-item chapter-item")[0]
-            
+
             chapter_link = most_recent_chapter.find("a")
-            
+
             if "href" in chapter_link.attrs:
                 chapter_anchor = "https://mangareader.to"
                 chapter_anchor += chapter_link.get("href")
-                
+
             most_recent_chapter_title = chapter_link.get('title')
-            
+
             return [most_recent_chapter_title, chapter_anchor]
 
         except Exception as e:
             print(e)
 
-    def latest_chapter(self):
+    async def latest_chapter(self):
         try:
-            scrape_results = self.scrape()
+            scrape_results = await self.scrape()
             title = scrape_results[0]
             anchor = scrape_results[1]
             return f"'{title}' has been translated.\n{anchor}, I suppose!"

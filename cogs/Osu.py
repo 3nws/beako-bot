@@ -9,13 +9,12 @@ from cogs.classes.OsuAPI import OsuAPI
 from OsuMods import num_to_mod
 
 
-
 class Osu(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
         self.osu = OsuAPI()
-        
+
     @commands.command(aliases=['u', 'user'])
     async def osu(self, ctx, player_name=None):
         mode = "0"
@@ -34,6 +33,7 @@ class Osu(commands.Cog):
             embed.set_thumbnail(url=player['avatar_url'])
             select = Select(options=self.osu.game_mode_options,
                             placeholder="Select a game mode.")
+
             async def select_callback(i):
                 mode = (i.data['values'])[0]
                 player = await self.osu.get_user(player_name, mode)
@@ -46,14 +46,14 @@ class Osu(commands.Cog):
                 )
                 new_embed.set_thumbnail(url=player['avatar_url'])
                 await i.response.edit_message(embed=new_embed)
-            
+
             select.callback = select_callback
             view = View().add_item(select)
             msg = await msg.edit(content='', embed=embed, view=view)
         except Exception as e:
             print(e)
             await msg.edit("Something went wrong, in fact!")
-        
+
     @commands.command(aliases=['rc', 'rs'])
     async def recent(self, ctx, player_name=None):
         mode = "0"
@@ -65,7 +65,7 @@ class Osu(commands.Cog):
             player = await self.osu.get_user(player_name, mode)
             game_mode = self.osu.game_modes[mode]
             stripped_game_mode = self.osu.stripped_game_modes[mode]
-            
+
             desc = ""
             for score in scores:
                 map_info = score['beatmap']
@@ -91,7 +91,7 @@ class Osu(commands.Cog):
                                     {mods_str}\n\
                                     {date}\n\
                                     \n"
-            
+
             embed = discord.Embed(
                 colour=discord.Colour.random(),
                 title=f"**{player['username']} Lvl. {player['level']} ({player['progress']}) {game_mode}**",
@@ -99,7 +99,7 @@ class Osu(commands.Cog):
                 description=desc,
             )
             embed.set_thumbnail(url=player['avatar_url'])
-            
+
             select = Select(options=self.osu.game_mode_options,
                             placeholder="Select a game mode.")
 
@@ -148,7 +148,7 @@ class Osu(commands.Cog):
         except Exception as e:
             print(e)
             await msg.edit("Something went wrong, in fact!")
-        
+
     @commands.command(aliases=['top', 'best'])
     async def osutop(self, ctx, player_name=None):
         mode = "0"
@@ -193,7 +193,7 @@ class Osu(commands.Cog):
                 description=desc,
             )
             embed.set_thumbnail(url=player['avatar_url'])
-            
+
             select = Select(options=self.osu.game_mode_options,
                             placeholder="Select a game mode.")
 
@@ -243,8 +243,7 @@ class Osu(commands.Cog):
         except Exception as e:
             print(e)
             await msg.edit("Something went wrong, in fact!")
-        
-        
+
 
 async def setup(bot):
     await bot.add_cog(Osu(bot))

@@ -5,15 +5,16 @@ from datetime import datetime
 from datetime import timedelta
 from discord.ext import commands
 
+
 class Timer(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        
+
     # reminds the user about anything after specified time
     @commands.command(case_insensitive=True, aliases=["remindme", "remind_me"])
     async def remind(self, ctx, time, unit=None, *, reminder=""):
         embed = discord.Embed(color=discord.Colour.random(),
-                            timestamp=datetime.utcnow())
+                              timestamp=datetime.utcnow())
         if (unit is None):
             unit = time[-1]
             time = time[:-1]
@@ -24,10 +25,12 @@ class Timer(commands.Cog):
         seconds = 0
         if unit.lower().endswith("d"):
             seconds += int(float(time)) * 60 * 60 * 24
-            counter = f"{time} days" if int(float(time)) != 1 else f"{time} day"
+            counter = f"{time} days" if int(
+                float(time)) != 1 else f"{time} day"
         if unit.lower().endswith("h"):
             seconds += int(float(time)) * 60 * 60
-            counter = f"{time} hours" if int(float(time)) != 1 else f"{time} hour"
+            counter = f"{time} hours" if int(
+                float(time)) != 1 else f"{time} hour"
         elif unit.lower().endswith("m"):
             seconds += int(float(time) * 60)
             counter = f"{time} minutes" if int(
@@ -54,13 +57,12 @@ class Timer(commands.Cog):
             return
         await ctx.send(embed=embed)
 
-
     # sets an alarm for the user
     @commands.command()
     async def alarm(self, ctx, time="", *, reminder=""):
         try:
             embed = discord.Embed(color=discord.Colour.random(),
-                                timestamp=datetime.utcnow())
+                                  timestamp=datetime.utcnow())
 
             splitter = ":" if ":" in time else "."
 
@@ -70,7 +72,7 @@ class Timer(commands.Cog):
             alarm_minute = int(time.split(splitter)[1])
             alarm = timedelta(hours=alarm_hour, minutes=alarm_minute)
             now = timedelta(hours=hour_now, minutes=minute_now)
-            time_left = int((alarm-now).total_seconds())
+            time_left = int((alarm - now).total_seconds())
 
             if time_left <= 0:
                 embed.add_field(
@@ -93,6 +95,7 @@ class Timer(commands.Cog):
         except Exception as e:
             print(e)
             await ctx.send("Something went wrong, in fact! Check the time format, I suppose!")
+
 
 async def setup(bot):
     await bot.add_cog(Timer(bot))

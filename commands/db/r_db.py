@@ -49,7 +49,8 @@ channels_kaguya = db_channels.data_kaguya
 channels_onk = db_channels.data_onk
 channels_gb = db_channels.data_gb
 
-all_channels = [collection['name'] for collection in db_channels.list_collections()]
+all_channels = [collection['name']
+                for collection in db_channels.list_collections()]
 
 collection_aliases = {
     "data": "Re:Zero",
@@ -124,11 +125,13 @@ async def commands_latest_chapter(ctx, series):
 
     await ctx.send(message)
 
+
 # send manga info
 async def commands_get_manga_info(ctx, series):
     md = MangaDex()
     embed = md.get_info(series)
     await ctx.send(embed=embed)
+
 
 # add the channel to the receiver list
 async def commands_add_channel(bot, ctx, id, series):
@@ -224,7 +227,8 @@ async def commands_remove_channel(bot, ctx, id, series):
         mangas_dict = eval(mangas_on_channel)
 
         embed = discord.Embed(
-            title=f"Pick one of the series you wish to unfollow, I suppose!" if len(mangas_dict)>0 else "This channel is not following any series, in fact!\n Use `r.add <manga_title>` to pick some series to start, I suppose!",
+            title=f"Pick one of the series you wish to unfollow, I suppose!" if len(
+                mangas_dict) > 0 else "This channel is not following any series, in fact!\n Use `r.add <manga_title>` to pick some series to start, I suppose!",
             color=discord.Colour.random(),
         )
 
@@ -361,7 +365,7 @@ async def tasks_check_chapter(bot):
             last_chapter,
             latest_chapter_translated_link,
         )
-        
+
         # for grand blue
         gb = Grand_Blue(gb_url)
 
@@ -379,7 +383,7 @@ async def tasks_check_chapter(bot):
             last_chapter,
             latest_chapter_translated_link,
         )
-        
+
         # for mangadex
         md = MangaDex()
         records_exist = channels_md.find()
@@ -423,6 +427,7 @@ async def commands_flip(ctx):
     flip = list(flips.aggregate(pipeline=pipe))[0]["url"]
     await ctx.send(flip)
 
+
 # send a list of followed series of a channel
 async def commands_following(ctx, bot):
     series = []
@@ -440,14 +445,15 @@ async def commands_following(ctx, bot):
         mangas_dict = eval(mangas_on_channel)
         for manga_id in mangas_dict:
             series.append(md.get_manga_title(manga_id))
-    
+
     frame = discord.Embed(
         color=discord.Colour.random(),
-        title="This channel is following the series below, in fact!" if len(series)>0 else "This channel is not following any series, I suppose!",
+        title="This channel is following the series below, in fact!" if len(
+            series) > 0 else "This channel is not following any series, I suppose!",
         description="" if len(
             series) > 0 else "Use `r.add <series>` to start following a series on this channel, in fact!"
     )
-    if len(series)>0:
+    if len(series) > 0:
         counter = 1
         desc = ""
         for s in series:

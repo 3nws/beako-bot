@@ -13,7 +13,7 @@ class Chapter:
         self.link = link
 
     def get_title(self):
-        title = self.title if self.title != None else self.id
+        title = self.title if self.title is not None else self.id
         is_title = title != self.id
         return [title, is_title]
 
@@ -51,11 +51,11 @@ class MangaDex:
             title = (info['title'])['en']
             titles.append(title)
             title += f' {self.emojis[i]}'
-            link = self.base_manga_info_url+rs['id']
+            link = self.base_manga_info_url + rs['id']
             desc = f"on [MangaDex]({link})\n"
             if info['description']:
                 desc += (info['description'])['en']
-            embed.add_field(name=title, value=desc[:300]+'...', inline=False)
+            embed.add_field(name=title, value=desc[:300] + '...', inline=False)
 
         return [self.emojis, embed, titles, manga_ids]
 
@@ -63,7 +63,7 @@ class MangaDex:
         pass
 
     def get_manga_title(self, id):
-        url = self.base_manga_url+id
+        url = self.base_manga_url + id
         s = requests.session()
         r = s.get(url)
         r = (r.json())['data']
@@ -71,7 +71,7 @@ class MangaDex:
 
     def get_latest(self, id):
         s = requests.session()
-        url = self.base_chapter_url+'?limit=5&manga='+id + \
+        url = self.base_chapter_url + '?limit=5&manga=' + id + \
             '&translatedLanguage%5B%5D=en&order%5Bvolume%5D=desc&order%5Bchapter%5D=desc'
         r = s.get(url)
         r = r.json()
@@ -82,7 +82,7 @@ class MangaDex:
         chapter_num = attrs['chapter']
         translated_lang = attrs['translatedLanguage']
         num_of_pages = attrs['pages']
-        chapter_link = self.base_read_url+data[0]['id']+'/1'
+        chapter_link = self.base_read_url + data[0]['id'] + '/1'
         chapter = Chapter(chapter_id, chapter_title,
                           chapter_num, translated_lang, num_of_pages, chapter_link)
         return chapter
@@ -103,7 +103,7 @@ class MangaDex:
             rs = r['data']
             info = rs['attributes']
             title = (info['title'])['en']
-            link = self.base_manga_info_url+rs['id']
+            link = self.base_manga_info_url + rs['id']
             desc = f"on [MangaDex]({link})\n"
             if info['description']:
                 desc += (info['description'])['en']
@@ -112,7 +112,7 @@ class MangaDex:
             for rel in rels:
                 if rel["type"] == "cover_art":
                     cover_filename = rel["attributes"]["fileName"]
-            cover_url = self.cover_url+manga_id+"/"+cover_filename
+            cover_url = self.cover_url + manga_id + "/" + cover_filename
             embed = discord.Embed(
                 title=f"{title}",
                 color=discord.Colour.random(),
@@ -122,6 +122,6 @@ class MangaDex:
             return embed
         else:
             return discord.Embed(
-                    title="What info do you want, in fact! Tell me manga, I suppose!",
-                    color=discord.Colour.random(),
+                title="What info do you want, in fact! Tell me manga, I suppose!",
+                color=discord.Colour.random(),
             )

@@ -37,7 +37,6 @@ from commands.db.r_remove_channel import commands_remove_channel
 # logger.addHandler(handler)
 
 
-
 load_dotenv()
 
 intents = discord.Intents.default()
@@ -48,17 +47,20 @@ intents.message_content = True
 bot = commands.Bot(command_prefix="r.", intents=intents)
 bot.remove_command("help")
 
+
 async def load_cogs():
     for filename in os.listdir('./cogs'):
         if filename.endswith('.py'):
             await bot.load_extension(f'cogs.{filename[:-3]}')
         else:
             print(f'Unable to load {filename[:-3]}')
-        
+
+
 # get manga info
 @bot.command(aliases=["info"])
 async def manga(ctx, *, series=""):
     await commands_get_manga_info(ctx, series)
+
 
 # adds the channel to the notifications list
 @bot.command(aliases=["add"])
@@ -66,26 +68,31 @@ async def manga(ctx, *, series=""):
 async def add_channel(ctx, *, series=""):
     await commands_add_channel(bot, ctx, ChannelList(series, ctx.channel.id))
 
+
 # removes the channel from the notifications list
 @bot.command(aliases=["remove"])
 @commands.has_permissions(manage_channels=True)
 async def remove_channel(ctx, *, series=""):
     await commands_remove_channel(bot, ctx, ChannelList(series, ctx.channel.id))
 
+
 # sends a message with the list of series a channel is following
 @bot.command(aliases=["watching", "fol", "follow", "follows"])
 async def following(ctx):
     await commands_following(ctx, bot)
 
+
 # sends the latest english translated chapter
 @bot.command(aliases=["latest", "last", "chp"])
 async def latest_chapter(ctx, *, series=""):
     await commands_latest_chapter(ctx, series)
-    
+
+
 # flip your friends off
 @bot.command()
 async def flip(ctx):
     await commands_flip(ctx)
+
 
 # help command
 @bot.command()
@@ -137,6 +144,7 @@ async def on_ready():
     await asyncio.sleep(60)
     check_chapter.start()
     filter_channels.start()
+
 
 async def main():
     async with bot:

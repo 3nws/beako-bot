@@ -6,4 +6,5 @@ class Help:
         self.cmd = aliases[cmd] if cmd in aliases else cmd
 
     def get_help(self):
-        return "No such command, in fact!" if self.cmd not in messages else messages[self.cmd]
+        return "No such command, in fact!" if self.cmd not in messages else messages[
+            self.cmd]

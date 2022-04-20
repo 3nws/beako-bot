@@ -15,6 +15,7 @@ db_chapter = client.chapter
 # channels data
 channels_md = db_chapter.data_mangadex
 
+
 async def commands_remove_channel(bot, ctx, series_obj):
     md = MangaDex()
     msg = await series_obj.remove_channel(bot, ctx)

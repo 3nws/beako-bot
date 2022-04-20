@@ -15,6 +15,7 @@ db_chapter = client.chapter
 # channels data
 channels_md = db_chapter.data_mangadex
 
+
 async def commands_add_channel(bot, ctx, series_obj):
     md = MangaDex()
     msg = await series_obj.add_channel(bot, ctx)
@@ -28,20 +29,22 @@ async def commands_add_channel(bot, ctx, series_obj):
         return await ctx.send(msg)
     for i in range(len(manga_ids)):
         await msg.add_reaction(emojis[i])
-        
+
     def check(reaction, user):
-            return user == ctx.author and reaction.message == msg
-        
+        return user == ctx.author and reaction.message == msg
+
     while True:
         try:
             reaction, user = await bot.wait_for('reaction_add', check=check, timeout=60.0)
-            channel_exists = True if channels_md.find_one({"channel_id": str(ctx.channel.id)}) else False
+            channel_exists = True if channels_md.find_one(
+                {"channel_id": str(ctx.channel.id)}) else False
             if not channel_exists:
                 channels_md.insert_one({
                     'channel_id': str(ctx.channel.id),
                     'mangas': '{}',
                 })
-            mangas_on_channel = (channels_md.find_one({"channel_id": str(ctx.channel.id)}))['mangas']
+            mangas_on_channel = (channels_md.find_one(
+                {"channel_id": str(ctx.channel.id)}))['mangas']
             mangas_dict = eval(mangas_on_channel)
             idx = 0
             for i, emoji in enumerate(emojis):
@@ -57,7 +60,7 @@ async def commands_add_channel(bot, ctx, series_obj):
                     chapter_link = chapter_response.get_link()
                     mangas_dict.update({f"{manga_ids[idx]}": str(latest)})
                     new_doc = channels_md.find_one_and_update(
-                        {'channel_id': str(ctx.channel.id)}, 
+                        {'channel_id': str(ctx.channel.id)},
                         {
                             '$set': {
                                 'mangas': str(mangas_dict)

@@ -18,9 +18,9 @@ class Fun(commands.Cog):
             await ctx.send("What do you want me to say, in fact?!")
             return
         if random.randint(1, 100) % 2 == 0:
-            await ctx.send(msg+", in fact!")
+            await ctx.send(msg + ", in fact!")
         else:
-            await ctx.send(msg+", I suppose!")
+            await ctx.send(msg + ", I suppose!")
 
     # roll iq
     @commands.command()
@@ -49,7 +49,7 @@ class Fun(commands.Cog):
             await ctx.send(f"Well that's a draw, I suppose!")
         else:
             await ctx.send(f"Betty lost, I suppose! I knew I should have picked {counter}, in fact!")
-            
+
     # coin flip
     @commands.command(aliases=["coin"])
     async def coinflip(self, ctx, heads=None, tails=None):
@@ -78,6 +78,7 @@ class Fun(commands.Cog):
                 embed = discord.Embed(
                     title="Coinflip", description=f"{ctx.author.mention} flipped a coin, and got **Tails** for **{tails}**, I suppose!")
                 await ctx.send(embed=embed)
+
 
 async def setup(bot):
     await bot.add_cog(Fun(bot))

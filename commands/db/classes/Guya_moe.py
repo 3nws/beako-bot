@@ -21,7 +21,6 @@ class Guya_moe(Scrape_Series):
                         print("Guya.moe down!")
                         return
 
-            
             soup = BeautifulSoup(page.decode('utf-8'), "html5lib")
 
             most_recent_chapter = soup.find_all("td", "chapter-title")[0]
@@ -48,9 +47,9 @@ class Guya_moe(Scrape_Series):
         except Exception as e:
             print(e)
 
-    def latest_chapter(self):
+    async def latest_chapter(self):
         try:
-            scrape_results = self.scrape()
+            scrape_results = await self.scrape()
             title = scrape_results[0]
             anchor = scrape_results[1]
             return f"'{title}' has been translated.\n{anchor}, I suppose!"
