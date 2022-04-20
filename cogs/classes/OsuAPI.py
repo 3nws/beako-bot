@@ -1,7 +1,8 @@
 import discord
 import os
-import requests
+import aiohttp
 import asyncio
+import json
 
 from discord.ui import View, Select
 from discord.ext import commands
@@ -39,39 +40,67 @@ class OsuAPI:
 
     async def get_user(self, username, mode):
         url = f"{self.base_url}get_user{self.key_query}&u={username}&m={mode}"
-        r = requests.get(url).json()[0]
-        r['progress'] = r['level'].split('.')[1][:2]+'%'
-        r['level'] = r['level'].split('.')[0]
-        r['pp'] = r['pp_raw'].split('.')[0]
-        r['accuracy'] = r['accuracy'][:5]
-        r['playtime'] = str(int(r['total_seconds_played']) // 60 // 60)
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url) as r:
+                    if r.status == 200:
+                        response = await r.read()
+                        player = json.loads(response)[0]
+                    else:
+                        print("osu! down!")
+                        return
+        player['progress'] = player['level'].split('.')[1][:2]+'%'
+        player['level'] = player['level'].split('.')[0]
+        player['pp'] = player['pp_raw'].split('.')[0]
+        player['accuracy'] = player['accuracy'][:5]
+        player['playtime'] = str(
+            int(player['total_seconds_played']) // 60 // 60)
 
-        r['desc'] = f"Rank: #{r['pp_rank']} (#{r['pp_country_rank']} {r['country']})\n\n"
-        r['desc'] += f"{r['pp']} pp, {r['accuracy']}%, {r['playcount']} plays ({r['playtime']})\n\n"
-        r['desc'] += f"SSH: {r['count_rank_ssh']}, SH: {r['count_rank_sh']}, SS: {r['count_rank_ss']}, S: {r['count_rank_s']}, A: {r['count_rank_a']}"
+        player['desc'] = f"Rank: #{player['pp_rank']} (#{player['pp_country_rank']} {player['country']})\n\n"
+        player[
+            'desc'] += f"{player['pp']} pp, {player['accuracy']}%, {player['playcount']} plays ({player['playtime']})\n\n"
+        player['desc'] += f"SSH: {player['count_rank_ssh']}, SH: {player['count_rank_sh']}, SS: {player['count_rank_ss']}, S: {player['count_rank_s']}, A: {player['count_rank_a']}"
 
-        r['avatar_url'] = self.base_image_url+r['user_id']
-        return r
+        player['avatar_url'] = self.base_image_url+player['user_id']
+        return player
     
     async def get_beatmap(self, id):
         url = f"{self.base_url}get_beatmaps{self.key_query}&b={id}"
-        r = requests.get(url).json()[0]
-        return r
+        async with aiohttp.ClientSession() as session:
+             async with session.get(url) as r:
+                    if r.status == 200:
+                        response = await r.read()
+                        maps = json.loads(response)
+                    else:
+                        print("osu! down!")
+                        return
+        return maps[0]
 
     async def get_user_recent(self, username, mode, limit):
         url = f"{self.base_url}get_user_recent{self.key_query}&u={username}&m={mode}&limit={limit}"
-        r = requests.get(url).json()
-        r = list(r)
-        for score in r:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url) as r:
+                    if r.status == 200:
+                        response = await r.read()
+                        scores = list(json.loads(response))
+                    else:
+                        print("osu! down!")
+                        return
+        for score in scores:
             bm_id = score['beatmap_id']
             score['beatmap'] = await self.get_beatmap(bm_id)
-        return r
+        return scores
 
     async def get_best(self, username, mode, limit):
         url = f"{self.base_url}get_user_best{self.key_query}&u={username}&m={mode}&limit={limit}"
-        r = requests.get(url).json()
-        r = list(r)
-        for score in r:
+        async with aiohttp.ClientSession() as session:
+              async with session.get(url) as r:
+                    if r.status == 200:
+                        response = await r.read()
+                        scores = list(json.loads(response))
+                    else:
+                        print("osu! down!")
+                        return
+        for score in scores:
             bm_id = score['beatmap_id']
             score['beatmap'] = await self.get_beatmap(bm_id)
-        return r
+        return scores
