@@ -1,7 +1,7 @@
 import discord
 import random
 import os
-import requests
+import aiohttp
 import json
 
 from dotenv import load_dotenv
@@ -18,10 +18,15 @@ class Gif(commands.Cog):
     # pout uwu
     @commands.command()
     async def pout(self, ctx):
-        r = requests.get("https://g.tenor.com/v1/search?q=%s&key=%s" %
-                         ("anime pout", self.tenor_api_key))
-        if r.status_code == 200:
-            pouts = json.loads(r.content)
+        async with aiohttp.ClientSession() as session:
+            async with session.get("https://g.tenor.com/v1/search?q=%s&key=%s" %
+                                   ("anime pout", self.tenor_api_key)) as r:
+                     if r.status == 200:
+                        response = await r.read()
+                        pouts = json.loads(response)
+                     else:
+                        print("Tenor down!")
+                        return
         embed = discord.Embed(
             color=discord.Colour.random()
         )
@@ -35,12 +40,17 @@ class Gif(commands.Cog):
     # hug uwu
     @commands.command()
     async def hug(self, ctx, user: discord.Member = None):
-        r = requests.get("https://g.tenor.com/v1/search?q=%s&key=%s" %
-                         ("anime hug", self.tenor_api_key))
+        async with aiohttp.ClientSession() as session:
+            async with session.get("https://g.tenor.com/v1/search?q=%s&key=%s" %
+                                   ("anime hug", self.tenor_api_key)) as r:
+                    if r.status == 200:
+                        response = await r.read()
+                        hugs = json.loads(response)
+                    else:
+                        print("Tenor down!")
+                        return
         if not user:
             user = ctx.author
-        if r.status_code == 200:
-            hugs = json.loads(r.content)
         embed = discord.Embed(
             color=discord.Colour.random()
         )
@@ -60,10 +70,15 @@ class Gif(commands.Cog):
     # smug uwu
     @commands.command()
     async def smug(self, ctx):
-        r = requests.get("https://g.tenor.com/v1/search?q=%s&key=%s" %
-                         ("anime smug", self.tenor_api_key))
-        if r.status_code == 200:
-            smugs = json.loads(r.content)
+        async with aiohttp.ClientSession() as session:
+            async with session.get("https://g.tenor.com/v1/search?q=%s&key=%s" %
+                                   ("anime smug", self.tenor_api_key)) as r:
+                    if r.status == 200:
+                        response = await r.read()
+                        smugs = json.loads(response)
+                    else:
+                        print("Tenor down!")
+                        return
         embed = discord.Embed(
             color=discord.Colour.random()
         )
@@ -77,12 +92,15 @@ class Gif(commands.Cog):
     # pat uwu
     @commands.command()
     async def pat(self, ctx, user: discord.Member = None):
-        r = requests.get("https://g.tenor.com/v1/search?q=%s&key=%s" %
-                         ("anime pat", self.tenor_api_key))
-        if not user:
-            user = ctx.author
-        if r.status_code == 200:
-            pats = json.loads(r.content)
+        async with aiohttp.ClientSession() as session:
+            async with session.get("https://g.tenor.com/v1/search?q=%s&key=%s" %
+                                   ("anime pat", self.tenor_api_key)) as r:
+                    if r.status == 200:
+                        response = await r.read()
+                        pats = json.loads(response)
+                    else:
+                        print("Tenor down!")
+                        return
         embed = discord.Embed(
             color=discord.Colour.random()
         )
