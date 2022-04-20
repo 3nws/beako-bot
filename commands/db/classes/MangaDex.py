@@ -1,5 +1,7 @@
 import requests
 import discord
+import aiohttp
+import json
 
 
 class Chapter:
@@ -31,13 +33,19 @@ class MangaDex:
         self.cover_url = 'https://uploads.mangadex.org/covers/'
         self.emojis = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣']
 
-    def search(self, query, limit):
+    async def search(self, query, limit):
         url = self.base_manga_url + \
             f'?limit={limit}&title={query}&availableTranslatedLanguage%5B%5D=en'
 
-        s = requests.session()
-        r = s.get(url)
-        r = (r.json())['data']
+        async with aiohttp.ClientSession() as session:
+              async with session.get(url) as res:
+                    if res.status == 200:
+                        resp = await res.read()
+                        r = json.loads(resp)
+                    else:
+                        print("MangaReader down!")
+                        return
+        r = r['data']
         embed = discord.Embed(
             title=f"Pick one of the results for '{query}', I suppose!",
             color=discord.Colour.random(),
@@ -62,19 +70,31 @@ class MangaDex:
     def get_following(self, channel_id):
         pass
 
-    def get_manga_title(self, id):
+    async def get_manga_title(self, id):
         url = self.base_manga_url + id
-        s = requests.session()
-        r = s.get(url)
-        r = (r.json())['data']
+        async with aiohttp.ClientSession() as session:
+             async with session.get(url) as res:
+                    if res.status == 200:
+                        resp = await res.read()
+                        r = json.loads(resp)
+                    else:
+                        print("MangaReader down!")
+                        return
+        r = r['data']
         return r['attributes']['title']['en']
 
-    def get_latest(self, id):
+    async def get_latest(self, id):
         s = requests.session()
         url = self.base_chapter_url + '?limit=5&manga=' + id + \
             '&translatedLanguage%5B%5D=en&order%5Bvolume%5D=desc&order%5Bchapter%5D=desc'
-        r = s.get(url)
-        r = r.json()
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url) as res:
+                    if res.status == 200:
+                        resp = await res.read()
+                        r = json.loads(resp)
+                    else:
+                        print("MangaReader down!")
+                        return
         data = r['data']
         attrs = data[0]['attributes']
         chapter_id = data[0]['id']
@@ -87,13 +107,19 @@ class MangaDex:
                           chapter_num, translated_lang, num_of_pages, chapter_link)
         return chapter
 
-    def get_info(self, query):
+    async def get_info(self, query):
         if query:
             url = self.base_manga_url + \
                 f'?limit=1&title={query}&availableTranslatedLanguage%5B%5D=en'
-            s = requests.session()
-            r = s.get(url)
-            r = (r.json())['data']
+            async with aiohttp.ClientSession() as session:
+                async with session.get(url) as res:
+                    if res.status == 200:
+                            resp = await res.read()
+                            r = json.loads(resp)
+                    else:
+                        print("MangaReader down!")
+                        return
+            r = r['data']
             rs = r[0]
             manga_id = rs['id']
             manga_info_url = self.base_manga_url + manga_id +\

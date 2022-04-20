@@ -129,7 +129,7 @@ async def commands_latest_chapter(ctx, series):
 # send manga info
 async def commands_get_manga_info(ctx, series):
     md = MangaDex()
-    embed = md.get_info(series)
+    embed = await md.get_info(series)
     await ctx.send(embed=embed)
 
 
@@ -174,7 +174,7 @@ async def commands_add_channel(bot, ctx, id, series):
         return "To what list do you want to add this channel, in fact?!"
     else:
         md = MangaDex()
-        results = md.search(series, 5)
+        results = await md.search(series, 5)
         return results
 
 
@@ -237,7 +237,7 @@ async def commands_remove_channel(bot, ctx, id, series):
         emojis = md.emojis
         for i, rs in enumerate(mangas_dict):
             manga_ids.append(rs)
-            title = md.get_manga_title(rs)
+            title = await md.get_manga_title(rs)
             titles.append(title)
             title += f' {emojis[i]}'
             embed.add_field(name=title, value='\u200b', inline=False)
@@ -393,7 +393,7 @@ async def tasks_check_chapter(bot):
                 mangas_dict = eval(mangas_on_channel)
                 for manga_id in mangas_dict:
                     chapter = mangas_dict[manga_id]  # 'None'
-                    chapter_response = md.get_latest(manga_id)
+                    chapter_response = await md.get_latest(manga_id)
                     title_response = chapter_response.get_title()
                     latest = title_response[0]
                     is_title = title_response[1]
@@ -411,10 +411,10 @@ async def tasks_check_chapter(bot):
                         )
                         channel = int(record['channel_id'])
                         if is_title:
-                            chp_title = md.get_manga_title(manga_id)
+                            chp_title = await md.get_manga_title(manga_id)
                             await bot.get_channel(channel).send(f"'{chp_title} - {latest}' has been translated, I suppose \n{chapter_link}")
                         else:
-                            chp_title = md.get_manga_title(manga_id)
+                            chp_title = await md.get_manga_title(manga_id)
                             await bot.get_channel(channel).send(f"A new chapter of '{chp_title}' has been translated, I suppose \n{chapter_link}")
 
     except Exception as e:
@@ -444,7 +444,7 @@ async def commands_following(ctx, bot):
         mangas_on_channel = (channel_exists)['mangas']
         mangas_dict = eval(mangas_on_channel)
         for manga_id in mangas_dict:
-            series.append(md.get_manga_title(manga_id))
+            series.append(await md.get_manga_title(manga_id))
 
     frame = discord.Embed(
         color=discord.Colour.random(),
