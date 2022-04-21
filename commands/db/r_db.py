@@ -419,6 +419,12 @@ async def tasks_check_chapter(bot):
                         )
                         directions = ['⬅️', '➡️']
                         num_of_pages = len(chapter_response.images)
+                        if num_of_pages==0:
+                            if is_title:
+                                msg = await bot.get_channel(channel).send(f"'{chp_title} - {latest}' has been translated, I suppose \n{chapter_link}")
+                            else:
+                                msg = await bot.get_channel(channel).send(f"A new chapter of '{chp_title}' has been translated, I suppose \n{chapter_link}")
+                            return
                         current_page = 0
                         embed.set_footer(text=(f"Page {current_page+1}/{num_of_pages}. Translated by " + scanlation_group['data']['attributes']['name']))
                         embed.set_image(
