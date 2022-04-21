@@ -4,6 +4,7 @@ import os
 import random
 import shutil
 import discord
+import asyncio
 
 from dotenv import load_dotenv
 from bs4 import BeautifulSoup
@@ -410,12 +411,55 @@ async def tasks_check_chapter(bot):
                             return_document=pymongo.ReturnDocument.AFTER
                         )
                         channel = int(record['channel_id'])
+                        chp_title = await md.get_manga_title(manga_id)
+                        scanlation_group = await md.get_scanlation_group(chapter_response.scanlation)
+                        embed = discord.Embed(
+                            color=discord.Colour.random(),
+                            title=str(latest),
+                        )
+                        directions = ['⬅️', '➡️']
+                        num_of_pages = len(chapter_response.images)
+                        current_page = 0
+                        embed.set_footer(text=(f"Page {current_page+1}/{num_of_pages}. Translated by " + scanlation_group['data']['attributes']['name']))
+                        embed.set_image(
+                            url=chapter_response.images[current_page])
                         if is_title:
-                            chp_title = await md.get_manga_title(manga_id)
-                            await bot.get_channel(channel).send(f"'{chp_title} - {latest}' has been translated, I suppose \n{chapter_link}")
+                            msg = await bot.get_channel(channel).send(f"'{chp_title} - {latest}' has been translated, I suppose \n{chapter_link}", embed=embed)
                         else:
-                            chp_title = await md.get_manga_title(manga_id)
-                            await bot.get_channel(channel).send(f"A new chapter of '{chp_title}' has been translated, I suppose \n{chapter_link}")
+                            msg = await bot.get_channel(channel).send(f"A new chapter of '{chp_title}' has been translated, I suppose \n{chapter_link}", embed=embed)
+                            
+                        await msg.add_reaction(directions[0])
+                        await msg.add_reaction(directions[1])
+                        def check(reaction, user):
+                            return reaction.message == msg and not user.bot
+
+                        while True:
+                            try:
+                                reaction, user = await bot.wait_for('reaction_add', check=check, timeout=180.0)
+                                if str(reaction.emoji) == directions[0]:
+                                    current_page -= 1 if current_page > 0 else 0
+                                elif str(reaction.emoji) == directions[1]:
+                                    if current_page < num_of_pages:
+                                        current_page += 1
+                                        if current_page==num_of_pages:
+                                            await msg.reply("You are reading the last page, in fact!")
+                                            current_page -= 1
+                                new_embed = discord.Embed(
+                                    color=discord.Colour.random(),
+                                    title=str(latest),
+                                )
+                                new_embed.set_footer(
+                                    text=(
+                                        f"Page {current_page+1}/{num_of_pages}. Translated by " +
+                                        scanlation_group['data']['attributes']['name']))
+                                new_embed.set_image(
+                                    url=chapter_response.images[current_page])
+                                await msg.edit(embed=new_embed)
+                                await reaction.remove(user)
+                            except asyncio.TimeoutError:
+                                await msg.clear_reactions()
+                                await msg.reply("You are not even reading! I'm done, in fact!")
+                                break
 
     except Exception as e:
         print(e)
