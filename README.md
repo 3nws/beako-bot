@@ -4,7 +4,7 @@ Checks every 60 seconds.
 
 I scrape the data from [WitchCultTranslation](https://witchculttranslation.com/) for Re:zero, [MangaReader](https://mangareader.to) for Grand Blue, and [Guya.Moe](https://guya.moe) for Kaguya-sama and Oshi No Ko.
 
-Now also supports (hopefully) any series on [MangaDex](https://mangadex.org) with a search function and everything. Pretty cool [API](https://api.mangadex.org/swagger.html#/) they got there. Nice.
+Now also supports (hopefully) any series on [MangaDex](https://mangadex.org) with a search function and a reader. Pretty cool [API](https://api.mangadex.org/swagger.html#/) they got there. Nice.
 
 I use [pysaucenao](https://github.com/FujiMakoto/pysaucenao) for reverse image searching.
 
