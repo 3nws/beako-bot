@@ -5,7 +5,6 @@ import random
 import shutil
 import discord
 import asyncio
-import time
 
 from dotenv import load_dotenv
 from bs4 import BeautifulSoup
