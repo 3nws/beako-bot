@@ -5,7 +5,7 @@ attrs==21.4.0
 beautifulsoup4==4.9.3
 certifi==2021.10.8
 chardet==3.0.4
-discord.py @ git+https://github.com/Rapptz/discord.py@4fb1309e2ae103820e980697e90f4345597d4f3e
+discord.py @ git+https://github.com/Rapptz/discord.py
 dnspython==2.1.0
 html5lib==1.1.0
 idna==2.8
