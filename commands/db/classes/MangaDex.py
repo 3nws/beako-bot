@@ -132,8 +132,6 @@ class MangaDex:
                         image_server_url = f"{image_server_url}/data"
                         for filename in self.data:
                             image_urls.append(f"{image_server_url}/{self.hash}/{filename}")
-                    else:
-                        print("No images?! for ", chapter_title)
         
         chapter = Chapter(chapter_id, chapter_title,
                           chapter_num, translated_lang, num_of_pages, chapter_link, image_urls, scanlation_id)
