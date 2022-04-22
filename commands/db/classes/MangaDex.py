@@ -120,24 +120,24 @@ class MangaDex:
         chapter_link = self.base_read_url + data[0]['id'] + '/1'
         
         url = f"https://api.mangadex.org/at-home/server/{chapter_id}"
+        image_urls = []
         async with aiohttp.ClientSession() as session:
             async with session.get(url) as res:
                     if res.status == 200:
                         resp = await res.read()
                         image_server_url = json.loads(resp)
+                        self.hash = image_server_url["chapter"]["hash"]
+                        self.data = image_server_url["chapter"]["data"]
+                        image_server_url = image_server_url["baseUrl"].replace("\\", "")
+                        image_server_url = f"{image_server_url}/data"
+                        for filename in self.data:
+                            image_urls.append(f"{image_server_url}/{self.hash}/{filename}")
                     else:
-                        print("MangaReader down!")
-                        return
-        self.hash = image_server_url["chapter"]["hash"]
-        self.data = image_server_url["chapter"]["data"]
-        image_server_url = image_server_url["baseUrl"].replace("\\", "")
-        image_server_url = f"{image_server_url}/data"
-        image_urls = []
-        for filename in self.data:
-            image_urls.append(f"{image_server_url}/{self.hash}/{filename}")
+                        print("No images?!")
         
         chapter = Chapter(chapter_id, chapter_title,
                           chapter_num, translated_lang, num_of_pages, chapter_link, image_urls, scanlation_id)
+        
         return chapter
 
     async def get_info(self, query):

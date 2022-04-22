@@ -141,7 +141,6 @@ async def on_ready():
         )
     )
     change_avatar.start()
-    await asyncio.sleep(60)
     check_chapter.start()
     filter_channels.start()
 
