@@ -141,6 +141,7 @@ async def last_chapter(bot, series, channel):
                         current_page += 1
                         time_out = 180.0
                         if current_page==num_of_pages:
+                            await msg.clear_reactions()
                             await msg.reply("I assume you've finished reading, in fact!")
                             break
                 new_embed = discord.Embed(
@@ -516,6 +517,7 @@ async def tasks_check_chapter(bot):
                                         current_page += 1
                                         time_out = 180.0
                                         if current_page==num_of_pages:
+                                            await msg.clear_reactions()
                                             await msg.reply("I assume you've finished reading, in fact!")
                                             break
                                 new_embed = discord.Embed(
