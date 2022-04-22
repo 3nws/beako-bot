@@ -5,6 +5,7 @@ import random
 import shutil
 import discord
 import asyncio
+import time
 
 from dotenv import load_dotenv
 from bs4 import BeautifulSoup
@@ -83,7 +84,7 @@ onk_url = "https://guya.moe/read/manga/Oshi-no-Ko/"
 gb_url = "https://mangareader.to/grand-blue-dreaming-8/"
 
 
-def last_chapter(series):
+async def last_chapter(bot, series, channel):
     series = aliases[series] if series in aliases else series
     if series == "rz":
         return Re_zero(rz_url).latest_chapter()
@@ -94,7 +95,72 @@ def last_chapter(series):
     elif series == "gb":
         return Grand_Blue(gb_url).latest_chapter()
     else:
-        return "What is that, I suppose?!"
+        md = MangaDex()
+        search = (await md.search(series, 1))[-1][0]
+        chapter_response = await md.get_latest(search)
+        chp_title = await md.get_manga_title(search)
+        scanlation_group = await md.get_scanlation_group(chapter_response.scanlation)
+        title_response = chapter_response.get_title()
+        latest = title_response[0]
+        is_title = title_response[1]
+        chapter_link = chapter_response.get_link()
+        embed = discord.Embed(
+            color=discord.Colour.random(),
+            title=str(latest),
+        )
+        directions = ['⬅️', '➡️']
+        num_of_pages = len(chapter_response.images)
+        if num_of_pages==0:
+            if is_title:
+                msg = await bot.get_channel(channel).send(f"'{chp_title} - {latest}' has been translated, I suppose \n{chapter_link}")
+            else:
+                msg = await bot.get_channel(channel).send(f"A new chapter of '{chp_title}' has been translated, I suppose \n{chapter_link}")
+            return
+        current_page = 0
+        embed.set_footer(text=(f"Page {current_page+1}/{num_of_pages}. Translated by " + scanlation_group['data']['attributes']['name']))
+        embed.set_image(
+            url=chapter_response.images[current_page])
+        if is_title:
+            msg = await bot.get_channel(channel).send(f"'{chp_title} - {latest}' has been translated, I suppose \n{chapter_link}", embed=embed)
+        else:
+            msg = await bot.get_channel(channel).send(f"A new chapter of '{chp_title}' has been translated, I suppose \n{chapter_link}", embed=embed)
+            
+        await msg.add_reaction(directions[0])
+        await msg.add_reaction(directions[1])
+        def check(reaction, user):
+            return reaction.message == msg and not user.bot
+
+        time_out = None
+        while True:
+            try:
+                reaction, user = await bot.wait_for('reaction_add', check=check, timeout=time_out)
+                if str(reaction.emoji) == directions[0]:
+                    current_page -= 1 if current_page > 0 else 0
+                    time_out = 180.0
+                elif str(reaction.emoji) == directions[1]:
+                    if current_page < num_of_pages:
+                        current_page += 1
+                        time_out = 180.0
+                        if current_page==num_of_pages:
+                            await msg.reply("I assume you've finished reading, in fact!")
+                            break
+                new_embed = discord.Embed(
+                    color=discord.Colour.random(),
+                    title=str(latest),
+                )
+                new_embed.set_footer(
+                    text=(
+                        f"Page {current_page+1}/{num_of_pages}. Translated by " +
+                        scanlation_group['data']['attributes']['name']))
+                new_embed.set_image(
+                            url=chapter_response.images[current_page])
+                await msg.edit(embed=new_embed)
+                await reaction.remove(user)
+            except asyncio.TimeoutError:
+                await msg.clear_reactions()
+                await msg.reply("You are not even reading! I'm done, in fact!")
+                break
+                    
 
 
 def select_random_image_path():
@@ -118,11 +184,11 @@ async def send_messages(bot, channels, title, data, db_rec, anchor):
 
 
 # sends the latest english translated chapter
-async def commands_latest_chapter(ctx, series):
+async def commands_latest_chapter(bot, ctx, series):
     if series == "":
         message = "What series do you want to know about, in fact!"
     else:
-        message = last_chapter(series)
+        return await last_chapter(bot, series, ctx.channel.id)
 
     await ctx.send(message)
 
@@ -393,7 +459,7 @@ async def tasks_check_chapter(bot):
                 mangas_on_channel = (record)['mangas']
                 mangas_dict = eval(mangas_on_channel)
                 for manga_id in mangas_dict:
-                    chapter = mangas_dict[manga_id]  # 'None'
+                    chapter = mangas_dict[manga_id]
                     chapter_response = await md.get_latest(manga_id)
                     title_response = chapter_response.get_title()
                     latest = title_response[0]
@@ -439,17 +505,20 @@ async def tasks_check_chapter(bot):
                         def check(reaction, user):
                             return reaction.message == msg and not user.bot
 
+                        time_out = None
                         while True:
                             try:
-                                reaction, user = await bot.wait_for('reaction_add', check=check, timeout=180.0)
+                                reaction, user = await bot.wait_for('reaction_add', check=check, timeout=time_out)
                                 if str(reaction.emoji) == directions[0]:
                                     current_page -= 1 if current_page > 0 else 0
+                                    time_out = 180.0
                                 elif str(reaction.emoji) == directions[1]:
                                     if current_page < num_of_pages:
                                         current_page += 1
+                                        time_out = 180.0
                                         if current_page==num_of_pages:
-                                            await msg.reply("You are reading the last page, in fact!")
-                                            current_page -= 1
+                                            await msg.reply("I assume you've finished reading, in fact!")
+                                            break
                                 new_embed = discord.Embed(
                                     color=discord.Colour.random(),
                                     title=str(latest),

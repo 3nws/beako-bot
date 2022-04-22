@@ -85,7 +85,7 @@ async def following(ctx):
 # sends the latest english translated chapter
 @bot.command(aliases=["latest", "last", "chp"])
 async def latest_chapter(ctx, *, series=""):
-    await commands_latest_chapter(ctx, series)
+    await commands_latest_chapter(bot, ctx, series)
 
 
 # flip your friends off
