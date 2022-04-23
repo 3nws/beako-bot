@@ -549,16 +549,16 @@ async def commands_flip(i):
 
 
 # send a list of followed series of a channel
-async def commands_following(ctx, bot):
+async def commands_following(i, bot):
     series = []
     for channels in all_channels:
         for channel in db_channels[channels].find():
-            if bot.get_channel(channel['id']) == ctx.channel:
+            if bot.get_channel(channel['id']) == i.channel:
                 series.append(collection_aliases[channels])
 
     channel_exists = channels_md.find_one(
-        {"channel_id": str(ctx.channel.id)}) if channels_md.find_one(
-        {"channel_id": str(ctx.channel.id)}) else False
+        {"channel_id": str(i.channel_id)}) if channels_md.find_one(
+        {"channel_id": str(i.channel_id)}) else False
     if channel_exists:
         md = MangaDex()
         mangas_on_channel = (channel_exists)['mangas']
@@ -580,4 +580,4 @@ async def commands_following(ctx, bot):
             desc += f"**{counter}.** {s}\n"
             counter += 1
         frame.description = desc
-    await ctx.send(embed=frame)
+    await i.response.send_message(embed=frame)
