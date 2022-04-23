@@ -31,7 +31,7 @@ async def commands_remove_channel(bot, i, series_obj):
         await msg.add_reaction(emojis[j])
 
     def check(reaction, user):
-        return user == i.user
+        return user == i.user and reaction.message == msg
 
     while True:
         try:
