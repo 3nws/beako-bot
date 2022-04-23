@@ -64,11 +64,11 @@ class Admin(commands.Cog):
     @app_commands.command(name="clean")
     @app_commands.guilds(discord.Object(id=658947832392187906))
     @commands.has_permissions(administrator=True)
-    async def clean(self, i: discord.Interaction, limit: int, direction: str = None, msg_id: int = None):
+    async def clean(self, i: discord.Interaction, limit: int, direction: str = None, msg_id: str = None):
         direction = self.dir_aliases[direction] if direction in self.dir_aliases else direction
 
         if (msg_id):
-            msg = await i.channel.fetch_message(msg_id)
+            msg = await i.channel.fetch_message(int(msg_id))
             if direction == "after":
                 history = await i.channel.history(limit=limit, after=msg, oldest_first=True).flatten()
             elif direction == "before":
@@ -76,7 +76,7 @@ class Admin(commands.Cog):
             for message in set(history):
                 await message.delete()
         elif (direction == "after"):
-            return await i.send("I can't delete future messages, in fact! Tell me which message you want me to start deleting from, I suppose!")
+            return await i.response.send_message("I can't delete future messages, in fact! Tell me which message you want me to start deleting from, I suppose!")
         elif (direction == "before"):
             history = await i.channel.history(limit=limit, before=ctx.message, oldest_first=False).flatten()
             for message in set(history):
