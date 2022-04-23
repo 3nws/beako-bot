@@ -246,7 +246,7 @@ async def commands_add_channel(bot, ctx, id, series):
 
 
 # remove the channel from the receiver list
-async def commands_remove_channel(bot, ctx, id, series):
+async def commands_remove_channel(bot, i, id, series):
     md = MangaDex()
     channel_entry = {
         "id": id,
@@ -285,12 +285,12 @@ async def commands_remove_channel(bot, ctx, id, series):
             return failure_msg
     else:
         channel_exists = True if channels_md.find_one(
-            {"channel_id": str(ctx.channel.id)}) else False
+            {"channel_id": str(i.channel_id)}) else False
         if not channel_exists:
             return "This channel is not on any receiver list, in fact!"
 
         mangas_on_channel = (channels_md.find_one(
-            {"channel_id": str(ctx.channel.id)}))['mangas']
+            {"channel_id": str(i.channel_id)}))['mangas']
         mangas_dict = eval(mangas_on_channel)
 
         embed = discord.Embed(
