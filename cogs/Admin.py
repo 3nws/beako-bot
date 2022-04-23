@@ -36,12 +36,12 @@ class Admin(commands.Cog):
 
     @kick.error
     async def kick_error(self, error, ctx):
-        if isinstance(error, MissingPermissions):
+        if isinstance(error, commands.MissingPermissions):
             await ctx.send("You don't have permission to do that, I suppose!")
 
     @ban.error
     async def ban_error(self, error, ctx):
-        if isinstance(error, MissingPermissions):
+        if isinstance(error, commands.MissingPermissions):
             await ctx.send("You don't have permission to do that, I suppose!")
 
     # unbans user
@@ -62,7 +62,7 @@ class Admin(commands.Cog):
 
     @unban.error
     async def unban_error(self, error, ctx):
-        if isinstance(error, MissingPermissions):
+        if isinstance(error, commands.MissingPermissions):
             await ctx.send("You don't have permission to do that, I suppose!")
 
     # clears chat
