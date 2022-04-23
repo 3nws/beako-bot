@@ -1,11 +1,12 @@
 import discord
 
 from discord.ext import commands
+from discord import app_commands
 from discord import Permissions
 
 
 class Admin(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.dir_aliases = {
             'b': 'before',
@@ -17,22 +18,24 @@ class Admin(commands.Cog):
         }
 
     # kicks member
-    @commands.command(aliases=["yeet", "yeeto"])
+    @app_commands.command(name="kick")
+    @app_commands.guilds(discord.Object(id=658947832392187906))
     @commands.has_permissions(kick_members=True)
-    async def kick(self, ctx, user: discord.Member, *, reason=None):
-        if user.top_role > ctx.author.top_role:
-            return await ctx.send(f"You can't kick this person, I suppose!")
+    async def kick(self, i: discord.Interaction, user: discord.Member, *, reason:str=None):
+        if user.top_role > i.user.top_role:
+            return await i.response.send_message(f"You can't kick this person, I suppose!")
         await user.kick(reason=reason)
-        return await ctx.send(f"{user} has been yeeted, I suppose!")
+        return await i.response.send_message(f"{user} has been yeeted, I suppose!")
 
     # bans member
-    @commands.command()
+    @app_commands.command(name="ban")
+    @app_commands.guilds(discord.Object(id=658947832392187906))
     @commands.has_permissions(ban_members=True)
-    async def ban(self, ctx, user: discord.Member, *, reason=None):
-        if user.top_role > ctx.author.top_role:
-            return await ctx.send(f"You can't ban this person, I suppose!")
+    async def ban(self, i: discord.Interaction, user: discord.Member, *, reason:str=None):
+        if user.top_role > i.user.top_role:
+            return await i.response.send_message(f"You can't ban this person, I suppose!")
         await user.ban(reason=reason)
-        await ctx.send(f"{user} has been yeeted forever, I suppose!")
+        await i.response.send_message(f"{user} has been yeeted forever, I suppose!")
 
     @kick.error
     async def kick_error(self, error, ctx):
@@ -45,20 +48,12 @@ class Admin(commands.Cog):
             await ctx.send("You don't have permission to do that, I suppose!")
 
     # unbans user
-    @commands.command()
-    @commands.has_permissions(administrator=True)
-    async def unban(self, ctx, *, member):
-        banned_users = await ctx.guild.bans()
-        member_name, member_discriminator = member.split('#')
-
-        for ban_entry in set(banned_users):
-            user = ban_entry.user
-
-        if (user.name, user.discriminator) == (
-                member_name, member_discriminator):
-            await ctx.guild.unban(user)
-            await ctx.send(f"{user} has been unbanned, I suppose!")
-            return
+    @app_commands.command(name="unban")
+    @app_commands.guilds(discord.Object(id=658947832392187906))
+    @commands.has_permissions(ban_members=True)
+    async def unban(self, i: discord.Interaction, *, member: discord.User):
+        await i.guild.unban(member)
+        await i.response.send_message(f"{member} has been unbanned, I suppose!")
 
     @unban.error
     async def unban_error(self, error, ctx):
@@ -66,44 +61,45 @@ class Admin(commands.Cog):
             await ctx.send("You don't have permission to do that, I suppose!")
 
     # clears chat
-    @commands.command(aliases=["clear"])
+    @app_commands.command(name="clean")
+    @app_commands.guilds(discord.Object(id=658947832392187906))
     @commands.has_permissions(administrator=True)
-    async def clean(self, ctx, limit: int, direction: str = None, msg_id: int = None):
-        await ctx.message.delete()
+    async def clean(self, i: discord.Interaction, limit: int, direction: str = None, msg_id: int = None):
         direction = self.dir_aliases[direction] if direction in self.dir_aliases else direction
 
         if (msg_id):
-            msg = await ctx.fetch_message(msg_id)
+            msg = await i.channel.fetch_message(msg_id)
             if direction == "after":
-                history = await ctx.channel.history(limit=limit, after=msg, oldest_first=True).flatten()
+                history = await i.channel.history(limit=limit, after=msg, oldest_first=True).flatten()
             elif direction == "before":
-                history = await ctx.channel.history(limit=limit, before=msg, oldest_first=False).flatten()
+                history = await i.channel.history(limit=limit, before=msg, oldest_first=False).flatten()
             for message in set(history):
                 await message.delete()
         elif (direction == "after"):
-            return await ctx.send("I can't delete future messages, in fact! Tell me which message you want me to start deleting from, I suppose!")
+            return await i.send("I can't delete future messages, in fact! Tell me which message you want me to start deleting from, I suppose!")
         elif (direction == "before"):
-            history = await ctx.channel.history(limit=limit, before=ctx.message, oldest_first=False).flatten()
+            history = await i.channel.history(limit=limit, before=ctx.message, oldest_first=False).flatten()
             for message in set(history):
                 await message.delete()
         else:
-            await ctx.channel.purge(limit=limit)
+            await i.channel.purge(limit=limit)
 
-        await ctx.send('Cleared by {}, I suppose!'.format(ctx.author.mention))
+        await i.response.send_message('Cleared by {}, I suppose!'.format(i.user.mention))
 
     # deletes a member's all messages
-    @commands.command(aliases=["cleanse"])
+    @app_commands.command(name="purge")
+    @app_commands.guilds(discord.Object(id=658947832392187906))
     @commands.has_permissions(administrator=True)
-    async def purge(self, ctx, member: discord.Member = None):
+    async def purge(self, i: discord.Interaction, member: discord.Member = None):
         if member == self.bot.user:
-            await ctx.send("Nope, in fact!")
+            await i.response.send_message("Nope, in fact!")
         elif member:
-            async for message in ctx.channel.history(oldest_first=False):
+            async for message in i.channel.history(oldest_first=False):
                 if message.author == member:
                     await message.delete()
-            await ctx.send(f'I have cleansed this channel of {member.mention}\'s messages, in fact!')
+            await i.response.send_message(f'I have cleansed this channel of {member.mention}\'s messages, in fact!')
         else:
-            await ctx.send("Which degenerate's messages do you want to yeet, I suppose?!")
+            await i.response.send_message("Which degenerate's messages do you want to yeet, I suppose?!")
 
     # print the joined servers in the logs
     @commands.command()
@@ -138,5 +134,5 @@ class Admin(commands.Cog):
             await ctx.send(f"I have {status} the `{cmd.qualified_name}` command, in fact!")
 
 
-async def setup(bot):
+async def setup(bot: commands.Bot):
     await bot.add_cog(Admin(bot))
