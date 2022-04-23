@@ -3,16 +3,18 @@ import asyncio
 
 from datetime import datetime
 from datetime import timedelta
+from discord import app_commands
 from discord.ext import commands
 
 
 class Timer(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
 
     # reminds the user about anything after specified time
-    @commands.command(case_insensitive=True, aliases=["remindme", "remind_me"])
-    async def remind(self, ctx, time, unit=None, *, reminder=""):
+    @app_commands.command(name="remind")
+    @app_commands.guilds(discord.Object(id=658947832392187906))
+    async def remind(self, i: discord.Interaction, time:str, unit:str=None, *, reminder:str=""):
         embed = discord.Embed(color=discord.Colour.random(),
                               timestamp=datetime.utcnow())
         if (unit is None):
@@ -46,20 +48,21 @@ class Timer(commands.Cog):
                 name='Warning', value="We might not survive long enough to do this, in fact! Well, not you, I suppose!")
         else:
             if reminder == '':
-                await ctx.send(f"I'll ping you in {counter}, I suppose!")
+                await i.response.send_message(f"I'll ping you in {counter}, I suppose!")
             else:
-                await ctx.send(f"I'll ping you in {counter} about '{reminder}', I suppose!")
+                await i.response.send_message(f"I'll ping you in {counter} about '{reminder}', I suppose!")
             await asyncio.sleep(seconds)
             if reminder == '':
-                await ctx.send(f"Hey {ctx.author.mention}, what up, in fact!")
+                await i.channel.send(f"Hey {i.user.mention}, what up, in fact!")
             else:
-                await ctx.send(f"Hey {ctx.author.mention}, what up, in fact! You asked me to remind you about '{reminder}' {counter} ago, I suppose!")
+                await i.channel.send(f"Hey {i.user.mention}, what up, in fact! You asked me to remind you about '{reminder}' {counter} ago, I suppose!")
             return
-        await ctx.send(embed=embed)
+        await i.response.send_message(embed=embed)
 
     # sets an alarm for the user
-    @commands.command()
-    async def alarm(self, ctx, time="", *, reminder=""):
+    @app_commands.command(name="alarm")
+    @app_commands.guilds(discord.Object(id=658947832392187906))
+    async def alarm(self, i: discord.Interaction, time:str="", *, reminder:str=""):
         try:
             embed = discord.Embed(color=discord.Colour.random(),
                                   timestamp=datetime.utcnow())
@@ -82,20 +85,20 @@ class Timer(commands.Cog):
                     name='Warning', value="We might not survive long enough to do this, in fact! Well, not you, I suppose!")
             else:
                 if reminder == '':
-                    await ctx.send(f"Your Betty alarm is set for {time}, I suppose!")
+                    await i.response.send_message(f"Your Betty alarm is set for {time}, I suppose!")
                 else:
-                    await ctx.send(f"Your Betty alarm is set for {time} about '{reminder}', I suppose!")
+                    await i.response.send_message(f"Your Betty alarm is set for {time} about '{reminder}', I suppose!")
                 await asyncio.sleep(time_left)
                 if reminder == '':
-                    await ctx.send(f"Hey {ctx.author.mention}, what up, in fact!")
+                    await i.channel.send(f"Hey {i.user.mention}, what up, in fact!")
                 else:
-                    await ctx.send(f"Hey {ctx.author.mention}, what up, in fact! This is your Betty alarm for '{reminder}', I suppose!")
+                    await i.channel.send(f"Hey {i.user.mention}, what up, in fact! This is your Betty alarm for '{reminder}', I suppose!")
                 return
-            await ctx.send(embed=embed)
+            await i.response.send_message(embed=embed)
         except Exception as e:
             print(e)
-            await ctx.send("Something went wrong, in fact! Check the time format, I suppose!")
+            await i.response.send_message("Something went wrong, in fact! Check the time format, I suppose!")
 
 
-async def setup(bot):
+async def setup(bot: commands.Bot):
     await bot.add_cog(Timer(bot))
