@@ -194,10 +194,11 @@ async def commands_latest_chapter(bot, i, series):
 
 
 # send manga info
-async def commands_get_manga_info(ctx, series):
+async def commands_get_manga_info(i, series):
     md = MangaDex()
     embed = await md.get_info(series)
-    await ctx.send(embed=embed)
+    print(embed)
+    await i.channel.send(embed=embed)
 
 
 # add the channel to the receiver list

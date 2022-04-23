@@ -155,8 +155,14 @@ class MangaDex:
             manga_id = rs['id']
             manga_info_url = self.base_manga_url + manga_id +\
                 "?includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist"
-            r = s.get(manga_info_url).json()
-            print(r)
+            async with aiohttp.ClientSession() as session:
+                async with session.get(manga_info_url) as res:
+                    if res.status == 200:
+                            resp = await res.read()
+                            r = json.loads(resp)
+                    else:
+                        print("MangaReader down!")
+                        return
             rs = r['data']
             info = rs['attributes']
             title = (info['title'])['en']
@@ -179,6 +185,6 @@ class MangaDex:
             return embed
         else:
             return discord.Embed(
-                title="What info do you want, in fact! Tell me manga, I suppose!",
+                title="What info do you want, in fact! Tell me a manga, I suppose!",
                 color=discord.Colour.random(),
             )
