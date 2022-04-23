@@ -542,10 +542,10 @@ async def tasks_check_chapter(bot):
 
 
 # flip command
-async def commands_flip(ctx):
+async def commands_flip(i):
     pipe = [{"$sample": {"size": 1}}]
     flip = list(flips.aggregate(pipeline=pipe))[0]["url"]
-    await ctx.send(flip)
+    await i.response.send_message(flip)
 
 
 # send a list of followed series of a channel
