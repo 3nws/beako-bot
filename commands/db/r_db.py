@@ -184,13 +184,13 @@ async def send_messages(bot, channels, title, data, db_rec, anchor):
 
 
 # sends the latest english translated chapter
-async def commands_latest_chapter(bot, ctx, series):
+async def commands_latest_chapter(bot, i, series):
     if series == "":
         message = "What series do you want to know about, in fact!"
     else:
-        return await last_chapter(bot, series, ctx.channel.id)
+        return await last_chapter(bot, series, i.channel_id)
 
-    await ctx.send(message)
+    await i.response.send_message(message)
 
 
 # send manga info
