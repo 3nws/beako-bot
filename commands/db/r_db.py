@@ -86,13 +86,13 @@ gb_url = "https://mangareader.to/grand-blue-dreaming-8/"
 async def last_chapter(bot, series, channel):
     series = aliases[series] if series in aliases else series
     if series == "rz":
-        return Re_zero(rz_url).latest_chapter()
+        return await Re_zero(rz_url).latest_chapter()
     elif series == "kaguya":
-        return Guya_moe(kaguya_url).latest_chapter()
+        return await Guya_moe(kaguya_url).latest_chapter()
     elif series == "onk":
-        return Guya_moe(onk_url).latest_chapter()
+        return await Guya_moe(onk_url).latest_chapter()
     elif series == "gb":
-        return Grand_Blue(gb_url).latest_chapter()
+        return await Grand_Blue(gb_url).latest_chapter()
     else:
         md = MangaDex()
         search = (await md.search(series, 1))[-1][0]
