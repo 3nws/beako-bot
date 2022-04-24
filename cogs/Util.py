@@ -164,7 +164,9 @@ class Util(commands.Cog):
         for emoji in emojis:
             await msg.add_reaction(emoji)
 
-        await asyncio.sleep(5)
+        await i.response.send_message("I'll be back with the results in three minutes, I suppose!")
+        
+        await asyncio.sleep(180)
 
         message_1 = await i.channel.fetch_message(msg.id)
 
