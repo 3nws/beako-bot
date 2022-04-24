@@ -20,7 +20,7 @@ class Osu(commands.Cog):
         mode = "0"
         if player_name is None:
             return await ctx.send("Who, in fact?!\nUse `r.help osu` for more information, I suppose!")
-        msg = await ctx.send("Loading, I suppose")
+        msg = await ctx.send("Loading, I suppose!")
         try:
             player = await self.osu.get_user(player_name, mode)
             game_mode = self.osu.game_modes[mode]
@@ -59,7 +59,7 @@ class Osu(commands.Cog):
         mode = "0"
         if player_name is None:
             return await ctx.send("Who, in fact?!\nUse `r.help recent` for more information, I suppose!")
-        msg = await ctx.send("Loading, I suppose")
+        msg = await ctx.send("Loading, I suppose!")
         try:
             scores = await self.osu.get_user_recent(player_name, mode, 5)
             player = await self.osu.get_user(player_name, mode)
@@ -154,7 +154,7 @@ class Osu(commands.Cog):
         mode = "0"
         if player_name is None:
             return await ctx.send("Who, in fact?!\nUse `r.help osutop` for more information, I suppose!")
-        msg = await ctx.send("Loading, I suppose")
+        msg = await ctx.send("Loading, I suppose!")
         try:
             player = await self.osu.get_user(player_name, mode)
             best_scores = await self.osu.get_best(player_name, mode, 5)
