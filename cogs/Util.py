@@ -164,7 +164,7 @@ class Util(commands.Cog):
         for emoji in emojis:
             await msg.add_reaction(emoji)
 
-        await asyncio.sleep(180)
+        await asyncio.sleep(5)
 
         message_1 = await i.channel.fetch_message(msg.id)
 
@@ -179,7 +179,7 @@ class Util(commands.Cog):
         results.set_footer(
             text=f"For the poll '{question}'", icon_url=i.user.avatar.url)
 
-        await i.response.send_message(embed=results)
+        await i.channel.send(embed=results)
 
 
 async def setup(bot: commands.Bot):

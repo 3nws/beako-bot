@@ -3,6 +3,7 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 from discord import Permissions
+from typing import List
 
 
 class Admin(commands.Cog):
@@ -60,19 +61,32 @@ class Admin(commands.Cog):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("You don't have permission to do that, I suppose!")
 
+    async def clean_autocomplete(self,
+        interaction: discord.Interaction,
+        current: str,
+    ) -> List[app_commands.Choice[str]]:
+        directions = ['Before', 'After']
+        return [
+            app_commands.Choice(name=direction, value=direction)
+            for direction in directions if current.lower() in direction.lower()
+        ]
+
     # clears chat
     @app_commands.command(name="clean")
     @app_commands.guilds(discord.Object(id=658947832392187906))
+    @app_commands.autocomplete(direction=clean_autocomplete)
     @commands.has_permissions(administrator=True)
     async def clean(self, i: discord.Interaction, limit: int, direction: str = None, msg_id: str = None):
         direction = self.dir_aliases[direction] if direction in self.dir_aliases else direction
+        direction = direction.lower()
 
         if (msg_id):
             msg = await i.channel.fetch_message(int(msg_id))
+            
             if direction == "after":
-                history = await i.channel.history(limit=limit, after=msg, oldest_first=True).flatten()
+                history = [message async for message in i.channel.history(limit=limit, after=msg, oldest_first=True)]
             elif direction == "before":
-                history = await i.channel.history(limit=limit, before=msg, oldest_first=False).flatten()
+                history = [message async for message in  i.channel.history(limit=limit, before=msg, oldest_first=False)]
             for message in set(history):
                 await message.delete()
         elif (direction == "after"):

@@ -70,7 +70,7 @@ I use [pysaucenao](https://github.com/FujiMakoto/pysaucenao) for reverse image s
 
 ### TODOS
 
-- Fix: Poll and clean commands (fetch_message()), osu menu switching for recent and best scores
+- Fix: osu menu switching for recent and best scores
 - Add more osu! functionality
 - Make the results prettier, they look awful
 - Add tracking for animes as well
