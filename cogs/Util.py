@@ -133,10 +133,10 @@ class Util(commands.Cog):
                 sauce_frame.set_thumbnail(url=twitter_result.thumbnail)
 
             sauce_frame.set_footer(
-                text=f"on {str(ctx.author)}'s request, I suppose!", icon_url=ctx.author.avatar_url)
+                text=f"on {str(ctx.author)}'s request, I suppose!", icon_url=ctx.author.avatar.url)
 
             await ctx.send(embed=sauce_frame, reference=ctx.message)
-        except BaseException:
+        except BaseException as e:
             await ctx.send("It's not Betty's fault. Something went wrong, in fact!", reference=ctx.message)
 
         await ctx.message.delete()
@@ -151,7 +151,7 @@ class Util(commands.Cog):
         )
 
         embed.set_footer(
-            text=f"Poll created by {ctx.author.nick}", icon_url=ctx.author.avatar_url)
+            text=f"Poll created by {ctx.author.nick}", icon_url=ctx.author.avatar.url)
 
         msg = await ctx.send(embed=embed)
 
@@ -173,7 +173,7 @@ class Util(commands.Cog):
         )
 
         results.set_footer(
-            text=f"For the poll '{question}'", icon_url=ctx.author.avatar_url)
+            text=f"For the poll '{question}'", icon_url=ctx.author.avatar.url)
 
         await ctx.send(embed=results)
 
