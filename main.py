@@ -126,12 +126,18 @@ async def on_command_error(ctx, error):
 
 @bot.event
 async def on_guild_join(guild):
-    print(f"Just joined {guild.name}, in fact!")
+    msg = f"Just joined {guild.name}, in fact!"
+    user = bot.get_user(442715989310832650)
+    user.send(msg)
+    print(msg)
     
 @bot.event
-async def on_guild_join(guild):
-    print(f"Just left {guild.name}, in fact!\n\
-            They didn't like Betty, I suppose!")
+async def on_guild_remove(guild):
+    msg = f"Just left {guild.name}, in fact!\n\
+            They didn't like Betty, I suppose!"
+    user = bot.get_user(442715989310832650)
+    user.send(msg)
+    print(msg)
     
 
 
