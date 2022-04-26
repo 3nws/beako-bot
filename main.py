@@ -124,6 +124,16 @@ async def on_command_error(ctx, error):
     if isinstance(error, discord.ext.commands.errors.CommandNotFound):
         await ctx.send("What is that, I suppose?!\nTry `r.help`, in fact!")
 
+@bot.event
+async def on_guild_join(guild):
+    print(f"Just joined {guild.name}, in fact!")
+    
+@bot.event
+async def on_guild_join(guild):
+    print(f"Just left {guild.name}, in fact!\n\
+            They didn't like Betty, I suppose!")
+    
+
 
 # runs everytime the bot comes online
 @bot.event
