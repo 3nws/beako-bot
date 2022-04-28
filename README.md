@@ -73,7 +73,6 @@ I use [pysaucenao](https://github.com/FujiMakoto/pysaucenao) for reverse image s
 - Add more osu! functionality
 - Make the results prettier, they look awful
 - Add tracking for animes as well
-- Properly handle no images on some MangaDex series.
 
 ———————————No Images?———————————  
 ⠀⣞⢽⢪⢣⢣⢣⢫⡺⡵⣝⡮⣗⢷⢽⢽⢽⣮⡷⡽⣜⣜⢮⢺⣜⢷⢽⢝⡽⣝ ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀  
