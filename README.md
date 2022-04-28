@@ -75,7 +75,6 @@ I use [pysaucenao](https://github.com/FujiMakoto/pysaucenao) for reverse image s
 - Make the results prettier, they look awful
 - Maybe migrate to slash commands, idk
 - Add tracking for animes as well
-- Properly handle no images on some MangaDex series.  
 
 ———————————No Images?———————————    
 ⠀⣞⢽⢪⢣⢣⢣⢫⡺⡵⣝⡮⣗⢷⢽⢽⢽⣮⡷⡽⣜⣜⢮⢺⣜⢷⢽⢝⡽⣝    ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀  
