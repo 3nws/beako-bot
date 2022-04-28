@@ -34,6 +34,8 @@ messages = {
 
         'avatar': "```Betty will send a member's(author's if no member is passed) avatar to the text channel, in fact!```",
 
+        'server_avatar': "```Betty will send a member's(author's if no member is passed) server avatar to the text channel, in fact!```",
+
         'banner': "```Betty will send a member's(author's if no member is passed) banner to the text channel, in fact!```",
 
         'add_channel': "```Betty will add the text channel to the list of channels that will receive notifications of the preferred series, I suppose!```",
@@ -133,4 +135,5 @@ aliases = {
     'top': 'osutop',
     'rs': 'recent',
     'rc': 'recent',
+    'savatar': 'server_avatar'
 }

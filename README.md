@@ -34,6 +34,7 @@ I use [pysaucenao](https://github.com/FujiMakoto/pysaucenao) for reverse image s
 - `r.poll choice1 choice2 question` (creates a poll with the choices and the question, polls have a 3 minute timer before they are finished)
 - `r.reverse_image_search url` (search the image you want for the source), aliases: `r.ris`, `r.sauce`, `r.source`
 - `r.avatar member` (shows a member's avatar or the op's if no argument is passed)
+- `r.server_avatar member` (shows a member's avatar or the op's if no argument is passed), alias: `r.savatar`
 - `r.banner member` (shows a member's banner or the op's if no argument is passed)
 - `r.series` (sends a list of series available for tracking)
 

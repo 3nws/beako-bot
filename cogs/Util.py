@@ -60,6 +60,27 @@ class Util(commands.Cog):
             avatar_frame.set_image(url=f'{ctx.author.avatar.url}')
 
         await ctx.send(embed=avatar_frame)
+        
+    # sends a user's server avatar
+    @commands.command(aliases=['savatar'])
+    async def server_avatar(self, ctx, member: discord.Member = None):
+        avatar_frame = discord.Embed(
+            color=discord.Colour.random()
+        )
+        if member:
+            if member.display_avatar is None:
+                return await self.avatar(ctx, member)
+            avatar_frame.add_field(name=str(
+                ctx.author) + " requested", value=member.mention + "'s avatar, I suppose!")
+            avatar_frame.set_image(url=f'{member.display_avatar.url}')
+        else:
+            if ctx.author.display_avatar is None:
+                return await self.avatar(ctx, member)
+            avatar_frame.add_field(
+                name=str(ctx.author) + " requested", value=" their own avatar, I suppose!")
+            avatar_frame.set_image(url=f'{ctx.author.display_avatar.url}')
+
+        await ctx.send(embed=avatar_frame)
 
     # sends a user's banner
     @commands.command()

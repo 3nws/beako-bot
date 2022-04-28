@@ -45,7 +45,7 @@ class MangaDex:
                         resp = await res.read()
                         r = json.loads(resp)
                     else:
-                        print("MangaReader down!")
+                        print("Something went wrong with the MangaDex request!")
                         return
         r = r['data']
         embed = discord.Embed(
@@ -80,7 +80,7 @@ class MangaDex:
                         resp = await res.read()
                         r = json.loads(resp)
                     else:
-                        print("MangaReader down!")
+                        print("Something went wrong with the MangaDex request!")
                         return
         r = r['data']
         return r['attributes']['title']['en']
@@ -94,7 +94,7 @@ class MangaDex:
                         r = json.loads(resp)
                         return r
                     else:
-                        print("MangaReader down!")
+                        print("Something went wrong with the MangaDex request!")
                         return
 
     async def get_latest(self, id):
@@ -107,7 +107,7 @@ class MangaDex:
                         resp = await res.read()
                         r = json.loads(resp)
                     else:
-                        print("MangaReader down!")
+                        print("Something went wrong with the MangaDex request!")
                         return
         data = r['data']
         scanlation_id = data[0]['relationships'][0]['id']
@@ -148,7 +148,7 @@ class MangaDex:
                             resp = await res.read()
                             r = json.loads(resp)
                     else:
-                        print("MangaReader down!")
+                        print("Something went wrong with the MangaDex request!")
                         return
             r = r['data']
             rs = r[0]
@@ -161,7 +161,7 @@ class MangaDex:
                             resp = await res.read()
                             r = json.loads(resp)
                     else:
-                        print("MangaReader down!")
+                        print("Something went wrong with the MangaDex request!")
                         return
             rs = r['data']
             info = rs['attributes']
