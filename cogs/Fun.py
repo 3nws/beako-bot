@@ -49,13 +49,13 @@ class Fun(commands.Cog):
     @app_commands.autocomplete(choices=rps_autocomplete)
     @app_commands.guilds(discord.Object(id=658947832392187906))
     async def rps(self, i: discord.Interaction, choices:str):
-        if (choice == 'rock'):
+        choices = choices.lower()
+        if (choices == 'rock'):
             counter = 'paper'
-        elif (choice == 'paper'):
+        elif (choices == 'paper'):
             counter = 'scissors'
         else:
             counter = 'rock'
-
         random_pick = random.randint(1, 3)
 
         if (random_pick == 1):
