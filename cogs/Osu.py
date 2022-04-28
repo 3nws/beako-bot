@@ -1,6 +1,5 @@
 import discord
 import os
-import requests
 import asyncio
 
 from discord.ui import View, Select
