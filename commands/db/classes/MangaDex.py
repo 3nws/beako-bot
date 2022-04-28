@@ -1,4 +1,3 @@
-import requests
 import discord
 import aiohttp
 import json
@@ -98,7 +97,6 @@ class MangaDex:
                         return
 
     async def get_latest(self, id):
-        s = requests.session()
         url = self.base_chapter_url + '?limit=5&manga=' + id + \
             '&translatedLanguage%5B%5D=en&order%5Bvolume%5D=desc&order%5Bchapter%5D=desc&excludedGroups%5B%5D=4f1de6a2-f0c5-4ac5-bce5-02c7dbb67deb'
         async with aiohttp.ClientSession() as session:
@@ -109,6 +107,18 @@ class MangaDex:
                     else:
                         print("MangaReader down!")
                         return
+        data = r['data']
+        if len(data)==0:
+            url = self.base_chapter_url + '?limit=5&manga=' + id + \
+            '&translatedLanguage%5B%5D=en&order%5Bvolume%5D=desc&order%5Bchapter%5D=desc'
+            async with aiohttp.ClientSession() as session:
+                async with session.get(url) as res:
+                        if res.status == 200:
+                            resp = await res.read()
+                            r = json.loads(resp)
+                        else:
+                            print("Something went wrong with the MangaDex request!")
+                            return
         data = r['data']
         scanlation_id = data[0]['relationships'][0]['id']
         attrs = data[0]['attributes']
