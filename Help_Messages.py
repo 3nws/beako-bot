@@ -7,6 +7,7 @@ messages = {
                  \n-manga (alias: info)\
                  \n-latest_chapter (aliases: latest, last, chp)\
                  \n-avatar\
+                 \n-server_avatar\
                  \n-banner\
                  \n-following (aliases: follow, fol, watching, follows)\
                  \n-say\
