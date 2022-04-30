@@ -162,6 +162,7 @@ async def on_ready():
             type=discord.ActivityType.listening, name="r.help and Songstress Liliana!"
         )
     )
+    print("Synced!", await bot.tree.sync())
     change_avatar.start()
     check_chapter.start()
     filter_channels.start()
