@@ -4,22 +4,23 @@ import asyncio
 
 from discord.ui import View, Select
 from discord.ext import commands
+from discord import app_commands
 from cogs.classes.OsuAPI import OsuAPI
 from OsuMods import num_to_mod
 
 
 class Osu(commands.Cog):
 
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.osu = OsuAPI()
 
-    @commands.command(aliases=['u', 'user'])
-    async def osu(self, ctx, player_name=None):
+    @app_commands.command(name="osu")
+    async def osu(self, i: discord.Interaction, player_name:str=None):
         mode = "0"
         if player_name is None:
-            return await ctx.send("Who, in fact?!\nUse `r.help osu` for more information, I suppose!")
-        msg = await ctx.send("Loading, I suppose!")
+            return await i.response.send_message("Who, in fact?!\nUse `r.help osu` for more information, I suppose!")
+        msg = await i.channel.send("Loading, I suppose!")
         try:
             player = await self.osu.get_user(player_name, mode)
             game_mode = self.osu.game_modes[mode]
@@ -51,14 +52,14 @@ class Osu(commands.Cog):
             msg = await msg.edit(content='', embed=embed, view=view)
         except Exception as e:
             print(e)
-            await msg.edit("Something went wrong, in fact!")
+            await i.response.send_message("Something went wrong, in fact!")
 
-    @commands.command(aliases=['rc', 'rs'])
-    async def recent(self, ctx, player_name=None):
+    @app_commands.command(name="recent")
+    async def recent(self, i: discord.Interaction, player_name:str=None):
         mode = "0"
         if player_name is None:
-            return await ctx.send("Who, in fact?!\nUse `r.help recent` for more information, I suppose!")
-        msg = await ctx.send("Loading, I suppose!")
+            return await i.response.send_message("Who, in fact?!\nUse `r.help recent` for more information, I suppose!")
+        msg = await i.channel.send("Loading, I suppose!")
         try:
             scores = await self.osu.get_user_recent(player_name, mode, 5)
             player = await self.osu.get_user(player_name, mode)
@@ -146,14 +147,14 @@ class Osu(commands.Cog):
             msg = await msg.edit(content='', embed=embed, view=view)
         except Exception as e:
             print(e)
-            await msg.edit("Something went wrong, in fact!")
+            await i.response.send_message("Something went wrong, in fact!")
 
-    @commands.command(aliases=['top', 'best'])
-    async def osutop(self, ctx, player_name=None):
+    @app_commands.command(name="best")
+    async def osutop(self, i: discord.Interaction, player_name:str=None):
         mode = "0"
         if player_name is None:
-            return await ctx.send("Who, in fact?!\nUse `r.help osutop` for more information, I suppose!")
-        msg = await ctx.send("Loading, I suppose!")
+            return await i.response.send_message("Who, in fact?!\nUse `r.help osutop` for more information, I suppose!")
+        msg = await i.channel.send("Loading, I suppose!")
         try:
             player = await self.osu.get_user(player_name, mode)
             best_scores = await self.osu.get_best(player_name, mode, 5)
@@ -241,8 +242,8 @@ class Osu(commands.Cog):
             msg = await msg.edit(content='', embed=embed, view=view)
         except Exception as e:
             print(e)
-            await msg.edit("Something went wrong, in fact!")
+            await i.response.send_message("Something went wrong, in fact!")
 
 
-async def setup(bot):
+async def setup(bot: commands.Bot):
     await bot.add_cog(Osu(bot))

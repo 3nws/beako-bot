@@ -6,6 +6,7 @@ import json
 
 from datetime import datetime
 from discord.ext import commands
+from discord import app_commands
 from dotenv import load_dotenv
 from pysaucenao import SauceNao, PixivSource, GenericSource
 
@@ -16,7 +17,7 @@ load_dotenv()
 
 
 class Util(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.TwitterSource = pysaucenao.containers.TwitterSource
         self.saucenao_api_key = os.getenv('SAUCENAO_API_KEY')
@@ -26,8 +27,8 @@ class Util(commands.Cog):
         self.saucenao = SauceNao(api_key=self.saucenao_api_key)
 
     # send available series
-    @commands.command()
-    async def series(self, ctx):
+    @app_commands.command(name="series")
+    async def series(self, i: discord.Interaction):
         series = {
             "Kaguya-sama: Love is War (kaguya)",
             "Oshi no Ko (onk)",
@@ -43,54 +44,54 @@ class Util(commands.Cog):
             desc += f"**{counter}.** {s}\n"
             counter += 1
         frame.description = desc
-        await ctx.send(embed=frame)
+        await i.response.send_message(embed=frame)
 
     # sends a user's avatar
-    @commands.command()
-    async def avatar(self, ctx, member: discord.Member = None):
+    @app_commands.command(name="avatar")
+    async def avatar(self, i: discord.Interaction, member: discord.Member = None):
         avatar_frame = discord.Embed(
             color=discord.Colour.random()
         )
         if member:
             avatar_frame.add_field(name=str(
-                ctx.author) + " requested", value=member.mention + "'s avatar, I suppose!")
+                i.user) + " requested", value=member.mention + "'s avatar, I suppose!")
             avatar_frame.set_image(url=f'{member.avatar.url}')
         else:
             avatar_frame.add_field(
-                name=str(ctx.author) + " requested", value=" their own avatar, I suppose!")
-            avatar_frame.set_image(url=f'{ctx.author.avatar.url}')
+                name=str(i.user) + " requested", value=" their own avatar, I suppose!")
+            avatar_frame.set_image(url=f'{i.user.avatar.url}')
 
-        await ctx.send(embed=avatar_frame)
+        await i.response.send_message(embed=avatar_frame)
         
     # sends a user's server avatar
-    @commands.command(aliases=['savatar'])
-    async def server_avatar(self, ctx, member: discord.Member = None):
+    @app_commands.command(name="savatar")
+    async def server_avatar(self, i: discord.Interaction, member: discord.Member = None):
         avatar_frame = discord.Embed(
             color=discord.Colour.random()
         )
         if member:
             if member.display_avatar is None:
-                return await self.avatar(ctx, member)
+                return await self.avatar(i, member)
             avatar_frame.add_field(name=str(
-                ctx.author) + " requested", value=member.mention + "'s avatar, I suppose!")
+                i.user) + " requested", value=member.mention + "'s server avatar, I suppose!")
             avatar_frame.set_image(url=f'{member.display_avatar.url}')
         else:
-            if ctx.author.display_avatar is None:
-                return await self.avatar(ctx, member)
+            if i.user.display_avatar is None:
+                return await self.avatar(i, member)
             avatar_frame.add_field(
-                name=str(ctx.author) + " requested", value=" their own avatar, I suppose!")
-            avatar_frame.set_image(url=f'{ctx.author.display_avatar.url}')
+                name=str(i.user) + " requested", value=" their own server avatar, I suppose!")
+            avatar_frame.set_image(url=f'{i.user.display_avatar.url}')
 
-        await ctx.send(embed=avatar_frame)
+        await i.response.send_message(embed=avatar_frame)
 
     # sends a user's banner
-    @commands.command()
-    async def banner(self, ctx, member: discord.Member = None):
+    @app_commands.command(name="banner")
+    async def banner(self, i: discord.Interaction, member: discord.Member = None):
         embed = discord.Embed(
             color=discord.Colour.random()
         )
         image_size = '?size=1024'
-        member = ctx.author if not member else member
+        member = i.user if not member else member
         base_url = 'https://discord.com/api'
         users_endpoint = f'/users/{member.id}'
         headers = {'Authorization': f'Bot {self.TOKEN}'}
@@ -114,24 +115,24 @@ class Util(commands.Cog):
 
         if f'None.{file_extension}' in r:
             embed.add_field(name=str(
-                ctx.author) + " requested", value=member.mention + "'s banner, I suppose! Shame they don't have any, in fact!")
-        elif member != ctx.author:
+                i.user) + " requested", value=member.mention + "'s banner, I suppose! Shame they don't have any, in fact!")
+        elif member != i.user:
             embed.add_field(name=str(
-                ctx.author) + " requested", value=member.mention + "'s banner, I suppose!")
+                i.user) + " requested", value=member.mention + "'s banner, I suppose!")
             embed.set_image(url=f'{r}')
         else:
             embed.add_field(
-                name=str(ctx.author) + " requested", value=" their own banner, I suppose!")
+                name=str(i.user) + " requested", value=" their own banner, I suppose!")
             embed.set_image(url=f'{r}')
 
-        await ctx.send(embed=embed)
+        await i.response.send_message(embed=embed)
 
     # reverse search image
-    @commands.command(aliases=["ris", "sauce", "source"])
-    async def reverse_image_search(self, ctx, url=""):
+    @app_commands.command(name="sauce")
+    async def reverse_image_search(self, i: discord.Interaction, url:str=""):
         try:
             if url == "":
-                await ctx.send("What image do you want to search for, I suppose?!")
+                await i.response.send_message("What image do you want to search for, I suppose?!")
                 return
             sauce_frame = discord.Embed(
                 color=discord.Colour.random()
@@ -161,17 +162,15 @@ class Util(commands.Cog):
                 sauce_frame.set_thumbnail(url=twitter_result.thumbnail)
 
             sauce_frame.set_footer(
-                text=f"on {str(ctx.author)}'s request, I suppose!", icon_url=ctx.author.avatar.url)
+                text=f"on {str(i.user)}'s request, I suppose!", icon_url=i.user.avatar.url)
 
-            await ctx.send(embed=sauce_frame, reference=ctx.message)
-        except BaseException as e:
-            await ctx.send("It's not Betty's fault. Something went wrong, in fact!", reference=ctx.message)
-
-        await ctx.message.delete()
+            await i.response.send_message(embed=sauce_frame)
+        except BaseException:
+            await i.response.send_message("It's not Betty's fault. Something went wrong, in fact!")
 
     # creates a poll with two choices
-    @commands.command()
-    async def poll(self, ctx, c1, c2, *, question=""):
+    @app_commands.command(name="poll")
+    async def poll(self, i: discord.Interaction, c1:str, c2:str, *, question:str=""):
         embed = discord.Embed(
             title=question.upper(),
             description=f":one: {c1}\n\n:two: {c2}\n",
@@ -179,18 +178,20 @@ class Util(commands.Cog):
         )
 
         embed.set_footer(
-            text=f"Poll created by {ctx.author.nick}", icon_url=ctx.author.avatar.url)
+            text=f"Poll created by {i.user.nick}", icon_url=i.user.avatar.url)
 
-        msg = await ctx.send(embed=embed)
+        msg = await i.channel.send(embed=embed)
 
         emojis = ['1️⃣', '2️⃣']
 
         for emoji in emojis:
             await msg.add_reaction(emoji)
 
+        await i.response.send_message("I'll be back with the results in three minutes, I suppose!")
+        
         await asyncio.sleep(180)
 
-        message_1 = await ctx.channel.fetch_message(msg.id)
+        message_1 = await i.channel.fetch_message(msg.id)
 
         reactions = {react.emoji: react.count for react in message_1.reactions}
 
@@ -201,10 +202,10 @@ class Util(commands.Cog):
         )
 
         results.set_footer(
-            text=f"For the poll '{question}'", icon_url=ctx.author.avatar.url)
+            text=f"For the poll '{question}'", icon_url=i.user.avatar.url)
 
-        await ctx.send(embed=results)
+        await i.channel.send(embed=results)
 
 
-async def setup(bot):
+async def setup(bot: commands.Bot):
     await bot.add_cog(Util(bot))

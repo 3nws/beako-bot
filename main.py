@@ -26,7 +26,7 @@ from commands.db.r_db import (
 from commands.db.r_add_channel import commands_add_channel
 from commands.db.r_remove_channel import commands_remove_channel
 
-# logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 # logger = logging.getLogger('discord')
 # logger.setLevel(logging.DEBUG)
@@ -57,47 +57,47 @@ async def load_cogs():
 
 
 # get manga info
-@bot.command(aliases=["info"])
-async def manga(ctx, *, series=""):
-    await commands_get_manga_info(ctx, series)
+@bot.tree.command(name='manga', guild = None)
+async def manga(interaction: discord.Interaction, *, series:str=""):
+    await commands_get_manga_info(interaction, series)
 
 
 # adds the channel to the notifications list
-@bot.command(aliases=["add"])
+@bot.tree.command(name='add', guild = None)
 @commands.has_permissions(manage_channels=True)
-async def add_channel(ctx, *, series=""):
-    await commands_add_channel(bot, ctx, ChannelList(series, ctx.channel.id))
+async def add_channel(interaction: discord.Interaction, *, series:str=""):
+    await commands_add_channel(bot, interaction, ChannelList(series, interaction.channel_id))
 
 
 # removes the channel from the notifications list
-@bot.command(aliases=["remove"])
+@bot.tree.command(name='remove', guild = None)
 @commands.has_permissions(manage_channels=True)
-async def remove_channel(ctx, *, series=""):
-    await commands_remove_channel(bot, ctx, ChannelList(series, ctx.channel.id))
+async def remove_channel(interaction: discord.Interaction, *, series:str=""):
+    await commands_remove_channel(bot, interaction, ChannelList(series, interaction.channel_id))
 
 
 # sends a message with the list of series a channel is following
-@bot.command(aliases=["watching", "fol", "follow", "follows"])
-async def following(ctx):
-    await commands_following(ctx, bot)
+@bot.tree.command(name='following', guild = None)
+async def following(interaction: discord.Interaction):
+    await commands_following(interaction, bot)
 
 
 # sends the latest english translated chapter
-@bot.command(aliases=["latest", "last", "chp"])
-async def latest_chapter(ctx, *, series=""):
-    await commands_latest_chapter(bot, ctx, series)
+@bot.tree.command(name='last', guild = None)
+async def latest_chapter(interaction: discord.Interaction, *, series:str=""):
+    await commands_latest_chapter(bot, interaction, series)
 
 
 # flip your friends off
-@bot.command()
-async def flip(ctx):
-    await commands_flip(ctx)
+@bot.tree.command(name='flip', guild = None)
+async def flip(interaction: discord.Interaction):
+    await commands_flip(interaction)
 
 
 # help command
-@bot.command()
-async def help(ctx, *, cmd=""):
-    await commands_help(ctx, Help(cmd))
+@bot.tree.command(name='help', guild = None)
+async def help(interaction: discord.Interaction, *, cmd:str=""):
+    await commands_help(interaction, Help(cmd))
 
 
 # task sets a random avatar every day
@@ -140,6 +140,14 @@ async def on_guild_remove(guild):
     print(msg)
     
 
+
+@bot.command()
+@commands.is_owner()
+async def sync(ctx, guild=None):
+    if guild is None:
+        print(await bot.tree.sync(guild=discord.Object(658947832392187906)))
+    else:
+        print(await bot.tree.sync())
 
 # runs everytime the bot comes online
 @bot.event

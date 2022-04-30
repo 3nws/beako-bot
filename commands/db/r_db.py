@@ -184,20 +184,21 @@ async def send_messages(bot, channels, title, data, db_rec, anchor):
 
 
 # sends the latest english translated chapter
-async def commands_latest_chapter(bot, ctx, series):
+async def commands_latest_chapter(bot, i, series):
     if series == "":
         message = "What series do you want to know about, in fact!"
     else:
-        return await last_chapter(bot, series, ctx.channel.id)
+        return await last_chapter(bot, series, i.channel_id)
 
-    await ctx.send(message)
+    await i.response.send_message(message)
 
 
 # send manga info
-async def commands_get_manga_info(ctx, series):
+async def commands_get_manga_info(i, series):
     md = MangaDex()
     embed = await md.get_info(series)
-    await ctx.send(embed=embed)
+    print(embed)
+    await i.channel.send(embed=embed)
 
 
 # add the channel to the receiver list
@@ -246,7 +247,7 @@ async def commands_add_channel(bot, ctx, id, series):
 
 
 # remove the channel from the receiver list
-async def commands_remove_channel(bot, ctx, id, series):
+async def commands_remove_channel(bot, i, id, series):
     md = MangaDex()
     channel_entry = {
         "id": id,
@@ -285,12 +286,12 @@ async def commands_remove_channel(bot, ctx, id, series):
             return failure_msg
     else:
         channel_exists = True if channels_md.find_one(
-            {"channel_id": str(ctx.channel.id)}) else False
+            {"channel_id": str(i.channel_id)}) else False
         if not channel_exists:
             return "This channel is not on any receiver list, in fact!"
 
         mangas_on_channel = (channels_md.find_one(
-            {"channel_id": str(ctx.channel.id)}))['mangas']
+            {"channel_id": str(i.channel_id)}))['mangas']
         mangas_dict = eval(mangas_on_channel)
 
         embed = discord.Embed(
@@ -542,23 +543,23 @@ async def tasks_check_chapter(bot):
 
 
 # flip command
-async def commands_flip(ctx):
+async def commands_flip(i):
     pipe = [{"$sample": {"size": 1}}]
     flip = list(flips.aggregate(pipeline=pipe))[0]["url"]
-    await ctx.send(flip)
+    await i.response.send_message(flip)
 
 
 # send a list of followed series of a channel
-async def commands_following(ctx, bot):
+async def commands_following(i, bot):
     series = []
     for channels in all_channels:
         for channel in db_channels[channels].find():
-            if bot.get_channel(channel['id']) == ctx.channel:
+            if bot.get_channel(channel['id']) == i.channel:
                 series.append(collection_aliases[channels])
 
     channel_exists = channels_md.find_one(
-        {"channel_id": str(ctx.channel.id)}) if channels_md.find_one(
-        {"channel_id": str(ctx.channel.id)}) else False
+        {"channel_id": str(i.channel_id)}) if channels_md.find_one(
+        {"channel_id": str(i.channel_id)}) else False
     if channel_exists:
         md = MangaDex()
         mangas_on_channel = (channel_exists)['mangas']
@@ -580,4 +581,4 @@ async def commands_following(ctx, bot):
             desc += f"**{counter}.** {s}\n"
             counter += 1
         frame.description = desc
-    await ctx.send(embed=frame)
+    await i.response.send_message(embed=frame)

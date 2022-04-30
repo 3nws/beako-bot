@@ -171,7 +171,7 @@ class MangaDex:
                             resp = await res.read()
                             r = json.loads(resp)
                     else:
-                        print("Something went wrong with the MangaDex request!")
+                        print("MangaReader down!")
                         return
             rs = r['data']
             info = rs['attributes']
