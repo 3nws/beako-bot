@@ -126,7 +126,7 @@ async def on_command_error(ctx, error):
 
 @bot.event
 async def on_guild_join(guild):
-    msg = f"Just joined {guild.name}, in fact!"
+    msg = f"Just joined {guild.name} with {guild.member_count} members, in fact!"
     user = bot.get_user(442715989310832650)
     await user.send(msg)
     print(msg)
@@ -139,8 +139,6 @@ async def on_guild_remove(guild):
     await user.send(msg)
     print(msg)
     
-
-
 @bot.command()
 @commands.is_owner()
 async def sync(ctx, guild=None):
