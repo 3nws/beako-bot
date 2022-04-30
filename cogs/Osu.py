@@ -19,7 +19,7 @@ class Osu(commands.Cog):
     async def osu(self, i: discord.Interaction, player_name:str=None):
         mode = "0"
         if player_name is None:
-            return await i.response.send_message("Who, in fact?!\nUse `r.help osu` for more information, I suppose!")
+            return await i.response.send_message("Who, in fact?!\nUse `/help osu` for more information, I suppose!")
         msg = await i.channel.send("Loading, I suppose!")
         try:
             player = await self.osu.get_user(player_name, mode)
@@ -58,7 +58,7 @@ class Osu(commands.Cog):
     async def recent(self, i: discord.Interaction, player_name:str=None):
         mode = "0"
         if player_name is None:
-            return await i.response.send_message("Who, in fact?!\nUse `r.help recent` for more information, I suppose!")
+            return await i.response.send_message("Who, in fact?!\nUse `/help recent` for more information, I suppose!")
         msg = await i.channel.send("Loading, I suppose!")
         try:
             scores = await self.osu.get_user_recent(player_name, mode, 5)
@@ -153,7 +153,7 @@ class Osu(commands.Cog):
     async def osutop(self, i: discord.Interaction, player_name:str=None):
         mode = "0"
         if player_name is None:
-            return await i.response.send_message("Who, in fact?!\nUse `r.help osutop` for more information, I suppose!")
+            return await i.response.send_message("Who, in fact?!\nUse `/help osutop` for more information, I suppose!")
         msg = await i.channel.send("Loading, I suppose!")
         try:
             player = await self.osu.get_user(player_name, mode)
