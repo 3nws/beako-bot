@@ -44,7 +44,7 @@ class MangaDex:
                         resp = await res.read()
                         r = json.loads(resp)
                     else:
-                        print("MangaReader down!")
+                        print("Something went wrong with the MangaDex request!")
                         return
         r = r['data']
         embed = discord.Embed(
@@ -79,7 +79,7 @@ class MangaDex:
                         resp = await res.read()
                         r = json.loads(resp)
                     else:
-                        print("MangaReader down!")
+                        print("Something went wrong with the MangaDex request!")
                         return
         r = r['data']
         return r['attributes']['title']['en']
@@ -93,7 +93,7 @@ class MangaDex:
                         r = json.loads(resp)
                         return r
                     else:
-                        print("MangaReader down!")
+                        print("Something went wrong with the MangaDex request!")
                         return
 
     async def get_latest(self, id):
@@ -105,7 +105,7 @@ class MangaDex:
                         resp = await res.read()
                         r = json.loads(resp)
                     else:
-                        print("MangaReader down!")
+                        print("Something went wrong with the MangaDex request!")
                         return
         data = r['data']
         if len(data)==0:
@@ -142,7 +142,7 @@ class MangaDex:
                         image_server_url = f"{image_server_url}/data"
                         for filename in self.data:
                             image_urls.append(f"{image_server_url}/{self.hash}/{filename}")
-        
+                            
         chapter = Chapter(chapter_id, chapter_title,
                           chapter_num, translated_lang, num_of_pages, chapter_link, image_urls, scanlation_id)
         
@@ -158,7 +158,7 @@ class MangaDex:
                             resp = await res.read()
                             r = json.loads(resp)
                     else:
-                        print("MangaReader down!")
+                        print("Something went wrong with the MangaDex request!")
                         return
             r = r['data']
             rs = r[0]

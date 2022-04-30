@@ -7,6 +7,7 @@ messages = {
                  \n-manga (alias: info)\
                  \n-latest_chapter (aliases: latest, last, chp)\
                  \n-avatar\
+                 \n-server_avatar\
                  \n-banner\
                  \n-following (aliases: follow, fol, watching, follows)\
                  \n-say\
@@ -33,6 +34,8 @@ messages = {
                  \n-rps, in fact!```",
 
         'avatar': "```Betty will send a member's(author's if no member is passed) avatar to the text channel, in fact!```",
+
+        'server_avatar': "```Betty will send a member's(author's if no member is passed) server avatar to the text channel, in fact!```",
 
         'banner': "```Betty will send a member's(author's if no member is passed) banner to the text channel, in fact!```",
 
@@ -133,4 +136,5 @@ aliases = {
     'top': 'osutop',
     'rs': 'recent',
     'rc': 'recent',
+    'savatar': 'server_avatar'
 }

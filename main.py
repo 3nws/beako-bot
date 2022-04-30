@@ -124,6 +124,22 @@ async def on_command_error(ctx, error):
     if isinstance(error, discord.ext.commands.errors.CommandNotFound):
         await ctx.send("What is that, I suppose?!\nTry `r.help`, in fact!")
 
+@bot.event
+async def on_guild_join(guild):
+    msg = f"Just joined {guild.name}, in fact!"
+    user = bot.get_user(442715989310832650)
+    await user.send(msg)
+    print(msg)
+    
+@bot.event
+async def on_guild_remove(guild):
+    msg = f"Just left {guild.name}, in fact!\n\
+            They didn't like Betty, I suppose!"
+    user = bot.get_user(442715989310832650)
+    await user.send(msg)
+    print(msg)
+    
+
 
 @bot.command()
 @commands.is_owner()
