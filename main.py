@@ -178,7 +178,7 @@ async def on_ready():
         server_counter += 1
     await bot.change_presence(
         activity=discord.Activity(
-            type=discord.ActivityType.listening, name="r.help and Songstress Liliana!"
+            type=discord.ActivityType.listening, name="/help and Songstress Liliana!"
         )
     )
     change_avatar.start()
