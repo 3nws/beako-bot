@@ -20,7 +20,6 @@ class Admin(commands.Cog):
 
     # kicks member
     @app_commands.command(name="kick")
-    @app_commands.guilds(discord.Object(id=658947832392187906))
     @commands.has_permissions(kick_members=True)
     async def kick(self, i: discord.Interaction, user: discord.Member, *, reason:str=None):
         if user.top_role > i.user.top_role:
@@ -30,7 +29,6 @@ class Admin(commands.Cog):
 
     # bans member
     @app_commands.command(name="ban")
-    @app_commands.guilds(discord.Object(id=658947832392187906))
     @commands.has_permissions(ban_members=True)
     async def ban(self, i: discord.Interaction, user: discord.Member, *, reason:str=None):
         if user.top_role > i.user.top_role:
@@ -50,7 +48,6 @@ class Admin(commands.Cog):
 
     # unbans user
     @app_commands.command(name="unban")
-    @app_commands.guilds(discord.Object(id=658947832392187906))
     @commands.has_permissions(ban_members=True)
     async def unban(self, i: discord.Interaction, *, member: discord.User):
         await i.guild.unban(member)
@@ -73,12 +70,12 @@ class Admin(commands.Cog):
 
     # clears chat
     @app_commands.command(name="clean")
-    @app_commands.guilds(discord.Object(id=658947832392187906))
     @app_commands.autocomplete(direction=clean_autocomplete)
     @commands.has_permissions(administrator=True)
     async def clean(self, i: discord.Interaction, limit: int, direction: str = None, msg_id: str = None):
         direction = self.dir_aliases[direction] if direction in self.dir_aliases else direction
-        direction = direction.lower()
+        if direction is not None:
+            direction = direction.lower()
 
         if (msg_id):
             msg = await i.channel.fetch_message(int(msg_id))
@@ -102,7 +99,6 @@ class Admin(commands.Cog):
 
     # deletes a member's all messages
     @app_commands.command(name="purge")
-    @app_commands.guilds(discord.Object(id=658947832392187906))
     @commands.has_permissions(administrator=True)
     async def purge(self, i: discord.Interaction, member: discord.Member = None):
         if member == self.bot.user:

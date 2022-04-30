@@ -13,7 +13,6 @@ class Timer(commands.Cog):
 
     # reminds the user about anything after specified time
     @app_commands.command(name="remind")
-    @app_commands.guilds(discord.Object(id=658947832392187906))
     async def remind(self, i: discord.Interaction, time:str, unit:str=None, *, reminder:str=""):
         embed = discord.Embed(color=discord.Colour.random(),
                               timestamp=datetime.utcnow())
@@ -61,7 +60,6 @@ class Timer(commands.Cog):
 
     # sets an alarm for the user
     @app_commands.command(name="alarm")
-    @app_commands.guilds(discord.Object(id=658947832392187906))
     async def alarm(self, i: discord.Interaction, time:str="", *, reminder:str=""):
         try:
             embed = discord.Embed(color=discord.Colour.random(),

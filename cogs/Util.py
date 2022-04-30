@@ -28,7 +28,6 @@ class Util(commands.Cog):
 
     # send available series
     @app_commands.command(name="series")
-    @app_commands.guilds(discord.Object(id=658947832392187906))
     async def series(self, i: discord.Interaction):
         series = {
             "Kaguya-sama: Love is War (kaguya)",
@@ -49,7 +48,6 @@ class Util(commands.Cog):
 
     # sends a user's avatar
     @app_commands.command(name="avatar")
-    @app_commands.guilds(discord.Object(id=658947832392187906))
     async def avatar(self, i: discord.Interaction, member: discord.Member = None):
         avatar_frame = discord.Embed(
             color=discord.Colour.random()
@@ -67,7 +65,6 @@ class Util(commands.Cog):
         
     # sends a user's server avatar
     @app_commands.command(name="savatar")
-    @app_commands.guilds(discord.Object(id=658947832392187906))
     async def server_avatar(self, i: discord.Interaction, member: discord.Member = None):
         avatar_frame = discord.Embed(
             color=discord.Colour.random()
@@ -76,20 +73,19 @@ class Util(commands.Cog):
             if member.display_avatar is None:
                 return await self.avatar(i, member)
             avatar_frame.add_field(name=str(
-                i.user) + " requested", value=member.mention + "'s avatar, I suppose!")
+                i.user) + " requested", value=member.mention + "'s server avatar, I suppose!")
             avatar_frame.set_image(url=f'{member.display_avatar.url}')
         else:
             if i.user.display_avatar is None:
                 return await self.avatar(i, member)
             avatar_frame.add_field(
-                name=str(i.user) + " requested", value=" their own avatar, I suppose!")
+                name=str(i.user) + " requested", value=" their own server avatar, I suppose!")
             avatar_frame.set_image(url=f'{i.user.display_avatar.url}')
 
         await i.response.send_message(embed=avatar_frame)
 
     # sends a user's banner
     @app_commands.command(name="banner")
-    @app_commands.guilds(discord.Object(id=658947832392187906))
     async def banner(self, i: discord.Interaction, member: discord.Member = None):
         embed = discord.Embed(
             color=discord.Colour.random()
@@ -133,7 +129,6 @@ class Util(commands.Cog):
 
     # reverse search image
     @app_commands.command(name="sauce")
-    @app_commands.guilds(discord.Object(id=658947832392187906))
     async def reverse_image_search(self, i: discord.Interaction, url:str=""):
         try:
             if url == "":
@@ -175,7 +170,6 @@ class Util(commands.Cog):
 
     # creates a poll with two choices
     @app_commands.command(name="poll")
-    @app_commands.guilds(discord.Object(id=658947832392187906))
     async def poll(self, i: discord.Interaction, c1:str, c2:str, *, question:str=""):
         embed = discord.Embed(
             title=question.upper(),

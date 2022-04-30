@@ -18,7 +18,6 @@ class Gif(commands.Cog):
 
     # pout uwu
     @app_commands.command(name="pout")
-    @app_commands.guilds(discord.Object(id=658947832392187906))
     async def pout(self, i: discord.Interaction):
         async with aiohttp.ClientSession() as session:
             async with session.get("https://g.tenor.com/v1/search?q=%s&key=%s" %
@@ -41,7 +40,6 @@ class Gif(commands.Cog):
 
     # hug uwu
     @app_commands.command(name="hug")
-    @app_commands.guilds(discord.Object(id=658947832392187906))
     async def hug(self, i: discord.Interaction, user: discord.Member = None):
         async with aiohttp.ClientSession() as session:
             async with session.get("https://g.tenor.com/v1/search?q=%s&key=%s" %
@@ -72,7 +70,6 @@ class Gif(commands.Cog):
 
     # smug uwu
     @app_commands.command(name="smug")
-    @app_commands.guilds(discord.Object(id=658947832392187906))
     async def smug(self, i: discord.Interaction):
         async with aiohttp.ClientSession() as session:
             async with session.get("https://g.tenor.com/v1/search?q=%s&key=%s" %
@@ -95,7 +92,6 @@ class Gif(commands.Cog):
 
     # pat uwu
     @app_commands.command(name="pat")
-    @app_commands.guilds(discord.Object(id=658947832392187906))
     async def pat(self, i: discord.Interaction, user: discord.Member = None):
         async with aiohttp.ClientSession() as session:
             async with session.get("https://g.tenor.com/v1/search?q=%s&key=%s" %

@@ -14,7 +14,6 @@ class Fun(commands.Cog):
 
     # beako will repeat what is passed in
     @app_commands.command(name="say")
-    @app_commands.guilds(discord.Object(id=658947832392187906))
     async def say(self, i: discord.Interaction, *, msg:str=""):
         if (msg == ""):
             await i.response.send_message("What do you want me to say, in fact?!")
@@ -26,7 +25,6 @@ class Fun(commands.Cog):
 
     # roll iq
     @app_commands.command(name="roll")
-    @app_commands.guilds(discord.Object(id=658947832392187906))
     async def roll(self, i: discord.Interaction, num:str=""):
         if num.isnumeric():
             number = random.randint(1, int(num))
@@ -47,7 +45,6 @@ class Fun(commands.Cog):
     # play rock paper scissors
     @app_commands.command(name="rps")
     @app_commands.autocomplete(choices=rps_autocomplete)
-    @app_commands.guilds(discord.Object(id=658947832392187906))
     async def rps(self, i: discord.Interaction, choices:str):
         choices = choices.lower()
         if (choices == 'rock'):
@@ -68,7 +65,6 @@ class Fun(commands.Cog):
 
     # coin flip
     @app_commands.command(name="coin")
-    @app_commands.guilds(discord.Object(id=658947832392187906))
     async def coinflip(self, i: discord.Interaction, heads:str=None, tails:str=None):
         if heads is not None and tails is None:
             embed = discord.Embed(
