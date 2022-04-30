@@ -4,6 +4,7 @@ import dns
 import asyncio
 import logging
 import threading
+import typing
 
 from dotenv import load_dotenv
 from discord.ext import tasks, commands
@@ -139,13 +140,31 @@ async def on_guild_remove(guild):
     await user.send(msg)
     print(msg)
     
+# syncing slash commands
 @bot.command()
 @commands.is_owner()
-async def sync(ctx, guild=None):
-    if guild is None:
-        print(await bot.tree.sync(guild=discord.Object(658947832392187906)))
-    else:
-        print(await bot.tree.sync())
+async def sync(ctx: discord.Context, guilds: commands.Greedy[discord.Object], spec: typing.Optional[typing.Literal["~"]] = None) -> None:
+    if not guilds:
+        if spec == "~":
+            fmt = await ctx.bot.tree.sync(guild=ctx.guild)
+        else:
+            fmt = await ctx.bot.tree.sync()
+
+        await ctx.send(
+            f"Synced {len(fmt)} commands {'globally' if spec is None else 'to the current guild.'}"
+        )
+        return
+
+    fmt = 0
+    for guild in guilds:
+        try:
+            await ctx.bot.tree.sync(guild=guild)
+        except discord.HTTPException:
+            pass
+        else:
+            fmt += 1
+
+    await ctx.send(f"Synced the tree to {fmt}/{len(guilds)} guilds.")
 
 # runs everytime the bot comes online
 @bot.event
@@ -162,7 +181,6 @@ async def on_ready():
             type=discord.ActivityType.listening, name="r.help and Songstress Liliana!"
         )
     )
-    print("Synced!", await bot.tree.sync())
     change_avatar.start()
     check_chapter.start()
     filter_channels.start()
