@@ -143,7 +143,7 @@ async def on_guild_remove(guild):
 # syncing slash commands
 @bot.command()
 @commands.is_owner()
-async def sync(ctx: discord.Context, guilds: commands.Greedy[discord.Object], spec: typing.Optional[typing.Literal["~"]] = None) -> None:
+async def sync(ctx: commands.Context, guilds: commands.Greedy[discord.Object], spec: typing.Optional[typing.Literal["~"]] = None) -> None:
     if not guilds:
         if spec == "~":
             fmt = await ctx.bot.tree.sync(guild=ctx.guild)
