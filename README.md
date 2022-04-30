@@ -10,58 +10,58 @@ I use [pysaucenao](https://github.com/FujiMakoto/pysaucenao) for reverse image s
 
 ## Series tracking and database action commands and the help command
 
-- `r.help cmd` (sends detailed information about the command or just general information if no argument is passed)
-- `r.add_channel series` (adds the text channel to the list that will receive notifications, if the series is not one of the four mentioned above it will search on mangadex and add them instead), alias: `r.add`
-- `r.remove_channel series` (remove the text channel from the list that will receive notifications, if no series argument is passed it will show the series followed on mangadex by the text channel), aliases: `r.remove`
-- `r.manga series` (gives information about the given manga series), alias: `r.info`
-- `r.latest_chapter series` (informs of the latest translated chapter of given series, sends a reader for MangaDex), aliases: `r.chp`, `r.latest`, `r.last`
-- `r.following` (sends a message with the list of series a channel is following), aliases: `r.follow`, `r.fol`, `r.watching`, `r.follows`
-- `r.flip` (sends a flip image)
+- `/help cmd` (sends detailed information about the command or just general information if no argument is passed)
+- `/add series` (adds the text channel to the list that will receive notifications, if the series is not one of the four mentioned above it will search on mangadex and add them instead)
+- `/remove series` (remove the text channel from the list that will receive notifications, if no series argument is passed it will show the series followed on mangadex by the text channel)
+- `/manga series` (gives information about the given manga series)
+- `/last series` (informs of the latest translated chapter of given series, sends a reader for MangaDex)
+- `/following` (sends a message with the list of series a channel is following)
+- `/flip` (sends a flip image)
 
 ## Admin commands
 
-- `r.toggle command` (enables/disables commands)
-- `r.terminate` (), alias: `r.kill`
-- `r.servers` (prints the servers the bot is in to the logs)
-- `r.purge member` (deletes all the messages of the given member from the current text channel, needs admin permissions), alias: `r.cleanse`
-- `r.clean n direction msg_id` (deletes the last n messages starting from message with the id msg_id (not required) in the direction you specify, needs admin permissions), alias: `r.clear`
-- `r.kick member` (kicks a member, needs kick permission), aliases: `r.yeet`, `r.yeeto`
-- `r.ban member` (bans a member, needs ban permission)
-- `r.unban member` (unbans a member, needs admin permissions)
+- `/toggle command` (enables/disables commands)
+- `/terminate` (), alias: `/kill`
+- `/servers` (prints the servers the bot is in to the logs)
+- `/purge member` (deletes all the messages of the given member from the current text channel, needs admin permissions)
+- `/clean n direction msg_id` (deletes the last n messages starting from message with the id msg_id (not required) in the direction you specify, needs admin permissions)
+- `/kick member` (kicks a member, needs kick permission)
+- `/ban member` (bans a member, needs ban permission)
+- `/unban member` (unbans a member, needs admin permissions)
 
 ## Util commands
 
-- `r.poll choice1 choice2 question` (creates a poll with the choices and the question, polls have a 3 minute timer before they are finished)
-- `r.reverse_image_search url` (search the image you want for the source), aliases: `r.ris`, `r.sauce`, `r.source`
-- `r.avatar member` (shows a member's avatar or the op's if no argument is passed)
-- `r.server_avatar member` (shows a member's avatar or the op's if no argument is passed), alias: `r.savatar`
-- `r.banner member` (shows a member's banner or the op's if no argument is passed)
-- `r.series` (sends a list of series available for tracking)
+- `/poll choice1 choice2 question` (creates a poll with the choices and the question, polls have a 3 minute timer before they are finished)
+- `/sauce url` (search the image you want for the source)
+- `/avatar member` (shows a member's avatar or the op's if no argument is passed)
+- `/savatar member` (shows a member's avatar or the op's if no argument is passed)
+- `/banner member` (shows a member's banner or the op's if no argument is passed)
+- `/series` (sends a list of series available for tracking)
 
 ## osu! commands
 
-- `r.osu player` (sends information about the player), aliases: `r.u`, `r.user`
-- `r.osutop player` (sends player's top plays), aliases: `r.top`, `r.best`
-- `r.recent player` (sends player's most recent plays), aliases: `r.rs`, `r.rc`
+- `/osu player` (sends information about the player)
+- `/best player` (sends player's top plays)
+- `/recent player` (sends player's most recent plays)
 
 ## Fun commands
 
-- `r.coinflip h t` (flip a coin h and t are not required), alias: `r.coin`
-- `r.rps choice` (play rock-paper-scissors with Betty)
-- `r.roll x` (rolls a random number between 1 and x(100 if no argument is passed))
-- `r.say message` (make the bot say something)
+- `/coin h t` (flip a coin h and t are not required)
+- `/rps choice` (play rock-paper-scissors with Betty)
+- `/roll x` (rolls a random number between 1 and x(100 if no argument is passed))
+- `/say message` (make the bot say something)
 
 ## Gif commands
 
-- `r.pout` (sends a pout gif from tenor api)
-- `r.pat member` (pat a member or yourself if you want)
-- `r.hug member` (hug a member or yourself if you so need)
-- `r.smug` (sends a smug gif from tenor api)
+- `/pout` (sends a pout gif from tenor api)
+- `/pat member` (pat a member or yourself if you want)
+- `/hug member` (hug a member or yourself if you so need)
+- `/smug` (sends a smug gif from tenor api)
 
 ## Timer commands
 
-- `r.alarm time reason` (sets an alarm for you and pings you at that time, only works in the same day though, at least for now)
-- `r.remind time unit reason` (reminds the user after 'time' 'unit's (ex. 5 seconds) for 'reason' (not required), d: day(s), h: hour(s), m: minute(s), s: second(s))
+- `/alarm time reason` (sets an alarm for you and pings you at that time, only works in the same day though, at least for now)
+- `/remind time unit reason` (reminds the user after 'time' 'unit's (ex. 5 seconds) for 'reason' (not required), d: day(s), h: hour(s), m: minute(s), s: second(s))
 
 ## Tasks
 
