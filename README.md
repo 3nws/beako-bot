@@ -20,8 +20,8 @@ I use [pysaucenao](https://github.com/FujiMakoto/pysaucenao) for reverse image s
 
 ## Admin commands
 
-- `/toggle command` (enables/disables commands)
-- `/terminate` (), alias: `/kill`
+- `r.toggle command` (enables/disables commands)
+- `r.terminate` alias: `r.kill`
 - `/servers` (prints the servers the bot is in to the logs)
 - `/purge member` (deletes all the messages of the given member from the current text channel, needs admin permissions)
 - `/clean n direction msg_id` (deletes the last n messages starting from message with the id msg_id (not required) in the direction you specify, needs admin permissions)
