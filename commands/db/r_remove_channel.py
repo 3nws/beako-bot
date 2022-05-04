@@ -25,8 +25,9 @@ async def commands_remove_channel(bot, i, series_obj):
         titles = msg[2]
         msg = msg[0]
         msg = await i.channel.send(embed=msg)
+        await i.response.send_message("Pick a series to unfollow , in fact!")
     else:
-        return await i.channel.send(msg)
+        return await i.response.send_message(msg)
     for j in range(len(manga_ids)):
         await msg.add_reaction(emojis[j])
 

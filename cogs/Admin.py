@@ -115,16 +115,13 @@ class Admin(commands.Cog):
     @commands.command()
     @commands.is_owner()
     async def servers(self, ctx):
-        print(f'Logged in as: {self.bot.user.name}\n')
-        await ctx.send(f'Logged in as: {self.bot.user.name}\n')
-        print(f'Server List ({len(self.bot.guilds)})\n')
-        await ctx.send(f'Server List ({len(self.bot.guilds)})\n')
+        msg = f'Logged in as: {self.bot.user.name}\n'
+        msg += f'Server List ({len(self.bot.guilds)})\n'
         server_counter = 1
         for guild in set(self.bot.guilds):
-            msg = f"{server_counter}. {guild.name}, owned by {guild.owner} with {guild.member_count} members"
-            print(msg)
-            await ctx.send(msg)
+            msg += f"{server_counter}. {guild.name}, owned by {guild.owner} with {guild.member_count} members\n"
             server_counter += 1
+        await ctx.send(msg)
 
     # terminates the bot
     @commands.command(aliases=["kill"])

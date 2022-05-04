@@ -25,8 +25,9 @@ async def commands_add_channel(bot, i, series_obj):
         manga_ids = msg[3]
         msg = msg[1]
         msg = await i.channel.send(embed=msg)
+        await i.response.send_message("Pick a series to follow, I suppose!")
     else:
-        return await i.channel.send(msg)
+        return await i.response.send_message(msg)
     for j in range(len(manga_ids)):
         await msg.add_reaction(emojis[j])
 
