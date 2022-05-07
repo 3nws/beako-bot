@@ -68,7 +68,8 @@ I use [pysaucenao](https://github.com/FujiMakoto/pysaucenao) for reverse image s
 ## Warframe commands
 
 - `/item order_type item_name` (send info about an item as well as several orders of given type with their /w message templates)
-- 
+
+
 ## Tasks
 
 - `change_avatar()` (changes avatar everyday, selecting randomly from db)
