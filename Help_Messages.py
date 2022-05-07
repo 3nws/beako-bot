@@ -95,7 +95,7 @@ messages = {
 
         'series': "```Betty will tell you the series available in the database, I suppose!```",
 
-        'coin': "```Betty will flip a coin, I suppose!\
+        'coinflip': "```Betty will flip a coin, I suppose!\
                       \nThe format for this is 'coin for_heads(not required) for_tails(not required)' (ex. coin lol valo), in fact!```",
 
         'last': "```Betty will tell you what the latest translated chapter for the given series is, I suppose!\

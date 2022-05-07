@@ -97,8 +97,8 @@ async def flip(interaction: discord.Interaction):
 
 # help command
 @bot.tree.command(name='beakohelp', guild = None)
-async def help(interaction: discord.Interaction, *, cmd:str=""):
-    await commands_help(interaction, Help(cmd))
+async def help(interaction: discord.Interaction):
+    await commands_help(bot, interaction, Help())
 
 
 # task sets a random avatar every day
@@ -123,7 +123,7 @@ async def check_chapter():
 @bot.event
 async def on_command_error(ctx, error):
     if isinstance(error, discord.ext.commands.errors.CommandNotFound):
-        await ctx.send("What is that, I suppose?!\nTry `/help`, in fact!")
+        await ctx.send("What is that, I suppose?!\nTry `/beakohelp`, in fact!")
 
 @bot.event
 async def on_guild_join(guild):

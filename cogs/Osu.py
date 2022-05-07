@@ -16,7 +16,7 @@ class Osu(commands.Cog):
         self.osu = OsuAPI()
 
     @app_commands.command(name="osu")
-    async def osu(self, i: discord.Interaction, player_name:str=None):
+    async def osu(self, i: discord.Interaction, player_name:str):
         mode = "0"
         if player_name is None:
             return await i.response.send_message("Who, in fact?!\nUse `/help osu` for more information, I suppose!")
@@ -49,13 +49,14 @@ class Osu(commands.Cog):
 
             select.callback = select_callback
             view = View().add_item(select)
-            msg = await msg.edit(content='', embed=embed, view=view)
+            await msg.delete()
+            await i.response.send_message(content='', embed=embed, view=view)
         except Exception as e:
             print(e)
             await i.response.send_message("Something went wrong, in fact!")
 
     @app_commands.command(name="recent")
-    async def recent(self, i: discord.Interaction, player_name:str=None):
+    async def recent(self, i: discord.Interaction, player_name:str):
         mode = "0"
         if player_name is None:
             return await i.response.send_message("Who, in fact?!\nUse `/help recent` for more information, I suppose!")
@@ -144,13 +145,14 @@ class Osu(commands.Cog):
 
             select.callback = select_callback
             view = View().add_item(select)
-            msg = await msg.edit(content='', embed=embed, view=view)
+            await msg.delete()
+            msg = await i.response.send_message(content='', embed=embed, view=view)
         except Exception as e:
             print(e)
             await i.response.send_message("Something went wrong, in fact!")
 
     @app_commands.command(name="best")
-    async def osutop(self, i: discord.Interaction, player_name:str=None):
+    async def osutop(self, i: discord.Interaction, player_name:str):
         mode = "0"
         if player_name is None:
             return await i.response.send_message("Who, in fact?!\nUse `/help osutop` for more information, I suppose!")
@@ -239,7 +241,8 @@ class Osu(commands.Cog):
 
             select.callback = select_callback
             view = View().add_item(select)
-            msg = await msg.edit(content='', embed=embed, view=view)
+            await msg.delete()
+            msg = await i.response.send_message(content='', embed=embed, view=view)
         except Exception as e:
             print(e)
             await i.response.send_message("Something went wrong, in fact!")

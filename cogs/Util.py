@@ -34,6 +34,7 @@ class Util(commands.Cog):
             "Oshi no Ko (onk)",
             "Re:Zero (rz)",
             "Grand Blue Dreaming (gb)",
+            "Any series on MangaDex. See `/manga, /add, /remove`"
         }
         frame = discord.Embed(
             color=discord.Colour.random()
