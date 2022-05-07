@@ -18,6 +18,7 @@ class Help:
         self.osu_cmds = ["best", "recent", "osu"]
         self.timer_cmds = ["remind", "alarm"]
         self.util_cmds = ["sauce", "avatar", "banner", "savatar", "poll", "series"]
+        self.warframe_cmds = ["item"]
         self.mode_titles = [
             "Series tracking commands",
             "Admin commands",
@@ -25,7 +26,8 @@ class Help:
             "Gif commands",
             "osu! commands",
             "Timer commands",
-            "Util commands"
+            "Util commands",
+            "Warframe commands",
         ]
         self.modes = [
             self.track_cmds,
@@ -34,7 +36,8 @@ class Help:
             self.gif_cmds,
             self.osu_cmds,
             self.timer_cmds,
-            self.util_cmds
+            self.util_cmds,
+            self.warframe_cmds
         ]
         self.cmd_options = [
             discord.SelectOption(value=0, label="Series tracking"),
@@ -44,6 +47,7 @@ class Help:
             discord.SelectOption(value=4, label="osu!"),
             discord.SelectOption(value=5, label="Timer"),
             discord.SelectOption(value=6, label="Util"),
+            discord.SelectOption(value=7, label="Warframe"),
         ]
 
     async def get_help(self, i: discord.Interaction, bot):

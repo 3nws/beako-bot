@@ -108,7 +108,7 @@ messages = {
                                   \nThe format for this is 'sauce url', in fact!```",
                                   
         'item': "```Betty will give you information on a tradable item and show you orders for it, in fact!\
-            \nThe format for this is 'item order_type(buy,sell) item_name, in fact!```"
+            \nThe format for this is 'item order_type(buy,sell) item_name', in fact!```"
 
 }
 
