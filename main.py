@@ -96,7 +96,7 @@ async def flip(interaction: discord.Interaction):
 
 
 # help command
-@bot.tree.command(name='help', guild = None)
+@bot.tree.command(name='beakohelp', guild = None)
 async def help(interaction: discord.Interaction, *, cmd:str=""):
     await commands_help(interaction, Help(cmd))
 
@@ -178,7 +178,7 @@ async def on_ready():
         server_counter += 1
     await bot.change_presence(
         activity=discord.Activity(
-            type=discord.ActivityType.listening, name="/help and Songstress Liliana!"
+            type=discord.ActivityType.listening, name="/beakohelp and Songstress Liliana!"
         )
     )
     change_avatar.start()
