@@ -59,9 +59,9 @@ class WarframeMarket(commands.Cog):
                         item_detail = json.loads(response)['payload']['item']['items_in_set'][0]
                     else:
                         print("WarframeMarket down!")
-            trading_tax = item_detail['trading_tax'] if 'trading_tax' in item_detail.keys() else "No ducats value"
+            trading_tax = item_detail['trading_tax'] if 'trading_tax' in item_detail.keys() else "No trading tax value"
             ducats = item_detail['ducats'] if 'ducats' in item_detail.keys() else "No ducats value"
-            mastery_level = item_detail['mastery_level'] if 'mastery_level' in item_detail.keys() else "No ducats value"
+            mastery_level = item_detail['mastery_level'] if 'mastery_level' in item_detail.keys() else "No mastery level"
             item_description = item_detail['en']['description']
             wikilink = item_detail['en']['wiki_link']
             drop_list = item_detail['en']['drop']
