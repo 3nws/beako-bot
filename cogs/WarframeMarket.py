@@ -68,7 +68,7 @@ class WarframeMarket(commands.Cog):
             desc = f"Requires mastery rank {mastery_level}\n"
             desc += f"Trading tax: {trading_tax}, Ducats value: {ducats}\n"
             desc += f"```{item_description}```\n"
-            desc += f"Drops from "
+            desc += f"Drops from " if len(drop_list)>0 else ""
             for i in range(len(drop_list)):
                 desc += drop_list[i]['name']+', ' if i < len(drop_list)-1 else drop_list[i]['name']
             async with aiohttp.ClientSession() as session:
