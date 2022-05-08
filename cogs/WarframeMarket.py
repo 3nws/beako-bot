@@ -6,6 +6,7 @@ import json
 
 from discord.ext import commands
 from discord import app_commands
+from typing import List
 
 
 class WarframeMarket(commands.Cog):
@@ -30,18 +31,30 @@ class WarframeMarket(commands.Cog):
     @commands.is_owner()
     async def sync_items(self, ctx):
         try:
-            self.sync()
+            await self.sync()
             await ctx.send("Items synced, I suppose!")
         except Exception as e:
             print(e)
             await ctx.send("Something went wrong, I suppose!")
+    
+    
+    async def item_autocomplete(self,
+        interaction: discord.Interaction,
+        current: str,
+    ) -> List[app_commands.Choice[str]]:
+        return [
+            app_commands.Choice(name=item['item_name'], value=item['item_name'])
+            for item in self.items_list if current.lower() in item['item_name'].lower()
+        ]
+    
     
     @app_commands.command(name="item")
     @app_commands.choices(choices=[
         app_commands.Choice(name="I want to buy", value="sell"),
         app_commands.Choice(name="I want to sell", value="buy"),
         ])
-    async def get_item(self, interaction: discord.Interaction, choices: app_commands.Choice[str], *, item_name: str):
+    @app_commands.autocomplete(item_name=item_autocomplete)
+    async def get_item(self, interaction: discord.Interaction, choices: app_commands.Choice[str], item_name: str):
         order_type = choices.value
         item_name = " ".join([p.capitalize() for p in item_name.split(' ')])
         if not self.is_synced:
