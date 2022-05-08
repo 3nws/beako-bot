@@ -130,11 +130,8 @@ class Util(commands.Cog):
 
     # reverse search image
     @app_commands.command(name="sauce")
-    async def reverse_image_search(self, i: discord.Interaction, url:str=""):
+    async def reverse_image_search(self, i: discord.Interaction, url:str):
         try:
-            if url == "":
-                await i.response.send_message("What image do you want to search for, I suppose?!")
-                return
             sauce_frame = discord.Embed(
                 color=discord.Colour.random()
             )
