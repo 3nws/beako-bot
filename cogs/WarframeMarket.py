@@ -42,6 +42,8 @@ class WarframeMarket(commands.Cog):
         interaction: discord.Interaction,
         current: str,
     ) -> List[app_commands.Choice[str]]:
+        if not self.is_synced:
+            await self.sync()
         return [
             app_commands.Choice(name=item['item_name'], value=item['item_name'])
             for item in self.items_list if current.lower() in item['item_name'].lower()
