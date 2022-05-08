@@ -38,8 +38,8 @@ class WarframeMarket(commands.Cog):
     
     @app_commands.command(name="item")
     @app_commands.choices(choices=[
-        app_commands.Choice(name="Sell", value="sell"),
-        app_commands.Choice(name="Buy", value="buy"),
+        app_commands.Choice(name="I want to buy", value="sell"),
+        app_commands.Choice(name="I want to sell", value="buy"),
         ])
     async def get_item(self, interaction: discord.Interaction, choices: app_commands.Choice[str], *, item_name: str):
         order_type = choices.value
@@ -78,7 +78,7 @@ class WarframeMarket(commands.Cog):
                         orders = json.loads(response)['payload']['orders']
                         online_orders = [o for o in orders if o['user']['status'] != 'offline']
                         filtered_types = [o for o in online_orders if o['order_type'] == order_type]
-                        orders_sorted = sorted(filtered_types, key = lambda ele: ele['platinum'])
+                        orders_sorted = sorted(filtered_types, key = lambda ele: ele['platinum']) if order_type != 'buy' else sorted(filtered_types, key = lambda ele: ele['platinum'], reverse=True)
                     else:
                         print("WarframeMarket down!")
             for i in range(len(orders_sorted)):
