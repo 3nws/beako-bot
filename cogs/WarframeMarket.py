@@ -47,7 +47,7 @@ class WarframeMarket(commands.Cog):
         return [
             app_commands.Choice(name=item['item_name'], value=item['item_name'])
             for item in self.items_list if current.lower() in item['item_name'].lower()
-        ]
+        ][:25]
     
     
     @app_commands.command(name="item")
