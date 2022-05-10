@@ -4,10 +4,17 @@ import asyncio
 
 from dotenv import load_dotenv
 from commands.db.classes.MangaDex import MangaDex
+from pymongo.errors import ConnectionFailure
 
 load_dotenv()
 
-client = pymongo.MongoClient(os.getenv("DB_URL"))
+client = pymongo.MongoClient('localhost', 27017)
+try:
+    client.admin.command('ping')
+except ConnectionFailure:
+    print("Local not available")
+    client = pymongo.MongoClient(os.getenv("DB_URL"))
+
 
 # chapter db
 db_chapter = client.chapter

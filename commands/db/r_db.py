@@ -13,10 +13,19 @@ from commands.db.classes.Re_zero import Re_zero
 from commands.db.classes.Guya_moe import Guya_moe
 from commands.db.classes.Grand_Blue import Grand_Blue
 from commands.db.classes.MangaDex import MangaDex
+from pymongo.errors import ConnectionFailure
 
 load_dotenv()
 
-client = pymongo.MongoClient(os.getenv("DB_URL"))
+
+client = pymongo.MongoClient('localhost', 27017)
+try:
+    client.admin.command('ping')
+    print("Running with local db")
+except ConnectionFailure:
+    print("Local not available")
+    client = pymongo.MongoClient(os.getenv("DB_URL"))
+
 
 # channels db
 db_channels = client.channel_id
