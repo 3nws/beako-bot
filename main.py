@@ -11,22 +11,10 @@ from dotenv import load_dotenv
 from discord.ext import tasks, commands
 
 # classes import
-from ChannelList import ChannelList
 from Help import Help
 
 # commands import
 from commands.r_help import commands_help
-from commands.db.r_db import (
-    tasks_check_chapter,
-    tasks_filter_channels,
-    tasks_change_avatar,
-    commands_flip,
-    commands_following,
-    commands_latest_chapter,
-    commands_get_manga_info
-)
-from commands.db.r_add_channel import commands_add_channel
-from commands.db.r_remove_channel import commands_remove_channel
 
 logging.basicConfig(level=logging.INFO)
 
@@ -71,66 +59,10 @@ class Bot(commands.Bot):
 bot = Bot(command_prefix="r.", intents=intents)
 bot.remove_command("help")
 
-# get manga info
-@bot.tree.command(name='manga', guild = None)
-async def manga(interaction: discord.Interaction, *, series:str=""):
-    await commands_get_manga_info(interaction, series)
-
-
-# adds the channel to the notifications list
-@bot.tree.command(name='add', guild = None)
-@commands.has_permissions(manage_channels=True)
-async def add_channel(interaction: discord.Interaction, *, series:str=""):
-    await commands_add_channel(bot, interaction, ChannelList(series, interaction.channel_id))
-
-
-# removes the channel from the notifications list
-@bot.tree.command(name='remove', guild = None)
-@commands.has_permissions(manage_channels=True)
-async def remove_channel(interaction: discord.Interaction, *, series:str=""):
-    await commands_remove_channel(bot, interaction, ChannelList(series, interaction.channel_id))
-
-
-# sends a message with the list of series a channel is following
-@bot.tree.command(name='following', guild = None)
-async def following(interaction: discord.Interaction):
-    await commands_following(interaction, bot)
-
-
-# sends the latest english translated chapter
-@bot.tree.command(name='last', guild = None)
-async def latest_chapter(interaction: discord.Interaction, *, series:str=""):
-    await commands_latest_chapter(bot, interaction, series)
-
-
-# flip your friends off
-@bot.tree.command(name='flip', guild = None)
-async def flip(interaction: discord.Interaction):
-    await commands_flip(interaction)
-
-
 # help command
 @bot.tree.command(name='beakohelp', guild = None)
 async def help(interaction: discord.Interaction):
     await commands_help(bot, interaction, Help())
-
-
-# task sets a random avatar every day
-@tasks.loop(hours=24)
-async def change_avatar():
-    await tasks_change_avatar(bot)
-
-
-# task that removes non existing(deleted) channels every 60 seconds
-@tasks.loop(seconds=60)
-async def filter_channels():
-    await tasks_filter_channels(bot)
-
-
-# task that checks chapter every 60 seconds
-@tasks.loop(seconds=60)
-async def check_chapter():
-    await tasks_check_chapter(bot)
 
 
 # catch command errors
@@ -195,9 +127,6 @@ async def on_ready():
             type=discord.ActivityType.listening, name="/beakohelp and Songstress Liliana!"
         )
     )
-    # change_avatar.start()
-    # check_chapter.start()
-    # filter_channels.start()
 
 
 async def main():
