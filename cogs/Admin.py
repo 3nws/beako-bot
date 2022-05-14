@@ -76,26 +76,29 @@ class Admin(commands.Cog):
         direction = self.dir_aliases[direction] if direction in self.dir_aliases else direction
         if direction is not None:
             direction = direction.lower()
-
+        await i.response.defer()
         if (msg_id):
             msg = await i.channel.fetch_message(int(msg_id))
             
             if direction == "after":
-                history = [message async for message in i.channel.history(limit=limit, after=msg, oldest_first=True)]
+                history = [message async for message in i.channel.history(limit=limit, after=msg, oldest_first=True) if message.interaction is None]
             elif direction == "before":
-                history = [message async for message in  i.channel.history(limit=limit, before=msg, oldest_first=False)]
+                history = [message async for message in  i.channel.history(limit=limit, before=msg, oldest_first=False) if message.interaction is None]
+            to_delete = await i.channel.send("Cleaning, in fact!..")
             for message in set(history):
                 await message.delete()
         elif (direction == "after"):
             return await i.response.send_message("I can't delete future messages, in fact! Tell me which message you want me to start deleting from, I suppose!")
         elif (direction == "before"):
-            history = await i.channel.history(limit=limit, before=ctx.message, oldest_first=False).flatten()
+            history = [message async for message in i.channel.history(limit=limit, before=ctx.message, oldest_first=False) if message.interaction is None]
+            to_delete = await i.channel.send("Cleaning, in fact!..")
             for message in set(history):
                 await message.delete()
         else:
+            to_delete = await i.channel.send("Cleaning, in fact!..")
             await i.channel.purge(limit=limit)
-
-        await i.response.send_message('Cleared by {}, I suppose!'.format(i.user.mention))
+        await to_delete.delete()
+        await i.followup.send(content='Cleared by {}, I suppose!'.format(i.user.mention))
 
     # deletes a member's all messages
     @app_commands.command(name="purge")
