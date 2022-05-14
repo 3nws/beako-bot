@@ -9,6 +9,7 @@ import pymongo
 
 from dotenv import load_dotenv
 from discord.ext import tasks, commands
+from pymongo.errors import ConnectionFailure
 
 # classes import
 from Help import Help
