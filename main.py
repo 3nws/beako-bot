@@ -5,6 +5,7 @@ import asyncio
 import logging
 import threading
 import typing
+import pymongo
 
 from dotenv import load_dotenv
 from discord.ext import tasks, commands
@@ -45,17 +46,30 @@ intents.members = True
 intents.guilds = True
 intents.messages = True
 intents.message_content = True
-bot = commands.Bot(command_prefix="r.", intents=intents)
+
+class Bot(commands.Bot):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.client = pymongo.MongoClient('localhost', 27017)
+        try:
+            self.client.admin.command('ping')
+        except ConnectionFailure:
+            print("Local not available")
+            self.client = pymongo.MongoClient(os.getenv("DB_URL"))
+
+    async def load_cogs(self):
+        for filename in os.listdir('./cogs'):
+            if filename.endswith('.py'):
+                await bot.load_extension(f'cogs.{filename[:-3]}')
+            else:
+                print(f'Unable to load {filename[:-3]}')
+
+    def get_client(self):
+        return self.client
+
+bot = Bot(command_prefix="r.", intents=intents)
 bot.remove_command("help")
-
-
-async def load_cogs():
-    for filename in os.listdir('./cogs'):
-        if filename.endswith('.py'):
-            await bot.load_extension(f'cogs.{filename[:-3]}')
-        else:
-            print(f'Unable to load {filename[:-3]}')
-
 
 # get manga info
 @bot.tree.command(name='manga', guild = None)
@@ -181,14 +195,14 @@ async def on_ready():
             type=discord.ActivityType.listening, name="/beakohelp and Songstress Liliana!"
         )
     )
-    change_avatar.start()
-    check_chapter.start()
-    filter_channels.start()
+    # change_avatar.start()
+    # check_chapter.start()
+    # filter_channels.start()
 
 
 async def main():
     async with bot:
-        await load_cogs()
+        await bot.load_cogs()
         await bot.start(os.getenv("TOKEN"))
 
 asyncio.run(main())
