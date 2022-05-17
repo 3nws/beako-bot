@@ -5,15 +5,17 @@ import discord
 import asyncio
 import pymongo
 import os
+import aiohttp
+import json
 
 from bs4 import BeautifulSoup
-
 from commands.db.classes.Re_zero import Re_zero
 from commands.db.classes.Guya_moe import Guya_moe
 from commands.db.classes.Grand_Blue import Grand_Blue
 from commands.db.classes.MangaDex import MangaDex
 from discord import app_commands
 from discord.ext import commands
+from typing import List
 
 
 class DB(commands.Cog):
@@ -80,6 +82,9 @@ class DB(commands.Cog):
             "grand_blue_dreaming": "gb",
             "grand-blue-dreaming": "gb"
         }
+        
+        
+        self.mangas_list = {}
         
         self.tasks_change_avatar.start()
         self.tasks_filter_channels.start()
@@ -358,28 +363,50 @@ class DB(commands.Cog):
     def select_random_image_path(self):
         return os.path.join(self.avatars, random.choice(os.listdir(self.avatars)))
     
+    async def manga_autocomplete(self,
+        interaction: discord.Interaction,
+        current: str,
+    ) -> List[app_commands.Choice[str]]:
+        await self.sync(current)
+        return [
+            app_commands.Choice(name=manga['attributes']['title']['en'][:100], value=manga['attributes']['title']['en'][:100])
+            for manga in self.mangas_list if 'en' in manga['attributes']['title'].keys() and current.lower() in manga['attributes']['title']['en'].lower()
+        ][:25]
     
     # sends the latest english translated chapter
     @app_commands.command(name="last")
+    @app_commands.autocomplete(series=manga_autocomplete)
     async def commands_latest_chapter(self, i: discord.Interaction, series: str=""):
         if series == "":
             message = "What series do you want to know about, in fact!"
         else:
             return await self.last_chapter(self.bot, series, i.channel_id, i)
-
-        await i.response.send_message(message)
+        await i.channel.send(message)
 
 
     # send manga info
     @app_commands.command(name="manga")
+    @app_commands.autocomplete(series=manga_autocomplete)
     async def commands_get_manga_info(self, i: discord.Interaction, series: str):
         md = MangaDex()
         embed = await md.get_info(series)
-        await i.channel.send(embed=embed)
+        await i.response.send_message(embed=embed)
         
+    async def sync(self, query:str):
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"https://api.mangadex.org/manga?limit=25&title={query}&\
+                includedTagsMode=AND&excludedTagsMode=OR&availableTranslatedLanguage%5B%5D=en&\
+                contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&\
+                order%5BlatestUploadedChapter%5D=desc") as r:
+                if r.status == 200:
+                    response = await r.read()
+                    self.mangas_list = json.loads(response)['data']
+                else:
+                    print("MangaDex down!")                     
     
     # add the channel to the receiver list
     @app_commands.command(name="add")
+    @app_commands.autocomplete(series=manga_autocomplete)
     async def commands_add_channel(self, i: discord.Interaction, series: str):
         md = MangaDex()
         channel_entry = {
