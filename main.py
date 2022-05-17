@@ -63,7 +63,7 @@ bot.remove_command("help")
 # help command
 @bot.tree.command(name='beakohelp', guild = None)
 async def help(interaction: discord.Interaction):
-    await commands_help(bot, interaction, Help())
+    await commands_help(bot, interaction, Help(bot))
 
 
 # catch command errors

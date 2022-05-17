@@ -10,7 +10,8 @@ from discord.ext import commands
 
 
 class Help:
-    def __init__(self):
+    def __init__(self, bot):
+        self.bot = bot
         self.track_cmds = ["add", "remove", "manga", "last"]
         self.admin_cmds = ["kick", "ban", "unban", "clean", "purge"]
         self.fun_cmds = ["say", "roll", "rps", "coinflip", "flip"]
@@ -66,7 +67,8 @@ class Help:
             embed.set_thumbnail(url=bot.user.avatar.url)
 
             select = Select(options=self.cmd_options,
-                            placeholder="Select a category.")
+                            placeholder="Select a category.",
+                            custom_id="persistent_view:help")
 
             async def select_callback(i):
                 mode = (i.data['values'])[0]
@@ -83,7 +85,7 @@ class Help:
                 await i.response.edit_message(embed=new_embed)
 
             select.callback = select_callback
-            view = View().add_item(select)
+            view = View(timeout=None).add_item(select)
             await msg.delete()
             await i.response.send_message(content='', embed=embed, view=view)
         except Exception as e:

@@ -32,7 +32,8 @@ class Osu(commands.Cog):
             )
             embed.set_thumbnail(url=player['avatar_url'])
             select = Select(options=self.osu.game_mode_options,
-                            placeholder="Select a game mode.")
+                            placeholder="Select a game mode.",
+                            custom_id="persistent_view:osu")
 
             async def select_callback(i):
                 mode = (i.data['values'])[0]
@@ -48,7 +49,7 @@ class Osu(commands.Cog):
                 await i.response.edit_message(embed=new_embed)
 
             select.callback = select_callback
-            view = View().add_item(select)
+            view = View(timeout=None).add_item(select)
             await msg.delete()
             await i.response.send_message(content='', embed=embed, view=view)
         except Exception as e:
@@ -102,7 +103,8 @@ class Osu(commands.Cog):
             embed.set_thumbnail(url=player['avatar_url'])
 
             select = Select(options=self.osu.game_mode_options,
-                            placeholder="Select a game mode.")
+                            placeholder="Select a game mode.",
+                            custom_id="persistent_view:recent")
 
             async def select_callback(i):
                 mode = (i.data['values'])[0]
@@ -144,7 +146,7 @@ class Osu(commands.Cog):
                 await i.response.edit_message(embed=new_embed)
 
             select.callback = select_callback
-            view = View().add_item(select)
+            view = View(timeout=None).add_item(select)
             await msg.delete()
             msg = await i.response.send_message(content='', embed=embed, view=view)
         except Exception as e:
@@ -197,7 +199,8 @@ class Osu(commands.Cog):
             embed.set_thumbnail(url=player['avatar_url'])
 
             select = Select(options=self.osu.game_mode_options,
-                            placeholder="Select a game mode.")
+                            placeholder="Select a game mode.",
+                            custom_id="persistent_view:best")
 
             async def select_callback(i):
                 mode = (i.data['values'])[0]
@@ -240,7 +243,7 @@ class Osu(commands.Cog):
                 await i.response.edit_message(embed=new_embed)
 
             select.callback = select_callback
-            view = View().add_item(select)
+            view = View(timeout=None).add_item(select)
             await msg.delete()
             msg = await i.response.send_message(content='', embed=embed, view=view)
         except Exception as e:
