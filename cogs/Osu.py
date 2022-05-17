@@ -15,7 +15,9 @@ class Osu(commands.Cog):
         self.bot = bot
         self.osu = OsuAPI()
 
-    @app_commands.command(name="osu")
+    group = app_commands.Group(name="osu", description="osu! command group...")
+
+    @group.command(name="profile")
     async def osu(self, i: discord.Interaction, player_name:str):
         mode = "0"
         if player_name is None:
@@ -56,7 +58,7 @@ class Osu(commands.Cog):
             print(e)
             await i.response.send_message("Something went wrong, in fact!")
 
-    @app_commands.command(name="recent")
+    @group.command(name="recent")
     async def recent(self, i: discord.Interaction, player_name:str):
         mode = "0"
         if player_name is None:
@@ -153,7 +155,7 @@ class Osu(commands.Cog):
             print(e)
             await i.response.send_message("Something went wrong, in fact!")
 
-    @app_commands.command(name="best")
+    @group.command(name="best")
     async def osutop(self, i: discord.Interaction, player_name:str):
         mode = "0"
         if player_name is None:

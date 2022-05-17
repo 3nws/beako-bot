@@ -59,14 +59,14 @@ messages = {
 
         'unban': "```Betty will forgive a member and remove their ban, I suppose!```",
 
-        'osu': "```Betty will give information about a player, I suppose!\
-                    \nThe format for this is 'osu player', in fact!```",
+        'osu profile': "```Betty will give information about a player, I suppose!\
+                    \nThe format for this is 'osu profile player', in fact!```",
 
-        'best': "```Betty will tell you a player's top scores, I suppose!\
-                    \nThe format for this is 'best player', in fact!```",
+        'osu best': "```Betty will tell you a player's top scores, I suppose!\
+                    \nThe format for this is 'osu best player', in fact!```",
 
-        'recent': "```Betty will tell you a player's 5 most recent plays, I suppose!\
-                    \nThe format for this is 'recent player', in fact!```",
+        'osu recent': "```Betty will tell you a player's 5 most recent plays, I suppose!\
+                    \nThe format for this is 'osu recent player', in fact!```",
 
         'alarm': "```Betty will set an alarm for you, I suppose!\
                    \nThe format for this is 'alarm time reason'\

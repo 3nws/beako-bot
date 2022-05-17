@@ -40,11 +40,11 @@ I use [pysaucenao](https://github.com/FujiMakoto/pysaucenao) for reverse image s
 - `/banner member` (shows a member's banner or the op's if no argument is passed)
 - `/series` (sends a list of series available for tracking)
 
-## osu! commands
+## osu! commands group
 
-- `/osu player` (sends information about the player)
-- `/best player` (sends player's top plays)
-- `/recent player` (sends player's most recent plays)
+- `/osu profile player` (sends information about the player)
+- `/osu best player` (sends player's top plays)
+- `/osu recent player` (sends player's most recent plays)
 
 ## Fun commands
 
