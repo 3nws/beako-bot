@@ -76,6 +76,10 @@ messages = {
         'remind': "```Betty will remind the author after specified time by pinging them, I suppose!\
                     \nThe format for this is 'remind time unit reason'\
                     \n(The unit can be concatenated with remind such as remind 5m coffee, s: seconds, m: minutes, h: hours, d: days, ex. remind 5 m coffee), in fact!```",
+                    
+        'time': "```Betty will tell you the time in the timezone you want, I suppose!\
+                    \nThe format for this is 'time timezone'\
+                    \nYou can search for timezones, in fact!```",
 
         'poll': "```Betty will create a poll for the server, I suppose!\
                     \nThe format for this is 'poll choice1 choice2 question'\

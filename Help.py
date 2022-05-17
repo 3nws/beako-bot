@@ -17,7 +17,7 @@ class Help:
         self.fun_cmds = ["say", "roll", "rps", "coinflip", "flip"]
         self.gif_cmds = ["hug", "pout", "pat", "smug"]
         self.osu_cmds = ["best", "recent", "osu"]
-        self.timer_cmds = ["remind", "alarm"]
+        self.timer_cmds = ["remind", "alarm", "time"]
         self.util_cmds = ["sauce", "avatar", "banner", "savatar", "poll", "series"]
         self.warframe_cmds = ["item"]
         self.mode_titles = [

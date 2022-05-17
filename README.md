@@ -64,6 +64,7 @@ I use [pysaucenao](https://github.com/FujiMakoto/pysaucenao) for reverse image s
 
 - `/alarm time reason` (sets an alarm for you and pings you at that time, only works in the same day though, at least for now)
 - `/remind time unit reason` (reminds the user after 'time' 'unit's (ex. 5 seconds) for 'reason' (not required), d: day(s), h: hour(s), m: minute(s), s: second(s))
+- `/time timezone` (tells you the time in the timezone you want, there is a autocomplete search function for this)
 
 ## Warframe commands
 
