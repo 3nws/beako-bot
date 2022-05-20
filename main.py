@@ -79,7 +79,10 @@ class Bot(commands.Bot):
 
 client = discord.Client(intents=intents)
 tree = MyTree(client)
-bot = Bot(command_prefix="r.", intents=intents, tree_cls=MyTree)
+bot = Bot(command_prefix="r.", intents=intents, tree_cls=MyTree,
+        activity=discord.Activity(
+            type=discord.ActivityType.listening, name="/beakohelp and Songstress Liliana!"
+        ))
 bot.remove_command("help")
 
 # help command
@@ -139,17 +142,6 @@ async def sync(ctx: commands.Context, guilds: commands.Greedy[discord.Object], s
 @bot.event
 async def on_ready():
     print(f'Logged in as: {bot.user.name}\n')
-    print(f'Server List ({len(bot.guilds)})\n')
-    server_counter = 1
-    for guild in set(bot.guilds):
-        print(
-            f"{server_counter}. {guild.name}, owned by {guild.owner} with {guild.member_count} members")
-        server_counter += 1
-    await bot.change_presence(
-        activity=discord.Activity(
-            type=discord.ActivityType.listening, name="/beakohelp and Songstress Liliana!"
-        )
-    )
 
 
 async def main():
