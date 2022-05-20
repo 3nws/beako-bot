@@ -49,7 +49,7 @@ class MyTree(CommandTree):
         bucket = self._cd.get_bucket(interaction)
         retry_after = bucket.update_rate_limit()
         if retry_after:
-            await interaction.response.send_message(f"Slow down, I suppose\nYou can try again in {round(retry_after, 2)} seconds, in fact!")
+            await interaction.response.send_message(f"Slow down, I suppose\nYou can try again in {round(retry_after, 2)} seconds, in fact!", ephemeral=True)
             raise app_commands.CommandOnCooldown(bucket, retry_after)
         return True
         
