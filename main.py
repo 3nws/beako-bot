@@ -9,7 +9,9 @@ import pymongo
 
 from dotenv import load_dotenv
 from discord.ext import tasks, commands
+from discord import app_commands
 from pymongo.errors import ConnectionFailure
+from discord.app_commands import CommandTree
 
 # classes import
 from Help import Help
@@ -36,10 +38,25 @@ intents.guilds = True
 intents.messages = True
 intents.message_content = True
 
+
+class MyTree(CommandTree):
+    
+    def __init__(self, client):
+        super().__init__(client)
+        self._cd = commands.CooldownMapping.from_cooldown(1, 5, lambda i: (i.user.id))
+        
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        bucket = self._cd.get_bucket(interaction)
+        retry_after = bucket.update_rate_limit()
+        if retry_after:
+            await interaction.response.send_message(f"Slow down, I suppose\nYou can try again in {round(retry_after, 2)} seconds, in fact!")
+            raise app_commands.CommandOnCooldown(bucket, retry_after)
+        return True
+        
 class Bot(commands.Bot):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
+    
         self.client = pymongo.MongoClient('localhost', 27017)
         try:
             self.client.admin.command('ping')
@@ -54,10 +71,13 @@ class Bot(commands.Bot):
             else:
                 print(f'Unable to load {filename[:-3]}')
 
+
     def get_client(self):
         return self.client
 
-bot = Bot(command_prefix="r.", intents=intents)
+client = discord.Client(intents=intents)
+tree = MyTree(client)
+bot = Bot(command_prefix="r.", intents=intents, tree_cls=MyTree)
 bot.remove_command("help")
 
 # help command
