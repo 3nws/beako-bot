@@ -14,7 +14,7 @@ from pymongo.errors import ConnectionFailure
 from discord.app_commands import CommandTree
 
 # classes import
-from Help import Help
+from Help import Help, PersistentViewHelp
 
 # commands import
 from commands.r_help import commands_help
@@ -71,6 +71,8 @@ class Bot(commands.Bot):
             else:
                 print(f'Unable to load {filename[:-3]}')
 
+    async def setup_hook(self) -> None:
+        self.add_view(PersistentViewHelp(0, self))
 
     def get_client(self):
         return self.client
