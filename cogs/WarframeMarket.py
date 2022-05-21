@@ -58,7 +58,6 @@ class WarframeMarket(commands.Cog):
     @app_commands.autocomplete(item_name=item_autocomplete)
     async def get_item(self, interaction: discord.Interaction, choices: app_commands.Choice[str], item_name: str):
         order_type = choices.value
-        item_name = " ".join([p.capitalize() for p in item_name.split(' ')])
         if not self.is_synced:
             await self.sync()
         item_info = None
