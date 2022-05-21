@@ -43,7 +43,7 @@ class MyTree(CommandTree):
     
     def __init__(self, client):
         super().__init__(client)
-        self._cd = commands.CooldownMapping.from_cooldown(1, 5, lambda i: (i.user.id))
+        self._cd = commands.CooldownMapping.from_cooldown(1, 1, lambda i: (i.user.id))
         
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         bucket = self._cd.get_bucket(interaction)
