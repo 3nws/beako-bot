@@ -43,15 +43,6 @@ class MyTree(CommandTree):
     
     def __init__(self, client):
         super().__init__(client)
-        self._cd = commands.CooldownMapping.from_cooldown(1, 1, lambda i: (i.user.id))
-        
-    async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        bucket = self._cd.get_bucket(interaction)
-        retry_after = bucket.update_rate_limit()
-        if retry_after:
-            await interaction.response.send_message(f"Slow down, I suppose\nYou can try again in {round(retry_after, 2)} seconds, in fact!", ephemeral=True)
-            raise app_commands.CommandOnCooldown(bucket, retry_after)
-        return True
         
 class Bot(commands.Bot):
     def __init__(self, *args, **kwargs):
