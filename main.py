@@ -11,6 +11,8 @@ from dotenv import load_dotenv
 from discord.ext import tasks, commands
 from discord import app_commands
 from pymongo.errors import ConnectionFailure
+from typing import Callable, Awaitable
+from discord.app_commands.checks import cooldown as cooldown_decorator
 from discord.app_commands import CommandTree
 
 # classes import
@@ -43,6 +45,16 @@ class MyTree(CommandTree):
     
     def __init__(self, client):
         super().__init__(client)
+        self._cooldown_predicate: CooldownPredicate = cooldown_decorator(1, 5)(lambda: None).__discord_app_commands_checks__[0]
+    
+    async def on_error(self, interaction, error):
+        if isinstance(error, discord.app_commands.errors.CommandOnCooldown):
+            await interaction.response.send_message(f"{interaction.user.mention}, slow down, I suppose!\nYou can try again in {round(error.retry_after, 2)} seconds, in fact!")
+            await asyncio.sleep(float(error.retry_after))
+            await interaction.delete_original_message()
+    
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        return await self._cooldown_predicate(interaction)
         
 class Bot(commands.Bot):
     def __init__(self, *args, **kwargs):
