@@ -53,15 +53,14 @@ class MyTree(CommandTree):
             await interaction.response.send_message(f"{interaction.user.mention}, slow down, I suppose!\nYou can try again in {round(error.retry_after, 2)} seconds, in fact!")
             await asyncio.sleep(float(error.retry_after))
             await interaction.delete_original_message()
+        else:
+            await interaction.response.send_message("What is that, I suppose?!\nTry `/beakohelp`, in fact!")
+            print(error)
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.type == discord.InteractionType.autocomplete:
             return True
         return await self._cooldown_predicate(interaction)
-    
-    async def on_error(self, interaction: discord.Interaction, error: app_commands.AppCommandError):
-        await interaction.response.send_message("What is that, I suppose?!\nTry `/beakohelp`, in fact!")
-        print(error)
 
 
 class Bot(commands.Bot):

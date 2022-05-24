@@ -105,9 +105,10 @@ class DB(commands.Cog):
                 {"title": str(db_rec["title"])}, {"$set": {"title": title}}
             )
             for channel in channels.find():
-                if bot.get_channel((channel["id"])):
+                channel_if_exists = bot.get_guild(channel["guild_id"]).get_channel((channel["id"]))
+                if channel_if_exists:
                     try:
-                        await (bot.get_channel(int(channel["id"]))).send(
+                        await channel_if_exists.send(
                             f"'{title}' has been translated.\n{anchor}, I suppose!"
                         )
                     except Exception as e:
@@ -207,7 +208,10 @@ class DB(commands.Cog):
                         if latest != chapter:
                             mangas_dict.update({f"{manga_id}": str(latest)})
                             new_doc = self.channels_md.find_one_and_update(
-                                {'channel_id': str(record['channel_id'])},
+                                {
+                                    'channel_id': record['channel_id'],
+                                    'guild_id': record['guild_id'],
+                                    },
                                 {
                                     '$set': {
                                         'mangas': str(mangas_dict)
@@ -215,7 +219,7 @@ class DB(commands.Cog):
                                 },
                                 return_document=pymongo.ReturnDocument.AFTER
                             )
-                            channel = int(record['channel_id'])
+                            channel = record['channel_id']
                             chp_title = await md.get_manga_title(manga_id)
                             scanlation_group = await md.get_scanlation_group(chapter_response.scanlation)
                             embed = discord.Embed(
@@ -411,6 +415,7 @@ class DB(commands.Cog):
         md = MangaDex()
         channel_entry = {
             "id": i.channel_id,
+            "guild_id": i.guild.id,
         }
         series = self.aliases[series] if series in self.aliases else series
         success_msg = "This text channel will receive notifications, I suppose!"
@@ -471,14 +476,22 @@ class DB(commands.Cog):
             try:
                 reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout=60.0)
                 channel_exists = True if self.channels_md.find_one(
-                    {"channel_id": str(i.channel_id)}) else False
+                        {
+                        "channel_id": i.channel_id,
+                        "guild_id": i.guild.id,
+                        }
+                    ) else False
                 if not channel_exists:
                     self.channels_md.insert_one({
-                        'channel_id': str(i.channel_id),
+                        'channel_id': i.channel_id,
+                        "guild_id": i.guild.id,
                         'mangas': '{}',
                     })
                 mangas_on_channel = (self.channels_md.find_one(
-                    {"channel_id": str(i.channel_id)}))['mangas']
+                    {
+                        "channel_id": i.channel_id,
+                        "guild_id": i.guild.id,
+                        }))['mangas']
                 mangas_dict = eval(mangas_on_channel)
                 idx = 0
                 for j, emoji in enumerate(emojis):
@@ -494,7 +507,10 @@ class DB(commands.Cog):
                         chapter_link = chapter_response.get_link()
                         mangas_dict.update({f"{manga_ids[idx]}": str(latest)})
                         new_doc = self.channels_md.find_one_and_update(
-                            {'channel_id': str(i.channel_id)},
+                            {
+                                'channel_id': i.channel_id,
+                                "guild_id": i.guild.id,
+                                },
                             {
                                 '$set': {
                                     'mangas': str(mangas_dict)
@@ -518,6 +534,7 @@ class DB(commands.Cog):
         md = MangaDex()
         channel_entry = {
             "id": i.channel_id,
+            "guild_id": i.guild.id,
         }
         series = self.aliases[series] if series in self.aliases else series
         success_msg = "This text channel will no longer receive notifications, I suppose!"
@@ -553,12 +570,18 @@ class DB(commands.Cog):
                 msg = failure_msg
         else:
             channel_exists = True if self.channels_md.find_one(
-                {"channel_id": str(i.channel_id)}) else False
+                {
+                    "channel_id": i.channel_id,
+                    "guild_id": i.guild.id,
+                    }) else False
             if not channel_exists:
                 msg = "This channel is not on any receiver list, in fact!"
 
             mangas_on_channel = (self.channels_md.find_one(
-                {"channel_id": str(i.channel_id)}))['mangas']
+                {
+                    "channel_id": i.channel_id,
+                    "guild_id": i.guild.id,
+                    }))['mangas']
             mangas_dict = eval(mangas_on_channel)
 
             embed = discord.Embed(
@@ -598,7 +621,10 @@ class DB(commands.Cog):
             try:
                 reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout=60.0)
                 mangas_on_channel = (self.channels_md.find_one(
-                    {"channel_id": str(i.channel_id)}))['mangas']
+                    {
+                        "channel_id": i.channel_id,
+                        "guild_id": i.guild.id,
+                        }))['mangas']
                 mangas_dict = eval(mangas_on_channel)
                 idx = 0
                 for j, emoji in enumerate(emojis):
@@ -609,7 +635,10 @@ class DB(commands.Cog):
                     if manga_ids[idx] in mangas_dict:
                         mangas_dict.pop(manga_ids[idx])
                         new_doc = self.channels_md.find_one_and_update(
-                            {'channel_id': str(i.channel_id)},
+                            {
+                                'channel_id': i.channel_id,
+                                "guild_id": i.guild.id,
+                                },
                             {
                                 '$set': {
                                     'mangas': str(mangas_dict)
@@ -701,8 +730,14 @@ class DB(commands.Cog):
                     series.append(self.collection_aliases[channels])
 
         channel_exists = self.channels_md.find_one(
-            {"channel_id": str(i.channel_id)}) if self.channels_md.find_one(
-            {"channel_id": str(i.channel_id)}) else False
+            {
+                "channel_id": i.channel_id,
+                "guild_id": i.guild.id,
+                }) if self.channels_md.find_one(
+            {
+                "channel_id": i.channel_id,
+                "guild_id": i.guild.id,
+                }) else False
         if channel_exists:
             md = MangaDex()
             mangas_on_channel = (channel_exists)['mangas']
