@@ -81,7 +81,6 @@ I use [pysaucenao](https://github.com/FujiMakoto/pysaucenao) for reverse image s
 ### TODOS
 
 - Switch to buttons pagination for the reader
-- Fix channels id bug
 - Add more osu! functionality
 - Make the results prettier, they look awful
 - Add tracking for animes as well
