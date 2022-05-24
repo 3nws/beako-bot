@@ -409,7 +409,8 @@ class DB(commands.Cog):
                     print("MangaDex down!")                     
     
     # add the channel to the receiver list
-    @app_commands.command(name="add", guild_only=True)
+    @app_commands.command(name="add")
+    @app_commands.guild_only
     @app_commands.autocomplete(series=manga_autocomplete)
     async def commands_add_channel(self, i: discord.Interaction, series: str):
         md = MangaDex()
@@ -529,7 +530,8 @@ class DB(commands.Cog):
 
 
     # remove the channel from the receiver list
-    @app_commands.command(name="remove", guild_only=True)
+    @app_commands.command(name="remove")
+    @app_commands.guild_only
     async def commands_remove_channel(self, i: discord.Interaction, series: str=""):
         md = MangaDex()
         channel_entry = {
