@@ -58,6 +58,10 @@ class MyTree(CommandTree):
         if interaction.type == discord.InteractionType.autocomplete:
             return True
         return await self._cooldown_predicate(interaction)
+    
+    async def on_error(self, interaction: discord.Interaction, error: app_commands.AppCommandError):
+        await interaction.response.send_message("What is that, I suppose?!\nTry `/beakohelp`, in fact!")
+        print(error)
 
 
 class Bot(commands.Bot):
