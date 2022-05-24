@@ -42,26 +42,28 @@ intents.message_content = True
 
 
 class MyTree(CommandTree):
-    
+
     def __init__(self, client):
         super().__init__(client)
-        self._cooldown_predicate: CooldownPredicate = cooldown_decorator(1, 5)(lambda: None).__discord_app_commands_checks__[0]
-    
+        self._cooldown_predicate: CooldownPredicate = cooldown_decorator(
+            1, 5)(lambda: None).__discord_app_commands_checks__[0]
+
     async def on_error(self, interaction, error):
         if isinstance(error, discord.app_commands.errors.CommandOnCooldown):
             await interaction.response.send_message(f"{interaction.user.mention}, slow down, I suppose!\nYou can try again in {round(error.retry_after, 2)} seconds, in fact!")
             await asyncio.sleep(float(error.retry_after))
             await interaction.delete_original_message()
-    
+
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.type == discord.InteractionType.autocomplete:
             return True
         return await self._cooldown_predicate(interaction)
-        
+
+
 class Bot(commands.Bot):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-    
+
         self.client = pymongo.MongoClient('localhost', 27017)
         try:
             self.client.admin.command('ping')
@@ -82,25 +84,27 @@ class Bot(commands.Bot):
     def get_client(self):
         return self.client
 
+
 client = discord.Client(intents=intents)
 tree = MyTree(client)
-bot = Bot(command_prefix="r.", intents=intents, tree_cls=MyTree,
-        activity=discord.Activity(
-            type=discord.ActivityType.listening, name="/beakohelp and Songstress Liliana!"
-        ))
-bot.remove_command("help")
+bot = Bot(command_prefix="r.", intents=intents, tree_cls=MyTree, help_command=None,
+          activity=discord.Activity(
+              type=discord.ActivityType.listening, name="/beakohelp and Songstress Liliana!"
+          ))
 
-# help command
-@bot.tree.command(name='beakohelp', guild = None)
+
+@bot.tree.command(name='beakohelp', guild=None)
 async def help(interaction: discord.Interaction):
     await commands_help(bot, interaction, Help(bot))
 
 
-# catch command errors
 @bot.event
 async def on_command_error(ctx, error):
     if isinstance(error, discord.ext.commands.errors.CommandNotFound):
         await ctx.send("What is that, I suppose?!\nTry `/beakohelp`, in fact!")
+    else:
+        print(error)
+
 
 @bot.event
 async def on_guild_join(guild):
@@ -108,7 +112,8 @@ async def on_guild_join(guild):
     user = bot.get_user(442715989310832650)
     await user.send(msg)
     print(msg)
-    
+
+
 @bot.event
 async def on_guild_remove(guild):
     msg = f"Just left {guild.name}, in fact!\n\
@@ -116,8 +121,8 @@ async def on_guild_remove(guild):
     user = bot.get_user(442715989310832650)
     await user.send(msg)
     print(msg)
-    
-# syncing slash commands
+
+
 @bot.command()
 @commands.is_owner()
 async def sync(ctx: commands.Context, guilds: commands.Greedy[discord.Object], spec: typing.Optional[typing.Literal["~"]] = None) -> None:
@@ -143,7 +148,7 @@ async def sync(ctx: commands.Context, guilds: commands.Greedy[discord.Object], s
 
     await ctx.send(f"Synced the tree to {fmt}/{len(guilds)} guilds.")
 
-# runs everytime the bot comes online
+
 @bot.event
 async def on_ready():
     print(f'Logged in as: {bot.user.name}\n')
