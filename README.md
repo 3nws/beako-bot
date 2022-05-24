@@ -80,6 +80,7 @@ I use [pysaucenao](https://github.com/FujiMakoto/pysaucenao) for reverse image s
 
 ### TODOS
 
+- Switch to buttons pagination for the reader
 - Fix channels id bug for legacy series 
 - Add more osu! functionality
 - Make the results prettier, they look awful
