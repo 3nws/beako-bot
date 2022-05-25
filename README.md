@@ -34,7 +34,8 @@ I use [pysaucenao](https://github.com/FujiMakoto/pysaucenao) for reverse image s
 ## Util commands
 
 - `/poll choice1 choice2 question` (creates a poll with the choices and the question, polls have a 3 minute timer before they are finished)
-- `/sauce url` (search the image you want for the source)
+- `/sauce url` (search the image url you want for the source)
+- `/sauce file_attachment` (search the image file you want for the source)
 - `/avatar member` (shows a member's avatar or the op's if no argument is passed)
 - `/savatar member` (shows a member's avatar or the op's if no argument is passed)
 - `/banner member` (shows a member's banner or the op's if no argument is passed)
