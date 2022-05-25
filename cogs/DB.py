@@ -86,13 +86,12 @@ class DB(commands.Cog):
         
         self.mangas_list = {}
         
-    @commands.Cog.listener()
-    async def on_ready(self):
+        
         self.tasks_change_avatar.start()
         self.tasks_filter_channels.start()
         self.tasks_check_chapter.start()
         
-    
+        
     # flip command
     @app_commands.command(name="flip")
     async def commands_flip(self, i: discord.Interaction):
