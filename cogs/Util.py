@@ -128,9 +128,10 @@ class Util(commands.Cog):
 
         await i.response.send_message(embed=embed)
 
-    # reverse search image
-    @app_commands.command(name="sauce")
-    async def reverse_image_search(self, i: discord.Interaction, url:str):
+    sauce_group = app_commands.Group(name="sauce", description="osu! command group...")
+
+
+    async def send_sauce(self, i: discord.Interaction, url: str):
         try:
             sauce_frame = discord.Embed(
                 color=discord.Colour.random()
@@ -166,7 +167,14 @@ class Util(commands.Cog):
         except BaseException:
             await i.response.send_message("It's not Betty's fault. Something went wrong, in fact!")
 
-    # creates a poll with two choices
+    @sauce_group.command(name="url")
+    async def reverse_image_search(self, i: discord.Interaction, url: str):
+        await self.send_sauce(i, url)
+
+    @sauce_group.command(name="file")
+    async def reverse_image_search(self, i: discord.Interaction, file: discord.Attachment):
+        await self.send_sauce(i, file.url)
+
     @app_commands.command(name="poll")
     async def poll(self, i: discord.Interaction, c1:str, c2:str, *, question:str=""):
         embed = discord.Embed(
