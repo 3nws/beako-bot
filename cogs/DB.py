@@ -86,6 +86,8 @@ class DB(commands.Cog):
         
         self.mangas_list = {}
         
+    @commands.Cog.listener()
+    async def on_ready(self):
         self.tasks_change_avatar.start()
         self.tasks_filter_channels.start()
         self.tasks_check_chapter.start()
@@ -691,31 +693,31 @@ class DB(commands.Cog):
     @discord.ext.tasks.loop(seconds=10)
     async def tasks_filter_channels(self):
         for channel in self.channels_rz.find():
-            if not self.bot.get_channel((channel["id"])):
+            if not self.bot.get_guild(channel['guild_id']).get_channel((channel["id"])):
                 channel_entry = {
                     "id": channel["id"],
                 }
                 self.channels_rz.find_one_and_delete(channel_entry)
         for channel in self.channels_kaguya.find():
-            if not self.bot.get_channel((channel["id"])):
+            if not self.bot.get_guild(channel['guild_id']).get_channel((channel["id"])):
                 channel_entry = {
                     "id": channel["id"],
                 }
                 self.channels_kaguya.find_one_and_delete(channel_entry)
         for channel in self.channels_onk.find():
-            if not self.bot.get_channel((channel["id"])):
+            if not self.bot.get_guild(channel['guild_id']).get_channel((channel["id"])):
                 channel_entry = {
                     "id": channel["id"],
                 }
                 self.channels_onk.find_one_and_delete(channel_entry)
         for channel in self.channels_gb.find():
-            if not self.bot.get_channel((channel["id"])):
+            if not self.bot.get_guild(channel['guild_id']).get_channel((channel["id"])):
                 channel_entry = {
                     "id": channel["id"],
                 }
                 self.channels_gb.find_one_and_delete(channel_entry)
         for channel in self.channels_md.find():
-            if not self.bot.get_channel((channel["channel_id"])):
+            if not self.bot.get_guild(channel['guild_id']).get_channel((channel["channel_id"])):
                 channel_entry = {
                     "channel_id": channel["channel_id"],
                 }
