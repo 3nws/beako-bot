@@ -6,6 +6,9 @@ import logging
 import threading
 import typing
 import pymongo
+import motor.motor_asyncio
+import traceback
+import sys
 
 from dotenv import load_dotenv
 from discord.ext import tasks, commands
@@ -55,7 +58,7 @@ class MyTree(CommandTree):
             await interaction.delete_original_message()
         else:
             await interaction.response.send_message("What is that, I suppose?!\nTry `/beakohelp`, in fact!")
-            print(error)
+            traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.type == discord.InteractionType.autocomplete:
@@ -66,13 +69,8 @@ class MyTree(CommandTree):
 class Bot(commands.Bot):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
-        self.client = pymongo.MongoClient('localhost', 27017)
-        try:
-            self.client.admin.command('ping')
-        except ConnectionFailure:
-            print("Local not available")
-            self.client = pymongo.MongoClient(os.getenv("DB_URL"))
+        
+        self.client = None
 
     async def load_cogs(self):
         for filename in os.listdir('./cogs'):
@@ -82,7 +80,16 @@ class Bot(commands.Bot):
                 print(f'Unable to load {filename[:-3]}')
 
     async def setup_hook(self) -> None:
+        self.client = motor.motor_asyncio.AsyncIOMotorClient('localhost', 27017)
+        try:
+            self.client.admin.command('ping')
+        except ConnectionFailure:
+            print("Local not available")
+            self.client = motor.motor_asyncio.AsyncIOMotorClient(os.getenv("DB_URL"))
+            
         self.add_view(PersistentViewHelp(0, self))
+        
+        await self.load_cogs()
 
     def get_client(self):
         return self.client
@@ -159,7 +166,6 @@ async def on_ready():
 
 async def main():
     async with bot:
-        await bot.load_cogs()
         await bot.start(os.getenv("TOKEN"))
 
 asyncio.run(main())
