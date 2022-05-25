@@ -80,9 +80,12 @@ class Bot(commands.Bot):
 
     async def setup_hook(self) -> None:
         
-        # self.client = motor.motor_asyncio.AsyncIOMotorClient('localhost', 27017)
-        
-        self.client = motor.motor_asyncio.AsyncIOMotorClient(os.getenv("DB_URL"))
+        try:
+            self.client = motor.motor_asyncio.AsyncIOMotorClient('localhost', 27017, serverSelectionTimeoutMS=5000)
+            print(await self.client.server_info())
+        except pymongo.errors.ServerSelectionTimeoutError:
+            print("Local not available!")
+            self.client = motor.motor_asyncio.AsyncIOMotorClient(os.getenv("DB_URL"))
             
         self.add_view(PersistentViewHelp(0, self))
         
