@@ -10,6 +10,7 @@ from discord.ext import commands
 
 track_cmds = ["add", "remove", "manga", "last"]
 admin_cmds = ["kick", "ban", "unban", "clean", "purge"]
+tag_cmds = ["tag show", "tag add", "tag remove"]
 fun_cmds = ["say", "roll", "rps", "coinflip", "flip"]
 gif_cmds = ["hug", "pout", "pat", "smug"]
 osu_cmds = ["osu best", "osu recent", "osu profile"]
@@ -19,6 +20,7 @@ warframe_cmds = ["item"]
 mode_titles = [
     "Series tracking commands",
     "Admin commands",
+    "Tag commands",
     "Fun commands",
     "Gif commands",
     "osu! commands",
@@ -30,6 +32,7 @@ mode_titles = [
 modes = [
     track_cmds,
     admin_cmds,
+    tag_cmds,
     fun_cmds,
     gif_cmds,
     osu_cmds,
@@ -43,12 +46,13 @@ class Dropdown(discord.ui.Select):
         cmd_options = [
             discord.SelectOption(value=0, label="Series tracking"),
             discord.SelectOption(value=1, label="Admin"),
-            discord.SelectOption(value=2, label="Fun"),
-            discord.SelectOption(value=3, label="Gif"),
-            discord.SelectOption(value=4, label="osu!"),
-            discord.SelectOption(value=5, label="Timer"),
-            discord.SelectOption(value=6, label="Util"),
-            discord.SelectOption(value=7, label="Warframe"),
+            discord.SelectOption(value=2, label="Tag"),
+            discord.SelectOption(value=3, label="Fun"),
+            discord.SelectOption(value=4, label="Gif"),
+            discord.SelectOption(value=5, label="osu!"),
+            discord.SelectOption(value=6, label="Timer"),
+            discord.SelectOption(value=7, label="Util"),
+            discord.SelectOption(value=8, label="Warframe"),
         ]
 
         self.bot = bot

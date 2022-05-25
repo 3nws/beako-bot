@@ -112,7 +112,16 @@ messages = {
                                   \nThe format for this is 'sauce url', in fact!```",
                                   
         'item': "```Betty will give you information on a tradable item and show you orders for it, in fact!\
-            \nThe format for this is 'item order_type(buy,sell) item_name', in fact!```"
+            \nThe format for this is 'item order_type(buy,sell) item_name', in fact!```",
+                                  
+        'tag show': "```Betty will give you the contents of a tag set on this server, I suppose!\
+            \nThe format for this is 'tag show tag_name, in fact!```",
+                                  
+        'tag add': "```Betty will give add a tag for this server, in fact!\
+            \nThe format for this is 'tag add tag_name tag_content tag_file' (mutally exclusive arguments, the latter will override the former), in fact!```",
+                                  
+        'tag remove': "```Betty will give remove the given tag from this server!\
+            \nThe format for this is 'tag remove tag_name', in fact!```"
 
 }
 

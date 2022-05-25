@@ -128,7 +128,7 @@ class Util(commands.Cog):
 
         await i.response.send_message(embed=embed)
 
-    sauce_group = app_commands.Group(name="sauce", description="osu! command group...")
+    sauce_group = app_commands.Group(name="sauce", description="Sauce command group...")
 
 
     async def send_sauce(self, i: discord.Interaction, url: str):

@@ -13,10 +13,10 @@ I use [pysaucenao](https://github.com/FujiMakoto/pysaucenao) for reverse image s
 ## Series tracking and database action commands and the help command
 
 - `/beakohelp` (sends information about the commands)
-- `/add series` (adds the text channel to the list that will receive notifications, if the series is not one of the four mentioned above it will search on mangadex and add them instead)
+- `/add series` (has autocomplete) (adds the text channel to the list that will receive notifications, if the series is not one of the four mentioned above it will search on mangadex and add them instead)
 - `/remove series` (remove the text channel from the list that will receive notifications, if no series argument is passed it will show the series followed on mangadex by the text channel)
-- `/manga series` (gives information about the given manga series)
-- `/last series` (informs of the latest translated chapter of given series, sends a reader for MangaDex)
+- `/manga series` (has autocomplete) (gives information about the given manga series)
+- `/last series` (has autocomplete) (informs of the latest translated chapter of given series, sends a reader for MangaDex)
 - `/following` (sends a message with the list of series a channel is following)
 - `/flip` (sends a flip image)
 
@@ -31,6 +31,11 @@ I use [pysaucenao](https://github.com/FujiMakoto/pysaucenao) for reverse image s
 - `/ban member` (bans a member, needs ban permission)
 - `/unban member` (unbans a member, needs admin permissions)
 
+## Tag commands
+
+- `/tag show tag` (has autocomplete) (shows the contents of the tag, sends a file if the content was added as a file)
+- `/tag add tag_content tag_file` (mutually exclusive arguments, if both is passed `tag_file` will override `tab_content`)
+- `/tag remove tag` (has autocomplete) (removes the tag)
 ## Util commands
 
 - `/poll choice1 choice2 question` (creates a poll with the choices and the question, polls have a 3 minute timer before they are finished)
@@ -50,7 +55,7 @@ I use [pysaucenao](https://github.com/FujiMakoto/pysaucenao) for reverse image s
 ## Fun commands
 
 - `/coin h t` (flip a coin h and t are not required)
-- `/rps choice` (play rock-paper-scissors with Betty)
+- `/rps choice` (has choices) (play rock-paper-scissors with Betty)
 - `/roll x` (rolls a random number between 1 and x(100 if no argument is passed))
 - `/say message` (make the bot say something)
 
@@ -65,11 +70,11 @@ I use [pysaucenao](https://github.com/FujiMakoto/pysaucenao) for reverse image s
 
 - `/alarm time reason` (sets an alarm for you and pings you at that time, only works in the same day though, at least for now)
 - `/remind time unit reason` (reminds the user after 'time' 'unit's (ex. 5 seconds) for 'reason' (not required), d: day(s), h: hour(s), m: minute(s), s: second(s))
-- `/time timezone` (tells you the time in the timezone you want, there is a autocomplete search function for this)
+- `/time timezone` (has autocomplete) (tells you the time in the timezone you want, there is a autocomplete search function for this)
 
 ## Warframe commands
 
-- `/item order_type item_name` (send info about an item as well as several orders of given type with their /w message templates)
+- `/item order_type item_name` (has autocomplete + choices) (send info about an item as well as several orders of given type with their /w message templates)
 
 
 ## Tasks
