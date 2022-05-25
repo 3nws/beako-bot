@@ -11,7 +11,7 @@ html5lib==1.1.0
 idna==2.8
 multidict==6.0.2
 motor==3.0.0
-pymongo==3.11.4
+pymongo==4.1.1
 pysaucenao==1.6.1
 python-dotenv==0.17.1
 requests==2.21.0
