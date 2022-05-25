@@ -97,7 +97,7 @@ class DB(commands.Cog):
     @app_commands.command(name="flip")
     async def commands_flip(self, i: discord.Interaction):
         pipe = [{"$sample": {"size": 1}}]
-        flip = list(self.flips.aggregate(pipeline=pipe))[0]["url"]
+        flip = [f async for f in self.flips.aggregate(pipe)][0]["url"]
         await i.response.send_message(flip)
     
     
@@ -727,6 +727,7 @@ class DB(commands.Cog):
     
     # send a list of followed series of a channel
     @app_commands.command(name="following")
+    @app_commands.guild_only
     async def commands_following(self, i: discord.Interaction):
         series = []
         all_channels = await self.db_channels.list_collection_names()
