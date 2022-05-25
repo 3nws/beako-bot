@@ -7,6 +7,7 @@ import pymongo
 import os
 import aiohttp
 import json
+import ast
 
 from bs4 import BeautifulSoup
 from commands.db.classes.Re_zero import Re_zero
@@ -86,11 +87,14 @@ class DB(commands.Cog):
         
         self.mangas_list = {}
         
-        
         self.tasks_change_avatar.start()
+        
+        
+    @commands.Cog.listener()
+    async def on_ready(self):
         self.tasks_filter_channels.start()
         self.tasks_check_chapter.start()
-        
+
         
     # flip command
     @app_commands.command(name="flip")
@@ -117,7 +121,7 @@ class DB(commands.Cog):
                             f"The channel with id {channel['id']} is private, I suppose!")
     
     # task that checks chapter every 60 seconds
-    @discord.ext.tasks.loop(seconds=10)
+    @discord.ext.tasks.loop(seconds=60)
     async def tasks_check_chapter(self):
         try:
             # for re zero
@@ -198,7 +202,7 @@ class DB(commands.Cog):
             if records_exist:
                 for record in records_exist:
                     mangas_on_channel = (record)['mangas']
-                    mangas_dict = eval(mangas_on_channel)
+                    mangas_dict = ast.literal_eval(mangas_on_channel)
                     for manga_id in mangas_dict:
                         chapter = mangas_dict[manga_id]
                         chapter_response = await md.get_latest(manga_id)
@@ -234,7 +238,7 @@ class DB(commands.Cog):
                                     msg = await self.bot.get_channel(channel).send(f"'{chp_title} - {latest}' has been translated, I suppose \n{chapter_link}")
                                 else:
                                     msg = await self.bot.get_channel(channel).send(f"A new chapter of '{chp_title}' has been translated, I suppose \n{chapter_link}")
-                                return
+                                continue
                             current_page = 0
                             embed.set_footer(text=(f"Page {current_page+1}/{num_of_pages}. Translated by " + scanlation_group['data']['attributes']['name']))
                             embed.set_image(
@@ -494,7 +498,7 @@ class DB(commands.Cog):
                         "channel_id": i.channel_id,
                         "guild_id": i.guild.id,
                         }))['mangas']
-                mangas_dict = eval(mangas_on_channel)
+                mangas_dict = ast.literal_eval(mangas_on_channel)
                 idx = 0
                 for j, emoji in enumerate(emojis):
                     if emoji == str(reaction):
@@ -585,7 +589,7 @@ class DB(commands.Cog):
                     "channel_id": i.channel_id,
                     "guild_id": i.guild.id,
                     }))['mangas']
-            mangas_dict = eval(mangas_on_channel)
+            mangas_dict = ast.literal_eval(mangas_on_channel)
 
             embed = discord.Embed(
                 title=f"Pick one of the series you wish to unfollow, I suppose!" if len(
@@ -628,7 +632,7 @@ class DB(commands.Cog):
                         "channel_id": i.channel_id,
                         "guild_id": i.guild.id,
                         }))['mangas']
-                mangas_dict = eval(mangas_on_channel)
+                mangas_dict = ast.literal_eval(mangas_on_channel)
                 idx = 0
                 for j, emoji in enumerate(emojis):
                     if emoji == str(reaction):
@@ -719,8 +723,9 @@ class DB(commands.Cog):
             if not self.bot.get_guild(channel['guild_id']).get_channel((channel["channel_id"])):
                 channel_entry = {
                     "channel_id": channel["channel_id"],
+                    "guild_id": channel['guild_id']
                 }
-                self.channels_gb.find_one_and_delete(channel_entry)
+                self.channels_md.find_one_and_delete(channel_entry)
                 
     
     # send a list of followed series of a channel
@@ -744,7 +749,7 @@ class DB(commands.Cog):
         if channel_exists:
             md = MangaDex()
             mangas_on_channel = (channel_exists)['mangas']
-            mangas_dict = eval(mangas_on_channel)
+            mangas_dict = ast.literal_eval(mangas_on_channel)
             for manga_id in mangas_dict:
                 series.append(await md.get_manga_title(manga_id))
 
