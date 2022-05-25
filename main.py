@@ -13,7 +13,6 @@ import sys
 from dotenv import load_dotenv
 from discord.ext import tasks, commands
 from discord import app_commands
-from pymongo.errors import ConnectionFailure
 from typing import Callable, Awaitable
 from discord.app_commands.checks import cooldown as cooldown_decorator
 from discord.app_commands import CommandTree
@@ -80,12 +79,10 @@ class Bot(commands.Bot):
                 print(f'Unable to load {filename[:-3]}')
 
     async def setup_hook(self) -> None:
-        self.client = motor.motor_asyncio.AsyncIOMotorClient('localhost', 27017)
-        try:
-            self.client.admin.command('ping')
-        except ConnectionFailure:
-            print("Local not available")
-            self.client = motor.motor_asyncio.AsyncIOMotorClient(os.getenv("DB_URL"))
+        
+        # self.client = motor.motor_asyncio.AsyncIOMotorClient('localhost', 27017)
+        
+        self.client = motor.motor_asyncio.AsyncIOMotorClient(os.getenv("DB_URL"))
             
         self.add_view(PersistentViewHelp(0, self))
         
