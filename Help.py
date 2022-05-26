@@ -44,15 +44,15 @@ modes = [
 class Dropdown(discord.ui.Select):
     def __init__(self, mode, bot):
         cmd_options = [
-            discord.SelectOption(value=0, label="Series tracking"),
-            discord.SelectOption(value=1, label="Admin"),
-            discord.SelectOption(value=2, label="Tag"),
-            discord.SelectOption(value=3, label="Fun"),
-            discord.SelectOption(value=4, label="Gif"),
-            discord.SelectOption(value=5, label="osu!"),
-            discord.SelectOption(value=6, label="Timer"),
-            discord.SelectOption(value=7, label="Util"),
-            discord.SelectOption(value=8, label="Warframe"),
+            discord.SelectOption(value=0, label="Series tracking", emoji="<a:_:459105999618572308>"),
+            discord.SelectOption(value=1, label="Admin", emoji="<:_:596577110982918146>"),
+            discord.SelectOption(value=2, label="Tag", emoji="<:_:576499016376909854>"),
+            discord.SelectOption(value=3, label="Fun", emoji="<:_:586291133059956908>"),
+            discord.SelectOption(value=4, label="Gif", emoji="<a:_:662661255278100489>"),
+            discord.SelectOption(value=5, label="osu!", emoji="<:_:979258962731995136>"),
+            discord.SelectOption(value=6, label="Timer", emoji="⌛"),
+            discord.SelectOption(value=7, label="Util", emoji="<:_:979259589633654837>"),
+            discord.SelectOption(value=8, label="Warframe", emoji="<:_:979258513429782588>"),
         ]
 
         self.bot = bot
