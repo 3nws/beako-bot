@@ -693,31 +693,31 @@ class DB(commands.Cog):
     @discord.ext.tasks.loop(seconds=10)
     async def tasks_filter_channels(self):
         async for channel in self.channels_rz.find():
-            if not self.bot.get_guild(channel['guild_id']).get_channel((channel["id"])):
+            if self.bot.get_guild(channel['guild_id']) is None or self.bot.get_guild(channel['guild_id']).get_channel((channel["channel_id"])) is None:
                 channel_entry = {
                     "id": channel["id"],
                 }
                 await self.channels_rz.find_one_and_delete(channel_entry)
         async for channel in self.channels_kaguya.find():
-            if not self.bot.get_guild(channel['guild_id']).get_channel((channel["id"])):
+            if self.bot.get_guild(channel['guild_id']) is None or self.bot.get_guild(channel['guild_id']).get_channel((channel["channel_id"])) is None:
                 channel_entry = {
                     "id": channel["id"],
                 }
                 await self.channels_kaguya.find_one_and_delete(channel_entry)
         async for channel in self.channels_onk.find():
-            if not self.bot.get_guild(channel['guild_id']).get_channel((channel["id"])):
+            if self.bot.get_guild(channel['guild_id']) is None or self.bot.get_guild(channel['guild_id']).get_channel((channel["channel_id"])) is None:
                 channel_entry = {
                     "id": channel["id"],
                 }
                 await self.channels_onk.find_one_and_delete(channel_entry)
         async for channel in self.channels_gb.find():
-            if not self.bot.get_guild(channel['guild_id']).get_channel((channel["id"])):
+            if self.bot.get_guild(channel['guild_id']) is None or self.bot.get_guild(channel['guild_id']).get_channel((channel["channel_id"])) is None:
                 channel_entry = {
                     "id": channel["id"],
                 }
                 await self.channels_gb.find_one_and_delete(channel_entry)
         async for channel in self.channels_md.find():
-            if not self.bot.get_guild(channel['guild_id']).get_channel((channel["channel_id"])):
+            if self.bot.get_guild(channel['guild_id']) is None or self.bot.get_guild(channel['guild_id']).get_channel((channel["channel_id"])) is None:
                 channel_entry = {
                     "channel_id": channel["channel_id"],
                     "guild_id": channel['guild_id']
