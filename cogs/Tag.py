@@ -40,13 +40,18 @@ class Tag(commands.Cog):
     @app_commands.guild_only
     @app_commands.autocomplete(tag_name=tag_autocomplete)
     async def get_tag(self, i: discord.Interaction, *, tag_name:str):
+        await i.response.defer()
         try:
-            await i.response.send_message(self.tags_list[tag_name])
+            await i.followup.send(self.tags_list[tag_name])
         except Exception as e:
             content = self.tags_list[tag_name]
+            if isinstance(content, bytes):
+                buffer = BytesIO(content)
+                file = discord.File(buffer, filename='image.png')
+                return await i.followup.send(file=file)
             buffer = BytesIO(content.encode('utf-8'))
             file = discord.File(buffer, filename='text.md')
-            await i.response.send_message(file=file)
+            await i.followup.send(file=file)
             
         
     @group.command(name="add")
@@ -54,9 +59,12 @@ class Tag(commands.Cog):
     async def add_tag(self, i: discord.Interaction, tag_name: str, tag_content: Optional[str], tag_file: Optional[discord.Attachment]):
         if tag_file is not None:
             data = await tag_file.read()
-            tag_content = data.decode('ascii')
+            try:
+                tag_content = data.decode('ascii')
+            except UnicodeDecodeError:
+                tag_content = data
         if tag_content is None:
-            return i.response.send_message("What should this tag return, in fact!")
+            return await i.response.send_message("What should this tag return, in fact!")
         await self.sync_tags(i.guild.id)
         new = False
         if self.tags_list != {}:
@@ -83,21 +91,9 @@ class Tag(commands.Cog):
                                 )
         await i.response.send_message("Tag added, in fact!")
         
-        
-    async def tag_remove_autocomplete(self,
-        interaction: discord.Interaction,
-        current: str,
-    ) -> List[app_commands.Choice[str]]:
-        await self.sync_tags(interaction.guild.id)
-        return [
-            app_commands.Choice(name=tag, value=tag)
-            for tag in self.tags_list if current.lower() in tag or current.lower() in self.tags_list[tag]
-        ][:25]
-        
-        
     @group.command(name="remove")
     @app_commands.guild_only
-    @app_commands.autocomplete(tag_name=tag_remove_autocomplete)
+    @app_commands.autocomplete(tag_name=tag_autocomplete)
     async def remove_tag(self, i: discord.Interaction, tag_name:str):
         await self.sync_tags(i.guild.id)
         self.tags_list.pop(tag_name)
