@@ -693,25 +693,25 @@ class DB(commands.Cog):
     @discord.ext.tasks.loop(seconds=10)
     async def tasks_filter_channels(self):
         async for channel in self.channels_rz.find():
-            if self.bot.get_guild(channel['guild_id']) is None or self.bot.get_guild(channel['guild_id']).get_channel((channel["channel_id"])) is None:
+            if self.bot.get_guild(channel['guild_id']) is None or self.bot.get_guild(channel['guild_id']).get_channel((channel["id"])) is None:
                 channel_entry = {
                     "id": channel["id"],
                 }
                 await self.channels_rz.find_one_and_delete(channel_entry)
         async for channel in self.channels_kaguya.find():
-            if self.bot.get_guild(channel['guild_id']) is None or self.bot.get_guild(channel['guild_id']).get_channel((channel["channel_id"])) is None:
+            if self.bot.get_guild(channel['guild_id']) is None or self.bot.get_guild(channel['guild_id']).get_channel((channel["id"])) is None:
                 channel_entry = {
                     "id": channel["id"],
                 }
                 await self.channels_kaguya.find_one_and_delete(channel_entry)
         async for channel in self.channels_onk.find():
-            if self.bot.get_guild(channel['guild_id']) is None or self.bot.get_guild(channel['guild_id']).get_channel((channel["channel_id"])) is None:
+            if self.bot.get_guild(channel['guild_id']) is None or self.bot.get_guild(channel['guild_id']).get_channel((channel["id"])) is None:
                 channel_entry = {
                     "id": channel["id"],
                 }
                 await self.channels_onk.find_one_and_delete(channel_entry)
         async for channel in self.channels_gb.find():
-            if self.bot.get_guild(channel['guild_id']) is None or self.bot.get_guild(channel['guild_id']).get_channel((channel["channel_id"])) is None:
+            if self.bot.get_guild(channel['guild_id']) is None or self.bot.get_guild(channel['guild_id']).get_channel((channel["id"])) is None:
                 channel_entry = {
                     "id": channel["id"],
                 }
