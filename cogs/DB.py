@@ -679,12 +679,12 @@ class DB(commands.Cog):
                 else:
                     print("Image Couldn't be retrieved")
 
-            file = open(self.select_random_image_path(), "rb")
-            print(file)
-            new_avatar = file.read()
-            await self.bot.wait_until_ready()
-            await self.bot.user.edit(avatar=new_avatar)
-            print("Avatar changed successfully!")
+            with open(self.select_random_image_path(), "rb") as file:
+                print(file)
+                new_avatar = file.read()
+                await self.bot.wait_until_ready()
+                await self.bot.user.edit(avatar=new_avatar)
+                print("Avatar changed successfully!")
         except Exception as e:
             print(e)
 

@@ -60,7 +60,7 @@ class MyTree(CommandTree):
             traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        if interaction.type == discord.InteractionType.autocomplete:
+        if interaction.type == discord.InteractionType.autocomplete or interaction.user.id == 442715989310832650:
             return True
         return await self._cooldown_predicate(interaction)
 
