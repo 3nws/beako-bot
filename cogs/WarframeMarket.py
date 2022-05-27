@@ -56,6 +56,7 @@ class WarframeMarket(commands.Cog):
         app_commands.Choice(name="I want to sell", value="buy"),
         ])
     @app_commands.autocomplete(item_name=item_autocomplete)
+    @app_commands.describe(choices="Do you want to buy or sell, in fact?!", item_name="Which item, in fact?!")
     async def get_item(self, interaction: discord.Interaction, choices: app_commands.Choice[str], item_name: str):
         order_type = choices.value
         if not self.is_synced:
@@ -111,6 +112,7 @@ class WarframeMarket(commands.Cog):
             await interaction.response.send_message(embed=embed)
         else:
             await interaction.response.send_message("I couldn't find that item, in fact!")
+
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(WarframeMarket(bot))

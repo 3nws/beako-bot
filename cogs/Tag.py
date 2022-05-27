@@ -39,6 +39,7 @@ class Tag(commands.Cog):
     @group.command(name="show")
     @app_commands.guild_only
     @app_commands.autocomplete(tag_name=tag_autocomplete)
+    @app_commands.describe(tag_name="The name for this tag, I suppose! So you can find its contents later, in fact!")
     async def get_tag(self, i: discord.Interaction, *, tag_name:str):
         await i.response.defer()
         try:
@@ -56,6 +57,8 @@ class Tag(commands.Cog):
         
     @group.command(name="add")
     @app_commands.guild_only
+    @app_commands.describe(tag_name="The soon to be added tag's name, in fact!", tag_content="Contents of this tag, I suppose!",
+                           tag_file="You can also pass a file as the tag's contents, in fact! It will override the previous argument, in fact!")
     async def add_tag(self, i: discord.Interaction, tag_name: str, tag_content: Optional[str], tag_file: Optional[discord.Attachment]):
         if tag_file is not None:
             data = await tag_file.read()
@@ -91,9 +94,11 @@ class Tag(commands.Cog):
                                 )
         await i.response.send_message("Tag added, in fact!")
         
+        
     @group.command(name="remove")
     @app_commands.guild_only
     @app_commands.autocomplete(tag_name=tag_autocomplete)
+    @app_commands.describe(tag_name="The tag you want to remove, I suppose!")
     async def remove_tag(self, i: discord.Interaction, tag_name:str):
         await self.sync_tags(i.guild.id)
         self.tags_list.pop(tag_name)

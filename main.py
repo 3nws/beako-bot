@@ -49,6 +49,7 @@ class MyTree(CommandTree):
         super().__init__(client)
         self._cooldown_predicate: CooldownPredicate = cooldown_decorator(
             1, 5)(lambda: None).__discord_app_commands_checks__[0]
+        
 
     async def on_error(self, interaction, error):
         if isinstance(error, discord.app_commands.errors.CommandOnCooldown):
@@ -59,6 +60,7 @@ class MyTree(CommandTree):
             await interaction.response.send_message("What is that, I suppose?!\nTry `/beakohelp`, in fact!")
             traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
 
+
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.type == discord.InteractionType.autocomplete or interaction.user.id == 442715989310832650:
             return True
@@ -68,8 +70,8 @@ class MyTree(CommandTree):
 class Bot(commands.Bot):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        
         self.client = None
+
 
     async def load_cogs(self):
         for filename in os.listdir('./cogs'):
@@ -78,8 +80,8 @@ class Bot(commands.Bot):
             else:
                 print(f'Unable to load {filename[:-3]}')
 
+
     async def setup_hook(self) -> None:
-        
         try:
             self.client = motor.motor_asyncio.AsyncIOMotorClient('localhost', 27017, serverSelectionTimeoutMS=5000)
             print(await self.client.server_info())
@@ -90,6 +92,7 @@ class Bot(commands.Bot):
         self.add_view(PersistentViewHelp(0, self))
         
         await self.load_cogs()
+
 
     def get_client(self):
         return self.client

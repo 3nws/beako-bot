@@ -26,7 +26,7 @@ class Util(commands.Cog):
         # add 'db' parameter for specific databases
         self.saucenao = SauceNao(api_key=self.saucenao_api_key)
 
-    # send available series
+
     @app_commands.command(name="series")
     async def series(self, i: discord.Interaction):
         series = {
@@ -47,8 +47,9 @@ class Util(commands.Cog):
         frame.description = desc
         await i.response.send_message(embed=frame)
 
-    # sends a user's avatar
+
     @app_commands.command(name="avatar")
+    @app_commands.describe(member="The member you want to ~~steal~~borrow their avatar from, in fact!")
     async def avatar(self, i: discord.Interaction, member: discord.Member = None):
         avatar_frame = discord.Embed(
             color=discord.Colour.random()
@@ -64,8 +65,9 @@ class Util(commands.Cog):
 
         await i.response.send_message(embed=avatar_frame)
         
-    # sends a user's server avatar
+
     @app_commands.command(name="savatar")
+    @app_commands.describe(member="The member you want to ~~steal~~borrow their server specific avatar from, in fact!")
     async def server_avatar(self, i: discord.Interaction, member: discord.Member = None):
         avatar_frame = discord.Embed(
             color=discord.Colour.random()
@@ -85,8 +87,9 @@ class Util(commands.Cog):
 
         await i.response.send_message(embed=avatar_frame)
 
-    # sends a user's banner
+
     @app_commands.command(name="banner")
+    @app_commands.describe(member="The member you want to ~~steal~~borrow their banner from, in fact!")
     async def banner(self, i: discord.Interaction, member: discord.Member = None):
         embed = discord.Embed(
             color=discord.Colour.random()
@@ -128,6 +131,7 @@ class Util(commands.Cog):
 
         await i.response.send_message(embed=embed)
 
+
     sauce_group = app_commands.Group(name="sauce", description="Sauce command group...")
 
 
@@ -167,16 +171,22 @@ class Util(commands.Cog):
         except BaseException:
             await i.response.send_message("It's not Betty's fault. Something went wrong, in fact!")
 
+
     @sauce_group.command(name="url")
+    @app_commands.describe(url="The url of the image you want to find the source of, in fact!")
     async def reverse_image_search(self, i: discord.Interaction, url: str):
         await self.send_sauce(i, url)
 
+
     @sauce_group.command(name="file")
+    @app_commands.describe(file="The image file you want to find the source of, in fact!")
     async def reverse_image_search(self, i: discord.Interaction, file: discord.Attachment):
         await self.send_sauce(i, file.url)
 
+
     @app_commands.command(name="poll")
-    async def poll(self, i: discord.Interaction, c1:str, c2:str, *, question:str=""):
+    @app_commands.describe(c1="First choice, in fact!", c2="Second choice, in fact!", question="The question this poll is for, in fact!")
+    async def poll(self, i: discord.Interaction, c1: str, c2: str, *, question: str=""):
         embed = discord.Embed(
             title=question.upper(),
             description=f":one: {c1}\n\n:two: {c2}\n",

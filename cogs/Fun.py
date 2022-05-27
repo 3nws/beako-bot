@@ -12,9 +12,10 @@ class Fun(commands.Cog):
         self.bot = bot
         self.determine_flip = [1, 0]
 
-    # beako will repeat what is passed in
+
     @app_commands.command(name="say")
-    async def say(self, i: discord.Interaction, *, msg:str=""):
+    @app_commands.describe(msg="The thing you want me to repeat, in fact!")
+    async def say(self, i: discord.Interaction, *, msg: str=""):
         if (msg == ""):
             await i.response.send_message("What do you want me to say, in fact?!")
             return
@@ -23,14 +24,16 @@ class Fun(commands.Cog):
         else:
             await i.channel.send(msg + ", I suppose!")
 
-    # roll iq
+    
     @app_commands.command(name="roll")
-    async def roll(self, i: discord.Interaction, num:str=""):
+    @app_commands.describe(num="The upper limit for the roll, in fact!")
+    async def roll(self, i: discord.Interaction, num: str=""):
         if num.isnumeric():
             number = random.randint(1, int(num))
         else:
             number = random.randint(1, 100)
         await i.response.send_message(f"{i.user.name} Just rolled **{number}**, I suppose!")
+
 
     async def rps_autocomplete(self,
         interaction: discord.Interaction,
@@ -42,14 +45,15 @@ class Fun(commands.Cog):
             for choice in choices if current.lower() in choice.lower()
         ]
 
-    # play rock paper scissors
+
     @app_commands.command(name="rps")
-    @app_commands.autocomplete(choices=rps_autocomplete)
-    async def rps(self, i: discord.Interaction, choices:str):
-        choices = choices.lower()
-        if (choices == 'rock'):
+    @app_commands.autocomplete(choice=rps_autocomplete)
+    @app_commands.describe(choice="What do you want to draw against me, in fact?!")
+    async def rps(self, i: discord.Interaction, choice: str):
+        choice = choice.lower()
+        if (choice == 'rock'):
             counter = 'paper'
-        elif (choices == 'paper'):
+        elif (choice == 'paper'):
             counter = 'scissors'
         else:
             counter = 'rock'
@@ -63,9 +67,9 @@ class Fun(commands.Cog):
             await i.response.send_message(f"Betty lost, I suppose! I knew I should have picked {counter}, in fact!")
             
 
-    # coin flip
     @app_commands.command(name="coin")
-    async def coinflip(self, i: discord.Interaction, heads:str=None, tails:str=None):
+    @app_commands.describe(heads="The thing that represents heads, I suppose!", tails="The thing that represents tails, I suppose!")
+    async def coinflip(self, i: discord.Interaction, heads: str = None, tails: str = None):
         if heads is not None and tails is None:
             embed = discord.Embed(
                 title="Error", description=f"{i.user.mention} tried to flip a coin but didn't specify what for is tails, I suppose!")

@@ -7,7 +7,7 @@ from datetime import datetime
 from datetime import timedelta
 from discord import app_commands
 from discord.ext import commands
-from typing import List
+from typing import List, Literal
 
 
 class Timer(commands.Cog):
@@ -19,6 +19,7 @@ class Timer(commands.Cog):
         self.base_url = "https://www.timeapi.io/api/Time/current/zone?timeZone="
         self.months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
         
+        
     async def sync(self):
         async with aiohttp.ClientSession() as session:
             async with session.get(self.sync_url) as r:
@@ -28,6 +29,7 @@ class Timer(commands.Cog):
                     self.is_synced = True
                 else:
                     print("timeapi down!")
+            
                     
     @commands.command()
     @commands.is_owner()
@@ -39,9 +41,11 @@ class Timer(commands.Cog):
             print(e)
             await ctx.send("Something went wrong, I suppose!")
 
-    # reminds the user about anything after specified time
+
     @app_commands.command(name="remind")
-    async def remind(self, i: discord.Interaction, time:str, unit:str=None, *, reminder:str=""):
+    @app_commands.describe(time="After how long should I ping you, in fact?!",
+                           unit="Seconds? Hours? Cows? Give me a unit, in fact! You can concatenate this with the previous argument, I suppose!", reminder="What is this timer about, in fact?!")
+    async def remind(self, i: discord.Interaction, time: str, unit: Literal["s", "h", "d"]=None, *, reminder: str=""):
         embed = discord.Embed(color=discord.Colour.random(),
                               timestamp=datetime.utcnow())
         if (unit is None):
@@ -86,9 +90,11 @@ class Timer(commands.Cog):
             return
         await i.response.send_message(embed=embed)
 
-    # sets an alarm for the user
+
     @app_commands.command(name="alarm")
-    async def alarm(self, i: discord.Interaction, time:str="", *, reminder:str=""):
+    @app_commands.describe(time="The time you want betty to ping you, in fact! You can use either '.' or ':' to seperate hours and minutes, I suppose!",
+                           reminder="What is this alarm about, in fact?!")
+    async def alarm(self, i: discord.Interaction, time: str="", *, reminder: str=""):
         try:
             embed = discord.Embed(color=discord.Colour.random(),
                                   timestamp=datetime.utcnow())
@@ -135,9 +141,11 @@ class Timer(commands.Cog):
             app_commands.Choice(name=city, value=city)
             for city in self.cities_list if current.lower() in city.lower()
         ][:25]
-    # gets the time at the specified city/timezone
+
+    
     @app_commands.command(name="time")
     @app_commands.autocomplete(city=city_autocomplete)
+    @app_commands.describe(city="The timezone/city you want to learn the timezone of, in fact!")
     async def get_time(self, i: discord.Interaction, city:str):
         async with aiohttp.ClientSession() as session:
             async with session.get(self.base_url+city) as r:

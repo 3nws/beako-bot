@@ -16,7 +16,7 @@ class Gif(commands.Cog):
         self.bot = bot
         self.tenor_api_key = os.getenv('TENOR_API_KEY')
 
-    # pout uwu
+
     @app_commands.command(name="pout")
     async def pout(self, i: discord.Interaction):
         async with aiohttp.ClientSession() as session:
@@ -38,8 +38,9 @@ class Gif(commands.Cog):
                         ['media'][0]['mediumgif']['url'])
         await i.response.send_message(embed=embed)
 
-    # hug uwu
+
     @app_commands.command(name="hug")
+    @app_commands.describe(user="The member you want to hug, I suppose!")
     async def hug(self, i: discord.Interaction, user: discord.Member = None):
         async with aiohttp.ClientSession() as session:
             async with session.get("https://g.tenor.com/v1/search?q=%s&key=%s" %
@@ -68,7 +69,7 @@ class Gif(commands.Cog):
                         ['media'][0]['mediumgif']['url'])
         await i.response.send_message(embed=embed)
 
-    # smug uwu
+
     @app_commands.command(name="smug")
     async def smug(self, i: discord.Interaction):
         async with aiohttp.ClientSession() as session:
@@ -90,8 +91,9 @@ class Gif(commands.Cog):
                         ['media'][0]['mediumgif']['url'])
         await i.response.send_message(embed=embed)
 
-    # pat uwu
+
     @app_commands.command(name="pat")
+    @app_commands.describe(user="The user you want to pat, I suppose!")
     async def pat(self, i: discord.Interaction, user: discord.Member = None):
         async with aiohttp.ClientSession() as session:
             async with session.get("https://g.tenor.com/v1/search?q=%s&key=%s" %

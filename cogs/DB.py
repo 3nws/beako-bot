@@ -95,7 +95,6 @@ class DB(commands.Cog):
         self.tasks_check_chapter.start()
 
         
-    # flip command
     @app_commands.command(name="flip")
     async def commands_flip(self, i: discord.Interaction):
         pipe = [{"$sample": {"size": 1}}]
@@ -314,6 +313,7 @@ class DB(commands.Cog):
     def select_random_image_path(self):
         return os.path.join(self.avatars, random.choice(os.listdir(self.avatars)))
     
+    
     async def manga_autocomplete(self,
         interaction: discord.Interaction,
         current: str,
@@ -324,9 +324,10 @@ class DB(commands.Cog):
             for manga in self.mangas_list if 'en' in manga['attributes']['title'].keys() and current.lower() in manga['attributes']['title']['en'].lower()
         ][:25]
     
-    # sends the latest english translated chapter
+
     @app_commands.command(name="last")
     @app_commands.autocomplete(series=manga_autocomplete)
+    @app_commands.describe(series="The series you want to get the latest chapter of, in fact!")
     async def commands_latest_chapter(self, i: discord.Interaction, series: str=""):
         if series == "":
             message = "What series do you want to know about, in fact!"
@@ -338,10 +339,12 @@ class DB(commands.Cog):
     # send manga info
     @app_commands.command(name="manga")
     @app_commands.autocomplete(series=manga_autocomplete)
+    @app_commands.describe(series="The series you want to get information about, I suppose!")
     async def commands_get_manga_info(self, i: discord.Interaction, series: str):
         md = MangaDex()
         embed = await md.get_info(series)
         await i.response.send_message(embed=embed)
+        
         
     async def sync(self, query:str):
         async with aiohttp.ClientSession() as session:
@@ -355,10 +358,11 @@ class DB(commands.Cog):
                 else:
                     print("MangaDex down!")                     
     
-    # add the channel to the receiver list
+
     @app_commands.command(name="add")
     @app_commands.guild_only
     @app_commands.autocomplete(series=manga_autocomplete)
+    @app_commands.describe(series="The series you want to track in this channel, in fact!")
     async def commands_add_channel(self, i: discord.Interaction, series: str):
         md = MangaDex()
         channel_entry = {
@@ -415,9 +419,9 @@ class DB(commands.Cog):
             return await i.response.send_message(msg)
 
 
-    # remove the channel from the receiver list
     @app_commands.command(name="remove")
     @app_commands.guild_only
+    @app_commands.describe(series="The series you want to stop tracking in this channel, I suppose!")
     async def commands_remove_channel(self, i: discord.Interaction, series: str=""):
         md = MangaDex()
         channel_entry = {
@@ -611,7 +615,6 @@ class DB(commands.Cog):
             frame.description = desc
         await i.response.send_message(embed=frame)
 
-        
     
 async def setup(bot: commands.Bot):
     await bot.add_cog(DB(bot))
