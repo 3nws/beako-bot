@@ -41,6 +41,11 @@ class MangaReader(ui.View, menus.MenuPages):
     async def interaction_check(self, interaction):
         return True if self.i is None else interaction.user == self.i.user
 
+    async def on_timeout(self):
+        self.stop()
+        await self.msg.edit(content=self.text, embed=self.embed, view=self.disabled())
+        await self.msg.reply("This view just timed out, I suppose! You need to interact with it to keep it up, in fact!")
+
     async def turn_page(self, page_num:int):
         page = await self._source.get_page(page_num)
         self.current_page = page_num
@@ -56,7 +61,6 @@ class MangaReader(ui.View, menus.MenuPages):
             btn.disabled = True
         return self
 
-    # This is extremely similar to Custom MenuPages(I will not explain these)
     @ui.button(emoji='<:before_fast_check:754948796139569224>', style=discord.ButtonStyle.blurple)
     async def first_page(self, interaction, button):
         await interaction.response.defer()
