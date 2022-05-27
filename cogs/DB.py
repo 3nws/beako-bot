@@ -17,7 +17,7 @@ from commands.db.classes.MangaDex import MangaDex
 from discord import app_commands
 from discord.ext import commands
 from typing import List
-from .classes.Pagination import MyMenuPages, MySource 
+from .classes.Pagination import MangaReader, Source 
 
 
 class DB(commands.Cog):
@@ -244,8 +244,8 @@ class DB(commands.Cog):
                         
 
                             data = chapter_response.images
-                            formatter = MySource(data, per_page=1)
-                            menu = MyMenuPages(formatter)
+                            formatter = Source(data, per_page=1)
+                            menu = MangaReader(formatter)
                             chnl = self.bot.get_channel(channel)
                             
                             if is_title:
@@ -299,8 +299,8 @@ class DB(commands.Cog):
             await i.response.send_message("Read away, I suppose!")
             
             data = chapter_response.images
-            formatter = MySource(data, per_page=1)
-            menu = MyMenuPages(formatter)
+            formatter = Source(data, per_page=1)
+            menu = MangaReader(formatter)
             
             if is_title:
                 text, embed = f"'{chp_title} - {latest}' has been translated, I suppose \n{chapter_link}", embed
@@ -331,7 +331,7 @@ class DB(commands.Cog):
             message = "What series do you want to know about, in fact!"
         else:
             return await self.last_chapter(self.bot, series, i.channel_id, i)
-        await i.channel.send(message)
+        await i.response.send_message(message)
 
 
     # send manga info

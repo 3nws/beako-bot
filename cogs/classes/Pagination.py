@@ -5,11 +5,11 @@ import typing
 from discord import ui
 from discord.ext import menus
 
-class MySource(menus.ListPageSource):
+class Source(menus.ListPageSource):
     async def format_page(self, menu, entries):
         return f"This is number {entries}."
 
-class MyMenuPages(ui.View, menus.MenuPages):
+class MangaReader(ui.View, menus.MenuPages):
     def __init__(self, source):
         super().__init__(timeout=60)
         self._source = source
