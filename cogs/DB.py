@@ -17,6 +17,7 @@ from commands.db.classes.MangaDex import MangaDex
 from discord import app_commands
 from discord.ext import commands
 from typing import List
+from .classes.Pagination import MyMenuPages, MySource 
 
 
 class DB(commands.Cog):
@@ -118,7 +119,7 @@ class DB(commands.Cog):
                             f"The channel with id {channel['id']} is private, I suppose!")
     
     # task that checks chapter every 60 seconds
-    @discord.ext.tasks.loop(seconds=60)
+    @discord.ext.tasks.loop(seconds=5)
     async def tasks_check_chapter(self):
         try:
             # for re zero
@@ -228,7 +229,6 @@ class DB(commands.Cog):
                                 color=discord.Colour.random(),
                                 title=str(latest),
                             )
-                            directions = ['⬅️', '➡️']
                             num_of_pages = len(chapter_response.images)
                             if num_of_pages==0:
                                 if is_title:
@@ -237,51 +237,24 @@ class DB(commands.Cog):
                                     msg = await self.bot.get_channel(channel).send(f"A new chapter of '{chp_title}' has been translated, I suppose \n{chapter_link}")
                                 continue
                             current_page = 0
-                            embed.set_footer(text=(f"Page {current_page+1}/{num_of_pages}. Translated by " + scanlation_group['data']['attributes']['name']))
+                            group = scanlation_group['data']['attributes']['name']
+                            embed.set_footer(text=(f"Page {current_page+1}/{num_of_pages}. Translated by " + group))
                             embed.set_image(
                                 url=chapter_response.images[current_page])
+                        
+
+                            data = chapter_response.images
+                            formatter = MySource(data, per_page=1)
+                            menu = MyMenuPages(formatter)
+                            chnl = self.bot.get_channel(channel)
+                            
                             if is_title:
-                                msg = await self.bot.get_channel(channel).send(f"'{chp_title} - {latest}' has been translated, I suppose \n{chapter_link}", embed=embed)
+                                text, embed = f"'{chp_title} - {latest}' has been translated, I suppose \n{chapter_link}", embed
                             else:
-                                msg = await self.bot.get_channel(channel).send(f"A new chapter of '{chp_title}' has been translated, I suppose \n{chapter_link}", embed=embed)
-                                
-                            await msg.add_reaction(directions[0])
-                            await msg.add_reaction(directions[1])
-                            def check(reaction, user):
-                                return reaction.message == msg and not user.bot
-
-                            time_out = None
-                            while True:
-                                try:
-                                    reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout=time_out)
-                                    if str(reaction.emoji) == directions[0]:
-                                        current_page -= 1 if current_page > 0 else 0
-                                        time_out = 180.0
-                                    elif str(reaction.emoji) == directions[1]:
-                                        if current_page < num_of_pages:
-                                            current_page += 1
-                                            time_out = 180.0
-                                            if current_page==num_of_pages:
-                                                await msg.clear_reactions()
-                                                await msg.reply("I assume you've finished reading, in fact!")
-                                                break
-                                    new_embed = discord.Embed(
-                                        color=discord.Colour.random(),
-                                        title=str(latest),
-                                    )
-                                    new_embed.set_footer(
-                                        text=(
-                                            f"Page {current_page+1}/{num_of_pages}. Translated by " +
-                                            scanlation_group['data']['attributes']['name']))
-                                    new_embed.set_image(
-                                        url=chapter_response.images[current_page])
-                                    await msg.edit(embed=new_embed)
-                                    await reaction.remove(user)
-                                except asyncio.TimeoutError:
-                                    await msg.clear_reactions()
-                                    await msg.reply("You are not even reading! I'm done, in fact!")
-                                    break
-
+                                text, embed = f"A new chapter of '{chp_title}' has been translated, I suppose \n{chapter_link}", embed
+        
+                            await menu.start(interaction=None, channel=chnl, text=text, embed=embed, group=group)
+                            
         except Exception as e:
             print(e)
             
