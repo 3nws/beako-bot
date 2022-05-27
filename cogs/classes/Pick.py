@@ -55,26 +55,45 @@ class PickView(ui.View):
         res = await self.find_one()
         titles = self.info[0]
         manga_ids = self.info[1]
-        if manga_ids[choice] not in res:
-            chapter_response = await self.md.get_latest(manga_ids[choice])
-            title_response = chapter_response.get_title()
-            latest = title_response[0]
-            is_title = title_response[1]
-            chapter_link = chapter_response.get_link()
-            res.update({f"{manga_ids[choice]}": str(latest)})
-            new_doc = await self.channels.find_one_and_update(
-                {
-                    'channel_id': self.i.channel_id,
-                    "guild_id": self.i.guild.id,
+        if self.i.command.name == "add":
+            if manga_ids[choice] not in res:
+                chapter_response = await self.md.get_latest(manga_ids[choice])
+                title_response = chapter_response.get_title()
+                latest = title_response[0]
+                is_title = title_response[1]
+                chapter_link = chapter_response.get_link()
+                res.update({f"{manga_ids[choice]}": str(latest)})
+                new_doc = await self.channels.find_one_and_update(
+                    {
+                        'channel_id': self.i.channel_id,
+                        "guild_id": self.i.guild.id,
+                        },
+                    {
+                        '$set': {
+                            'mangas': str(res)
+                        }
                     },
-                {
-                    '$set': {
-                        'mangas': str(res)
-                    }
-                },
-                return_document=pymongo.ReturnDocument.AFTER
-            )
-            await self.i.channel.send(f"This channel will receive notifications on new chapters of {titles[choice]}, I suppose!")
+                    return_document=pymongo.ReturnDocument.AFTER
+                )
+                await self.i.channel.send(f"This channel will receive notifications on new chapters of {titles[choice]}, I suppose!")
+        else:
+            if manga_ids[choice] in res:
+                res.pop(manga_ids[choice])
+                new_doc = await self.channels.find_one_and_update(
+                    {
+                        'channel_id': self.i.channel_id,
+                        "guild_id": self.i.guild.id,
+                        },
+                    {
+                        '$set': {
+                            'mangas': str(res)
+                        }
+                    },
+                    return_document=pymongo.ReturnDocument.AFTER
+                )
+                title = titles[choice]
+                await self.i.channel.send(f"This channel will no longer receive notifications on new chapters of {title}, I suppose!")
+            
         
     @ui.button(emoji='1️⃣', style=discord.ButtonStyle.blurple)
     async def opt_one(self, interaction, button):

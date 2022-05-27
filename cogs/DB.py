@@ -86,13 +86,13 @@ class DB(commands.Cog):
         
         self.mangas_list = {}
         
-    #     self.tasks_change_avatar.start()
+        self.tasks_change_avatar.start()
         
         
-    # @commands.Cog.listener()
-    # async def on_ready(self):
-    #     self.tasks_filter_channels.start()
-    #     self.tasks_check_chapter.start()
+    @commands.Cog.listener()
+    async def on_ready(self):
+        self.tasks_filter_channels.start()
+        self.tasks_check_chapter.start()
 
         
     # flip command
@@ -495,53 +495,12 @@ class DB(commands.Cog):
             manga_ids = msg[1]
             titles = msg[2]
             msg = msg[0]
-            msg = await i.channel.send(embed=msg)
-            await i.response.send_message("Pick a series to unfollow , in fact!")
+            manga_infos = (titles, manga_ids)
+            await i.response.send_message("Pick a series to follow, I suppose!", embed=msg, view=PickView(i, self.channels_md, manga_infos))
         else:
             return await i.response.send_message(msg)
-        for j in range(len(manga_ids)):
-            await msg.add_reaction(emojis[j])
-
-        def check(reaction, user):
-            return user == i.user and reaction.message == msg
-
-        while True:
-            try:
-                reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout=60.0)
-                mangas_on_channel = (await self.channels_md.find_one(
-                    {
-                        "channel_id": i.channel_id,
-                        "guild_id": i.guild.id,
-                        }))['mangas']
-                mangas_dict = ast.literal_eval(mangas_on_channel)
-                idx = 0
-                for j, emoji in enumerate(emojis):
-                    if emoji == str(reaction):
-                        idx = j
-                        break
-                if str(reaction) == emojis[idx]:
-                    if manga_ids[idx] in mangas_dict:
-                        mangas_dict.pop(manga_ids[idx])
-                        new_doc = await self.channels_md.find_one_and_update(
-                            {
-                                'channel_id': i.channel_id,
-                                "guild_id": i.guild.id,
-                                },
-                            {
-                                '$set': {
-                                    'mangas': str(mangas_dict)
-                                }
-                            },
-                            return_document=pymongo.ReturnDocument.AFTER
-                        )
-                        title = titles[idx]
-                        await i.channel.send(f"This channel will no longer receive notifications on new chapters of {title}, I suppose!")
-            except asyncio.TimeoutError:
-                await msg.clear_reactions()
-                await msg.reply("I'm not accepting any unfollow requests anymore, in fact!")
-                break
+        
     
-    # task sets a random avatar every day
     @discord.ext.tasks.loop(hours=24)
     async def tasks_change_avatar(self):
         try:
