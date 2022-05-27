@@ -26,13 +26,11 @@ class MyMenuPages(ui.View, menus.MenuPages):
         kwargs = await self._get_kwargs_from_page(page)
         kwargs['content'] = text
         kwargs['embed'] = embed
-        if interaction is None:
-            self.msg = await channel.send(**kwargs)
+        self.msg = await channel.send(**kwargs)
         self.embed = embed
         self.text = text
         self.group = group
         self.i = interaction
-        # await interaction.response.send_message(**kwargs)
 
     async def _get_kwargs_from_page(self, page):
         value = {}
@@ -41,7 +39,7 @@ class MyMenuPages(ui.View, menus.MenuPages):
         return value
 
     async def interaction_check(self, interaction):
-        return True
+        return True if self.i is None else interaction.user == self.i.user
 
     async def turn_page(self, page_num:int):
         page = await self._source.get_page(page_num)
@@ -52,7 +50,6 @@ class MyMenuPages(ui.View, menus.MenuPages):
         self.embed.set_footer(text=(f"Page {page_num+1}/{self._source._max_pages}. Translated by " + self.group))
         kwargs['embed'] = self.embed
         await self.msg.edit(**kwargs)
-        # await self.i.edit_original_message(**kwargs)
 
     def disabled(self):
         for btn in self._children:
