@@ -82,6 +82,7 @@ class Tag(commands.Cog):
     @app_commands.guild_only
     @app_commands.describe(tag_name="The soon to be added tag's name, in fact!", tag_content="Contents of this tag, I suppose!",
                            tag_file="You can also pass a file as the tag's contents, in fact! It will override the previous argument, in fact!")
+    @app_commands.checks.has_permissions(manage_guild=True)
     async def add_tag(self, i: discord.Interaction, tag_name: str, tag_content: Optional[str], tag_file: Optional[discord.Attachment]):
         """Add a tag to this guild.
 
@@ -133,6 +134,7 @@ class Tag(commands.Cog):
     @app_commands.guild_only
     @app_commands.autocomplete(tag_name=tag_autocomplete)
     @app_commands.describe(tag_name="The tag you want to remove, I suppose!")
+    @app_commands.checks.has_permissions(manage_guild=True)
     async def remove_tag(self, i: discord.Interaction, tag_name:str):
         """Remove a tag from this guild.
 

@@ -39,9 +39,11 @@ messages = {
 
         'banner': "```Betty will send a member's(author's if no member is passed) banner to the text channel, in fact!```",
 
-        'add': "```Betty will add the text channel to the list of channels that will receive notifications of the preferred series, I suppose!```",
+        'add': "```Betty will add the text channel to the list of channels that will receive notifications of the preferred series, I suppose!\
+                   \nThis needs 'manage_channels' permission, in fact!```",
 
-        'remove': "```Betty will remove the text channel from the list of channels that will receive notifications of the preferred series, I suppose! No need to name any series if its on MangaDex, in fact!```",
+        'remove': "```Betty will remove the text channel from the list of channels that will receive notifications of the preferred series, I suppose! No need to name any series if its on MangaDex, in fact!\
+                   \nThis needs 'manage_channels' permission, in fact!```",
 
         'manga': "```Betty will give information about the manga you want, in fact!```",
 
@@ -118,10 +120,10 @@ messages = {
             \nThe format for this is 'tag show tag_name, in fact!```",
                                   
         'tag add': "```Betty will give add a tag for this server, in fact!\
-            \nThe format for this is 'tag add tag_name tag_content tag_file' (mutally exclusive arguments, the latter will override the former), in fact!```",
+            \nThis needs 'manage_guild' permission and the format for this is 'tag add tag_name tag_content tag_file' (mutally exclusive arguments, the latter will override the former), in fact!```",
                                   
         'tag remove': "```Betty will give remove the given tag from this server!\
-            \nThe format for this is 'tag remove tag_name', in fact!```"
+            \nThis needs 'manage_guild' permission and the format for this is 'tag remove tag_name', in fact!```"
 
 }
 

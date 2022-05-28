@@ -415,6 +415,7 @@ class DB(commands.Cog):
     @app_commands.guild_only
     @app_commands.autocomplete(series=manga_autocomplete)
     @app_commands.describe(series="The series you want to track in this channel, in fact!")
+    @app_commands.checks.has_permissions(manage_channels=True)
     async def commands_add_channel(self, i: discord.Interaction, series: str):
         """Add a series to track to this channel.
 
@@ -480,6 +481,7 @@ class DB(commands.Cog):
     @app_commands.command(name="remove")
     @app_commands.guild_only
     @app_commands.describe(series="The series you want to stop tracking in this channel, I suppose!")
+    @app_commands.checks.has_permissions(manage_channels=True)
     async def commands_remove_channel(self, i: discord.Interaction, series: str=""):
         """Remove a series this channel is tracking.
 

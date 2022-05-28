@@ -56,6 +56,8 @@ class MyTree(CommandTree):
             await interaction.response.send_message(f"{interaction.user.mention}, slow down, I suppose!\nYou can try again in {round(error.retry_after, 2)} seconds, in fact!")
             await asyncio.sleep(float(error.retry_after))
             await interaction.delete_original_message()
+        elif isinstance(error, discord.app_commands.errors.MissingPermissions):
+            await interaction.response.send_message("You don't have permission to do that, I suppose!")
         else:
             await interaction.response.send_message("What is that, I suppose?!\nTry `/beakohelp`, in fact!")
             traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)

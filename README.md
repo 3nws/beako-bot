@@ -13,8 +13,8 @@ I use [pysaucenao](https://github.com/FujiMakoto/pysaucenao) for reverse image s
 ## Series tracking and database action commands and the help command
 
 - `/beakohelp` (sends information about the commands)
-- `/add series` (has autocomplete) (adds the text channel to the list that will receive notifications, if the series is not one of the four mentioned above it will search on mangadex and add them instead)
-- `/remove series` (remove the text channel from the list that will receive notifications, if no series argument is passed it will show the series followed on mangadex by the text channel)
+- `/add series` (has autocomplete) (adds the text channel to the list that will receive notifications, if the series is not one of the four mentioned above it will search on mangadex and add them instead)  (needs `manage_channels` permission)
+- `/remove series` (remove the text channel from the list that will receive notifications, if no series argument is passed it will show the series followed on mangadex by the text channel) (needs `manage_channels` permission)
 - `/manga series` (has autocomplete) (gives information about the given manga series)
 - `/last series` (has autocomplete) (informs of the latest translated chapter of given series, sends a reader for MangaDex)
 - `/following` (sends a message with the list of series a channel is following)
@@ -34,8 +34,8 @@ I use [pysaucenao](https://github.com/FujiMakoto/pysaucenao) for reverse image s
 ## Tag commands
 
 - `/tag show tag` (has autocomplete) (shows the contents of the tag, sends a file if the content was added as a file)
-- `/tag add tag_content tag_file` (mutually exclusive arguments, if both is passed `tag_file` will override `tab_content`)
-- `/tag remove tag` (has autocomplete) (removes the tag)
+- `/tag add tag_content tag_file` (mutually exclusive arguments, if both is passed `tag_file` will override `tab_content`) (needs `manage_guild` permission)
+- `/tag remove tag` (has autocomplete) (removes the tag) (needs `manage_guild` permission)
 ## Util commands
 
 - `/poll choice1 choice2 question` (creates a poll with the choices and the question, polls have a 3 minute timer before they are finished)
