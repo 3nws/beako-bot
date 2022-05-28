@@ -9,6 +9,7 @@ import pymongo
 import motor.motor_asyncio
 import traceback
 import sys
+import aiohttp
 
 from dotenv import load_dotenv
 from discord.ext import tasks, commands
@@ -52,11 +53,11 @@ class MyTree(CommandTree):
         
 
     async def on_error(self, interaction, error):
-        if isinstance(error, discord.app_commands.errors.CommandOnCooldown):
+        if isinstance(error, discord.app_commands.CommandOnCooldown):
             await interaction.response.send_message(f"{interaction.user.mention}, slow down, I suppose!\nYou can try again in {round(error.retry_after, 2)} seconds, in fact!")
             await asyncio.sleep(float(error.retry_after))
             await interaction.delete_original_message()
-        elif isinstance(error, discord.app_commands.errors.MissingPermissions):
+        elif isinstance(error, discord.app_commands.MissingPermissions):
             await interaction.response.send_message("You don't have permission to do that, I suppose!")
         else:
             await interaction.response.send_message("What is that, I suppose?!\nTry `/beakohelp`, in fact!")
@@ -73,6 +74,7 @@ class Bot(commands.Bot):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.client = None
+        self.session = None
 
 
     async def load_cogs(self):
@@ -84,6 +86,7 @@ class Bot(commands.Bot):
 
 
     async def setup_hook(self) -> None:
+        self.session = aiohttp.ClientSession()
         try:
             self.client = motor.motor_asyncio.AsyncIOMotorClient('localhost', 27017, serverSelectionTimeoutMS=5000)
             print(await self.client.server_info())

@@ -13,7 +13,7 @@ class Osu(commands.Cog):
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.osu = OsuAPI()
+        self.osu = OsuAPI(self.bot)
 
     group = app_commands.Group(name="osu", description="osu! command group...")
 
@@ -30,10 +30,10 @@ class Osu(commands.Cog):
         Returns:
             None: None
         """
+        await i.response.defer()
         mode = "0"
         if player_name is None:
-            return await i.response.send_message("Who, in fact?!\nUse `/help osu` for more information, I suppose!")
-        msg = await i.channel.send("Loading, I suppose!")
+            return await i.followup.send("Who, in fact?!\nUse `/help osu` for more information, I suppose!")
         try:
             player = await self.osu.get_user(player_name, mode)
             game_mode = self.osu.game_modes[mode]
@@ -63,11 +63,10 @@ class Osu(commands.Cog):
 
             select.callback = select_callback
             view = View(timeout=None).add_item(select)
-            await msg.delete()
-            await i.response.send_message(content='', embed=embed, view=view)
+            await i.followup.send(content='', embed=embed, view=view)
         except Exception as e:
             print(e)
-            await i.response.send_message("Something went wrong, in fact!")
+            await i.followup.send("Something went wrong, in fact!")
 
 
     @group.command(name="recent")
@@ -82,10 +81,10 @@ class Osu(commands.Cog):
         Returns:
             None: None
         """
+        await i.response.defer()
         mode = "0"
         if player_name is None:
-            return await i.response.send_message("Who, in fact?!\nUse `/help recent` for more information, I suppose!")
-        msg = await i.channel.send("Loading, I suppose!")
+            return await i.followup.send("Who, in fact?!\nUse `/help recent` for more information, I suppose!")
         try:
             scores = await self.osu.get_user_recent(player_name, mode, 5)
             player = await self.osu.get_user(player_name, mode)
@@ -171,11 +170,10 @@ class Osu(commands.Cog):
 
             select.callback = select_callback
             view = View(timeout=None).add_item(select)
-            await msg.delete()
-            msg = await i.response.send_message(content='', embed=embed, view=view)
+            msg = await i.followup.send(content='', embed=embed, view=view)
         except Exception as e:
             print(e)
-            await i.response.send_message("Something went wrong, in fact!")
+            await i.followup.send("Something went wrong, in fact!")
 
 
     @group.command(name="best")
@@ -190,10 +188,10 @@ class Osu(commands.Cog):
         Returns:
             None: None
         """
+        await i.response.defer()
         mode = "0"
         if player_name is None:
-            return await i.response.send_message("Who, in fact?!\nUse `/help osutop` for more information, I suppose!")
-        msg = await i.channel.send("Loading, I suppose!")
+            return await i.followup.send("Who, in fact?!\nUse `/help osutop` for more information, I suppose!")
         try:
             player = await self.osu.get_user(player_name, mode)
             best_scores = await self.osu.get_best(player_name, mode, 5)
@@ -279,11 +277,10 @@ class Osu(commands.Cog):
 
             select.callback = select_callback
             view = View(timeout=None).add_item(select)
-            await msg.delete()
-            msg = await i.response.send_message(content='', embed=embed, view=view)
+            msg = await i.followup.send(content='', embed=embed, view=view)
         except Exception as e:
             print(e)
-            await i.response.send_message("Something went wrong, in fact!")
+            await i.followup.send("Something went wrong, in fact!")
 
 
 async def setup(bot: commands.Bot):

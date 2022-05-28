@@ -125,14 +125,14 @@ class Util(commands.Cog):
         base_url = 'https://discord.com/api'
         users_endpoint = f'/users/{member.id}'
         headers = {'Authorization': f'Bot {self.TOKEN}'}
-        async with aiohttp.ClientSession() as session:
-            async with session.get(f'{base_url}{users_endpoint}', headers=headers) as r:
-                if r.status == 200:
-                    response = await r.read()
-                    r = json.loads(response)
-                else:
-                    print("Something went wrong with the Discord API request!")
-                    return
+        session = self.bot.session
+        async with session.get(f'{base_url}{users_endpoint}', headers=headers) as r:
+            if r.status == 200:
+                response = await r.read()
+                r = json.loads(response)
+            else:
+                print("Something went wrong with the Discord API request!")
+                return
         banner_hash = r['banner']
         if banner_hash:
             animated = banner_hash.startswith('a_')

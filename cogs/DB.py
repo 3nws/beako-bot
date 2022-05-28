@@ -7,8 +7,8 @@ import pymongo
 import os
 import aiohttp
 import json
-import ast
 
+from ast import literal_eval
 from bs4 import BeautifulSoup
 from commands.db.classes.Re_zero import Re_zero
 from commands.db.classes.Guya_moe import Guya_moe
@@ -139,7 +139,7 @@ class DB(commands.Cog):
         """
         try:
             # for re zero
-            rz = Re_zero(self.rz_url)
+            rz = Re_zero(self.rz_url, self.bot)
 
             scrapes = await rz.scrape()
             most_recent_post_str = scrapes[0]
@@ -156,7 +156,7 @@ class DB(commands.Cog):
             )
 
             # for kaguya-sama
-            kaguya = Guya_moe(self.kaguya_url)
+            kaguya = Guya_moe(self.kaguya_url, self.bot)
 
             scrapes = await kaguya.scrape()
             most_recent_post_str = scrapes[0]
@@ -173,7 +173,7 @@ class DB(commands.Cog):
             )
 
             # for oshi no ko
-            onk = Guya_moe(self.onk_url)
+            onk = Guya_moe(self.onk_url, self.bot)
 
             scrapes = await onk.scrape()
             most_recent_post_str = scrapes[0]
@@ -190,7 +190,7 @@ class DB(commands.Cog):
             )
 
             # for grand blue
-            gb = Grand_Blue(self.gb_url)
+            gb = Grand_Blue(self.gb_url, self.bot)
 
             scrapes = await gb.scrape()
             most_recent_post_str = scrapes[0]
@@ -207,12 +207,12 @@ class DB(commands.Cog):
             )
 
             # for mangadex
-            md = MangaDex()
+            md = MangaDex(self.bot)
             records_exist = await self.channels_md.find().to_list(None)
             if records_exist:
                 for record in records_exist:
                     mangas_on_channel = (record)['mangas']
-                    mangas_dict = ast.literal_eval(mangas_on_channel)
+                    mangas_dict = literal_eval(mangas_on_channel)
                     for manga_id in mangas_dict:
                         chapter = mangas_dict[manga_id]
                         chapter_response = await md.get_latest(manga_id)
@@ -288,7 +288,7 @@ class DB(commands.Cog):
         elif series == "gb":
             await i.response.send_message(await Grand_Blue(self.gb_url).latest_chapter())
         else:
-            md = MangaDex()
+            md = MangaDex(self.bot)
             search = (await md.search(series, 1))[-1][0]
             chapter_response = await md.get_latest(search)
             chp_title = await md.get_manga_title(search)
@@ -388,7 +388,7 @@ class DB(commands.Cog):
             i (discord.Interaction): the interaction that invokes this coroutine
             series (str): the series to know about
         """
-        md = MangaDex()
+        md = MangaDex(self.bot)
         embed = await md.get_info(series)
         await i.response.send_message(embed=embed)
         
@@ -399,16 +399,16 @@ class DB(commands.Cog):
         Args:
             query (str): query that will be sent to the api
         """
-        async with aiohttp.ClientSession() as session:
-            async with session.get(f"https://api.mangadex.org/manga?limit=25&title={query}&\
-                includedTagsMode=AND&excludedTagsMode=OR&availableTranslatedLanguage%5B%5D=en&\
-                contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&\
-                order%5BlatestUploadedChapter%5D=desc") as r:
-                if r.status == 200:
-                    response = await r.read()
-                    self.mangas_list = json.loads(response)['data']
-                else:
-                    print("MangaDex down!")                     
+        session = self.bot.session
+        async with session.get(f"https://api.mangadex.org/manga?limit=25&title={query}&\
+            includedTagsMode=AND&excludedTagsMode=OR&availableTranslatedLanguage%5B%5D=en&\
+            contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&\
+            order%5BlatestUploadedChapter%5D=desc") as r:
+            if r.status == 200:
+                response = await r.read()
+                self.mangas_list = json.loads(response)['data']
+            else:
+                print("MangaDex down!")                     
     
 
     @app_commands.command(name="add")
@@ -423,7 +423,7 @@ class DB(commands.Cog):
             i (discord.Interaction): the interaction that invokes this coroutine
             series (str): the series to add this channel's tracking list
         """
-        md = MangaDex()
+        md = MangaDex(self.bot)
         channel_entry = {
             "id": i.channel_id,
             "guild_id": i.guild.id,
@@ -463,7 +463,7 @@ class DB(commands.Cog):
         elif series == "" or series == " ":
             msg = "To what list do you want to add this channel, in fact?!"
         else:
-            md = MangaDex()
+            md = MangaDex(self.bot)
             results = await md.search(series, 5)
             msg = results
             
@@ -473,7 +473,7 @@ class DB(commands.Cog):
             manga_ids = msg[3]
             msg = msg[1]
             manga_infos = (titles, manga_ids)
-            await i.response.send_message("Pick a series to follow, I suppose!", embed=msg, view=PickView(i, self.channels_md, manga_infos))
+            await i.response.send_message("Pick a series to follow, I suppose!", embed=msg, view=PickView(i, self.channels_md, manga_infos, self.bot))
         else:
             await i.response.send_message(msg)
 
@@ -489,7 +489,7 @@ class DB(commands.Cog):
             i (discord.Interaction): the interaction that invokes this coroutine
             series (str, optional): the series to remove from this channel's tracking list. Defaults to "".
         """
-        md = MangaDex()
+        md = MangaDex(self.bot)
         channel_entry = {
             "id": i.channel_id,
             "guild_id": i.guild.id,
@@ -540,7 +540,7 @@ class DB(commands.Cog):
                     "channel_id": i.channel_id,
                     "guild_id": i.guild.id,
                     }))['mangas']
-            mangas_dict = ast.literal_eval(mangas_on_channel)
+            mangas_dict = literal_eval(mangas_on_channel)
 
             embed = discord.Embed(
                 title=f"Pick one of the series you wish to unfollow, I suppose!" if len(
@@ -566,7 +566,7 @@ class DB(commands.Cog):
             titles = msg[2]
             msg = msg[0]
             manga_infos = (titles, manga_ids)
-            await i.response.send_message("Pick a series to follow, I suppose!", embed=msg, view=PickView(i, self.channels_md, manga_infos))
+            await i.response.send_message("Pick a series to follow, I suppose!", embed=msg, view=PickView(i, self.channels_md, manga_infos, self.bot))
         else:
             await i.response.send_message(msg)
         
@@ -666,9 +666,9 @@ class DB(commands.Cog):
                 "guild_id": i.guild.id,
                 }) else False
         if channel_exists:
-            md = MangaDex()
+            md = MangaDex(self.bot)
             mangas_on_channel = (channel_exists)['mangas']
-            mangas_dict = ast.literal_eval(mangas_on_channel)
+            mangas_dict = literal_eval(mangas_on_channel)
             for manga_id in mangas_dict:
                 series.append(await md.get_manga_title(manga_id))
 

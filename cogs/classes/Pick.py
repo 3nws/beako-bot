@@ -2,8 +2,9 @@ import discord
 import asyncio
 import typing
 import pymongo
-import ast
+import json
 
+from ast import literal_eval
 from discord import ui
 from commands.db.classes.MangaDex import MangaDex
 
@@ -14,7 +15,8 @@ class PickView(ui.View):
         self.i: discord.Interaction = i
         self.channels: pymongo.collection.Collection = channels
         self.mangas: dict = {}
-        self.md: MangaDex = MangaDex()
+        self.bot = bot
+        self.md: MangaDex = MangaDex(self.bot)
         self.info: tuple = info
         self.num_of_results: int = len(self.info[0])
         if self.num_of_results != len(self._children):
@@ -49,7 +51,7 @@ class PickView(ui.View):
                         "guild_id": self.i.guild.id,
                         }
                     )
-        return ast.literal_eval(channel_exist['mangas'])
+        return literal_eval(channel_exist['mangas'])
     
     async def update(self, choice: int):
         res = await self.find_one()

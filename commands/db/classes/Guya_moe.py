@@ -7,19 +7,20 @@ from commands.db.classes.Scrape_Series import Scrape_Series
 
 
 class Guya_moe(Scrape_Series):
-    def __init__(self, url):
+    def __init__(self, url, bot):
         self.url = url
+        self.bot = bot
 
     async def scrape(self):
         try:
             # web scraping for guya.moe
-            async with aiohttp.ClientSession() as session:
-                async with session.get(self.url) as r:
-                    if r.status == 200:
-                        page = await r.read()
-                    else:
-                        print("Guya.moe down!")
-                        return
+            session = self.bot.session
+            async with session.get(self.url) as r:
+                if r.status == 200:
+                    page = await r.read()
+                else:
+                    print("Guya.moe down!")
+                    return
 
             soup = BeautifulSoup(page.decode('utf-8'), "html5lib")
 

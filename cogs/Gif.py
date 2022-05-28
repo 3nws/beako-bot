@@ -24,15 +24,15 @@ class Gif(commands.Cog):
         Args:
             i (discord.Interaction): the interaction that invokes this coroutine
         """
-        async with aiohttp.ClientSession() as session:
-            async with session.get("https://g.tenor.com/v1/search?q=%s&key=%s" %
-                                   ("anime pout", self.tenor_api_key)) as r:
-                if r.status == 200:
-                    response = await r.read()
-                    pouts = json.loads(response)
-                else:
-                    print("Tenor down!")
-                    return
+        session = self.bot.session
+        async with session.get("https://g.tenor.com/v1/search?q=%s&key=%s" %
+                               ("anime pout", self.tenor_api_key)) as r:
+            if r.status == 200:
+                response = await r.read()
+                pouts = json.loads(response)
+            else:
+                print("Tenor down!")
+                return
         embed = discord.Embed(
             color=discord.Colour.random()
         )
@@ -53,15 +53,15 @@ class Gif(commands.Cog):
             i (discord.Interaction): the interaction that invokes this coroutine
             member (discord.Member, optional): the member to ping. Defaults to None.
         """
-        async with aiohttp.ClientSession() as session:
-            async with session.get("https://g.tenor.com/v1/search?q=%s&key=%s" %
-                                   ("anime hug", self.tenor_api_key)) as r:
-                if r.status == 200:
-                    response = await r.read()
-                    hugs = json.loads(response)
-                else:
-                    print("Tenor down!")
-                    return
+        session = self.bot.session
+        async with session.get("https://g.tenor.com/v1/search?q=%s&key=%s" %
+                                ("anime hug", self.tenor_api_key)) as r:
+            if r.status == 200:
+                response = await r.read()
+                hugs = json.loads(response)
+            else:
+                print("Tenor down!")
+                return
         if not member:
             member = i.user
         embed = discord.Embed(
@@ -88,15 +88,15 @@ class Gif(commands.Cog):
         Args:
             i (discord.Interaction): the interaction that invokes this coroutine
         """
-        async with aiohttp.ClientSession() as session:
-            async with session.get("https://g.tenor.com/v1/search?q=%s&key=%s" %
-                                   ("anime smug", self.tenor_api_key)) as r:
-                if r.status == 200:
-                    response = await r.read()
-                    smugs = json.loads(response)
-                else:
-                    print("Tenor down!")
-                    return
+        session = self.bot.session
+        async with session.get("https://g.tenor.com/v1/search?q=%s&key=%s" %
+                                ("anime smug", self.tenor_api_key)) as r:
+            if r.status == 200:
+                response = await r.read()
+                smugs = json.loads(response)
+            else:
+                print("Tenor down!")
+                return
         embed = discord.Embed(
             color=discord.Colour.random()
         )
@@ -117,15 +117,15 @@ class Gif(commands.Cog):
             i (discord.Interaction): the interaction that invokes this coroutine
             member (discord.Member, optional): the member to ping. Defaults to None.
         """
-        async with aiohttp.ClientSession() as session:
-            async with session.get("https://g.tenor.com/v1/search?q=%s&key=%s" %
-                                   ("anime pat", self.tenor_api_key)) as r:
-                if r.status == 200:
-                    response = await r.read()
-                    pats = json.loads(response)
-                else:
-                    print("Tenor down!")
-                    return
+        session = self.bot.session
+        async with session.get("https://g.tenor.com/v1/search?q=%s&key=%s" %
+                                ("anime pat", self.tenor_api_key)) as r:
+            if r.status == 200:
+                response = await r.read()
+                pats = json.loads(response)
+            else:
+                print("Tenor down!")
+                return
         embed = discord.Embed(
             color=discord.Colour.random()
         )

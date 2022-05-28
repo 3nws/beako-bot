@@ -13,8 +13,9 @@ load_dotenv()
 
 
 class OsuAPI:
-    def __init__(self):
+    def __init__(self, bot):
         self.API_KEY = os.getenv("OSU_API_KEY")
+        self.bot = bot
         self.base_url = "https://osu.ppy.sh/api/"
         self.base_image_url = "http://s.ppy.sh/a/"
         self.key_query = f"?k={self.API_KEY}"
@@ -41,14 +42,14 @@ class OsuAPI:
 
     async def get_user(self, username, mode):
         url = f"{self.base_url}get_user{self.key_query}&u={username}&m={mode}"
-        async with aiohttp.ClientSession() as session:
-            async with session.get(url) as r:
-                if r.status == 200:
-                    response = await r.read()
-                    player = json.loads(response)[0]
-                else:
-                    print("osu! down!")
-                    return
+        session = self.bot.session
+        async with session.get(url) as r:
+            if r.status == 200:
+                response = await r.read()
+                player = json.loads(response)[0]
+            else:
+                print("osu! down!")
+                return
         player['progress'] = player['level'].split('.')[1][:2] + '%'
         player['level'] = player['level'].split('.')[0]
         player['pp'] = player['pp_raw'].split('.')[0]
@@ -66,26 +67,26 @@ class OsuAPI:
 
     async def get_beatmap(self, id):
         url = f"{self.base_url}get_beatmaps{self.key_query}&b={id}"
-        async with aiohttp.ClientSession() as session:
-            async with session.get(url) as r:
-                if r.status == 200:
-                    response = await r.read()
-                    maps = json.loads(response)
-                else:
-                    print("osu! down!")
-                    return
+        session = self.bot.session
+        async with session.get(url) as r:
+            if r.status == 200:
+                response = await r.read()
+                maps = json.loads(response)
+            else:
+                print("osu! down!")
+                return
         return maps[0]
 
     async def get_user_recent(self, username, mode, limit):
         url = f"{self.base_url}get_user_recent{self.key_query}&u={username}&m={mode}&limit={limit}"
-        async with aiohttp.ClientSession() as session:
-            async with session.get(url) as r:
-                if r.status == 200:
-                    response = await r.read()
-                    scores = list(json.loads(response))
-                else:
-                    print("osu! down!")
-                    return
+        session = self.bot.session
+        async with session.get(url) as r:
+            if r.status == 200:
+                response = await r.read()
+                scores = list(json.loads(response))
+            else:
+                print("osu! down!")
+                return
         for score in scores:
             bm_id = score['beatmap_id']
             score['beatmap'] = await self.get_beatmap(bm_id)
@@ -93,14 +94,14 @@ class OsuAPI:
 
     async def get_best(self, username, mode, limit):
         url = f"{self.base_url}get_user_best{self.key_query}&u={username}&m={mode}&limit={limit}"
-        async with aiohttp.ClientSession() as session:
-            async with session.get(url) as r:
-                if r.status == 200:
-                    response = await r.read()
-                    scores = list(json.loads(response))
-                else:
-                    print("osu! down!")
-                    return
+        session = self.bot.session
+        async with session.get(url) as r:
+            if r.status == 200:
+                response = await r.read()
+                scores = list(json.loads(response))
+            else:
+                print("osu! down!")
+                return
         for score in scores:
             bm_id = score['beatmap_id']
             score['beatmap'] = await self.get_beatmap(bm_id)

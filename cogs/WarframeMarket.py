@@ -20,14 +20,14 @@ class WarframeMarket(commands.Cog):
     async def sync(self):
         """Syncs the items information from WarframeMarket.
         """
-        async with aiohttp.ClientSession() as session:
-            async with session.get(self.base_url+"/items") as r:
-                if r.status == 200:
-                    response = await r.read()
-                    self.items_list = json.loads(response)['payload']['items']
-                    self.is_synced = True
-                else:
-                    print("WarframeMarket down!")
+        session = self.bot.session
+        async with session.get(self.base_url+"/items") as r:
+            if r.status == 200:
+                response = await r.read()
+                self.items_list = json.loads(response)['payload']['items']
+                self.is_synced = True
+            else:
+                print("WarframeMarket down!")
 
     @commands.command()
     @commands.is_owner()
@@ -90,13 +90,13 @@ class WarframeMarket(commands.Cog):
                 item_info = item
         if item_info is not None:
             url_name = item_info['url_name']
-            async with aiohttp.ClientSession() as session:
-                async with session.get(self.base_url+"/items/"+url_name) as r:
-                    if r.status == 200:
-                        response = await r.read()
-                        item_detail = json.loads(response)['payload']['item']['items_in_set'][0]
-                    else:
-                        print("WarframeMarket down!")
+            session = self.bot.session
+            async with session.get(self.base_url+"/items/"+url_name) as r:
+                if r.status == 200:
+                    response = await r.read()
+                    item_detail = json.loads(response)['payload']['item']['items_in_set'][0]
+                else:
+                    print("WarframeMarket down!")
             trading_tax = item_detail['trading_tax'] if 'trading_tax' in item_detail.keys() else "No trading tax value"
             ducats = item_detail['ducats'] if 'ducats' in item_detail.keys() else "No ducats value"
             mastery_level = item_detail['mastery_level'] if 'mastery_level' in item_detail.keys() else "No mastery level"
@@ -109,16 +109,16 @@ class WarframeMarket(commands.Cog):
             desc += f"Drops from " if len(drop_list)>0 else ""
             for i in range(len(drop_list)):
                 desc += drop_list[i]['name']+', ' if i < len(drop_list)-1 else drop_list[i]['name']
-            async with aiohttp.ClientSession() as session:
-                async with session.get(self.base_url+"/items/"+url_name+"/orders") as r:
-                    if r.status == 200:
-                        response = await r.read()
-                        orders = json.loads(response)['payload']['orders']
-                        online_orders = [o for o in orders if o['user']['status'] != 'offline']
-                        filtered_types = [o for o in online_orders if o['order_type'] == order_type]
-                        orders_sorted = sorted(filtered_types, key = lambda ele: ele['platinum']) if order_type != 'buy' else sorted(filtered_types, key = lambda ele: ele['platinum'], reverse=True)
-                    else:
-                        print("WarframeMarket down!")
+            session = self.bot.session
+            async with session.get(self.base_url+"/items/"+url_name+"/orders") as r:
+                if r.status == 200:
+                    response = await r.read()
+                    orders = json.loads(response)['payload']['orders']
+                    online_orders = [o for o in orders if o['user']['status'] != 'offline']
+                    filtered_types = [o for o in online_orders if o['order_type'] == order_type]
+                    orders_sorted = sorted(filtered_types, key = lambda ele: ele['platinum']) if order_type != 'buy' else sorted(filtered_types, key = lambda ele: ele['platinum'], reverse=True)
+                else:
+                    print("WarframeMarket down!")
             for i in range(len(orders_sorted)):
                 if i>4:
                     break

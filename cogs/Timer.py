@@ -23,14 +23,14 @@ class Timer(commands.Cog):
     async def sync(self):
         """Syncs the cities/timezones information.
         """
-        async with aiohttp.ClientSession() as session:
-            async with session.get(self.sync_url) as r:
-                if r.status == 200:
-                    response = await r.read()
-                    self.cities_list = json.loads(response)
-                    self.is_synced = True
-                else:
-                    print("timeapi down!")
+        session = self.bot.session
+        async with session.get(self.sync_url) as r:
+            if r.status == 200:
+                response = await r.read()
+                self.cities_list = json.loads(response)
+                self.is_synced = True
+            else:
+                print("timeapi down!")
             
                     
     @commands.command()
@@ -185,13 +185,13 @@ class Timer(commands.Cog):
             i (discord.Interaction): the interaction that invokes this coroutine
             city (str): city or the timezone to look up
         """
-        async with aiohttp.ClientSession() as session:
-            async with session.get(self.base_url+city) as r:
-                if r.status == 200:
-                    response = await r.read()
-                    time_json = json.loads(response)
-                else:
-                    print("timeapi down!")
+        session = self.bot.session
+        async with session.get(self.base_url+city) as r:
+            if r.status == 200:
+                response = await r.read()
+                time_json = json.loads(response)
+            else:
+                print("timeapi down!")
         date = time_json['date'].split('/')
         date[0], date[1] = date[1], date[0]
         month = self.months[int(date[1])-1]
