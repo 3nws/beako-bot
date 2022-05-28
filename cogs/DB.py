@@ -102,13 +102,22 @@ class DB(commands.Cog):
         await i.response.send_message(flip)
     
     
-    async def send_messages(self, bot, channels, title, data, db_rec, anchor):
+    async def send_messages(self, channels, title, data, db_rec, anchor):
+        """Sends the notification messages to all the relevant guild channels.
+
+        Args:
+            channels (motor.motor_asyncio.AsyncIOMotorCollection): relevant channels collection
+            title (str): the scraped or response title to compare with the database
+            data (motor.motor_asyncio.AsyncIOMotorCollection): chapter collection of the relevant series to update if necessary
+            db_rec (dict): the latest document in the database of the relevant series
+            anchor (str): link to the chapter
+        """
         if db_rec["title"] != title:
             await data.find_one_and_update(
                 {"title": str(db_rec["title"])}, {"$set": {"title": title}}
             )
             async for channel in channels.find():
-                channel_if_exists = bot.get_guild(channel["guild_id"]).get_channel((channel["id"]))
+                channel_if_exists = self.bot.get_guild(channel["guild_id"]).get_channel((channel["id"]))
                 if channel_if_exists:
                     try:
                         await channel_if_exists.send(
@@ -118,9 +127,11 @@ class DB(commands.Cog):
                         print(
                             f"The channel with id {channel['id']} is private, I suppose!")
     
-    # task that checks chapter every 60 seconds
-    @discord.ext.tasks.loop(seconds=5)
+
+    @discord.ext.tasks.loop(seconds=60)
     async def tasks_check_chapter(self):
+        """Checks for the newest chapters every minute.
+        """
         try:
             # for re zero
             rz = Re_zero(self.rz_url)
@@ -132,7 +143,6 @@ class DB(commands.Cog):
             last_chapter = await self.data_rz.find_one()
 
             await self.send_messages(
-                self.bot,
                 self.channels_rz,
                 most_recent_post_str,
                 self.data_rz,
@@ -150,7 +160,6 @@ class DB(commands.Cog):
             last_chapter = await self.data_kaguya.find_one()
 
             await self.send_messages(
-                self.bot,
                 self.channels_kaguya,
                 most_recent_post_str,
                 self.data_kaguya,
@@ -168,7 +177,6 @@ class DB(commands.Cog):
             last_chapter = await self.data_onk.find_one()
 
             await self.send_messages(
-                self.bot,
                 self.channels_onk,
                 most_recent_post_str,
                 self.data_onk,
@@ -186,7 +194,6 @@ class DB(commands.Cog):
             last_chapter = await self.data_gb.find_one()
 
             await self.send_messages(
-                self.bot,
                 self.channels_gb,
                 most_recent_post_str,
                 self.data_gb,
@@ -259,7 +266,14 @@ class DB(commands.Cog):
             print(e)
             
         
-    async def last_chapter(self, bot, series, channel, i):
+    async def last_chapter(self, series, channel, i):
+        """Sends the latest chapter info or the reader.
+
+        Args:
+            series (str): _description_
+            channel (int): _description_
+            i (discord.Interaction): _description_
+        """
         series = self.aliases[series] if series in self.aliases else series
         if series == "rz":
             await i.response.send_message(await Re_zero(self.rz_url).latest_chapter())
@@ -311,6 +325,11 @@ class DB(commands.Cog):
                 
         
     def select_random_image_path(self):
+        """Picks a random file path in self.avatars.
+
+        Returns:
+            str: path of the file randomly selected
+        """
         return os.path.join(self.avatars, random.choice(os.listdir(self.avatars)))
     
     
@@ -329,10 +348,19 @@ class DB(commands.Cog):
     @app_commands.autocomplete(series=manga_autocomplete)
     @app_commands.describe(series="The series you want to get the latest chapter of, in fact!")
     async def commands_latest_chapter(self, i: discord.Interaction, series: str=""):
+        """Get the latest chapter of a series.
+
+        Args:
+            i (discord.Interaction): the interaction that invokes this coroutine
+            series (str, optional): the series to know about. Defaults to "".
+
+        Returns:
+            None: None
+        """
         if series == "":
             message = "What series do you want to know about, in fact!"
         else:
-            return await self.last_chapter(self.bot, series, i.channel_id, i)
+            return await self.last_chapter(series, i.channel_id, i)
         await i.response.send_message(message)
 
 
@@ -341,12 +369,23 @@ class DB(commands.Cog):
     @app_commands.autocomplete(series=manga_autocomplete)
     @app_commands.describe(series="The series you want to get information about, I suppose!")
     async def commands_get_manga_info(self, i: discord.Interaction, series: str):
+        """Get info on a manga.
+
+        Args:
+            i (discord.Interaction): the interaction that invokes this coroutine
+            series (str): the series to know about
+        """
         md = MangaDex()
         embed = await md.get_info(series)
         await i.response.send_message(embed=embed)
         
         
     async def sync(self, query:str):
+        """The function called everytime the input on mangadex related autocomplete argument changes.
+
+        Args:
+            query (str): query that will be sent to the api
+        """
         async with aiohttp.ClientSession() as session:
             async with session.get(f"https://api.mangadex.org/manga?limit=25&title={query}&\
                 includedTagsMode=AND&excludedTagsMode=OR&availableTranslatedLanguage%5B%5D=en&\
@@ -364,6 +403,12 @@ class DB(commands.Cog):
     @app_commands.autocomplete(series=manga_autocomplete)
     @app_commands.describe(series="The series you want to track in this channel, in fact!")
     async def commands_add_channel(self, i: discord.Interaction, series: str):
+        """Add a series to track to this channel.
+
+        Args:
+            i (discord.Interaction): the interaction that invokes this coroutine
+            series (str): the series to add this channel's tracking list
+        """
         md = MangaDex()
         channel_entry = {
             "id": i.channel_id,
@@ -416,13 +461,19 @@ class DB(commands.Cog):
             manga_infos = (titles, manga_ids)
             await i.response.send_message("Pick a series to follow, I suppose!", embed=msg, view=PickView(i, self.channels_md, manga_infos))
         else:
-            return await i.response.send_message(msg)
+            await i.response.send_message(msg)
 
 
     @app_commands.command(name="remove")
     @app_commands.guild_only
     @app_commands.describe(series="The series you want to stop tracking in this channel, I suppose!")
     async def commands_remove_channel(self, i: discord.Interaction, series: str=""):
+        """Remove a series this channel is tracking.
+
+        Args:
+            i (discord.Interaction): the interaction that invokes this coroutine
+            series (str, optional): the series to remove from this channel's tracking list. Defaults to "".
+        """
         md = MangaDex()
         channel_entry = {
             "id": i.channel_id,
@@ -502,11 +553,13 @@ class DB(commands.Cog):
             manga_infos = (titles, manga_ids)
             await i.response.send_message("Pick a series to follow, I suppose!", embed=msg, view=PickView(i, self.channels_md, manga_infos))
         else:
-            return await i.response.send_message(msg)
+            await i.response.send_message(msg)
         
     
     @discord.ext.tasks.loop(hours=24)
     async def tasks_change_avatar(self):
+        """Task that changes the bot's avatar once a day.
+        """
         try:
             async for image_record in self.db_avatars.find():
                 url = image_record["url"]
@@ -536,9 +589,10 @@ class DB(commands.Cog):
             print(e)
 
 
-    # task that removes non existing(deleted) channels every 10 seconds
-    @discord.ext.tasks.loop(seconds=10)
+    @discord.ext.tasks.loop(seconds=60)
     async def tasks_filter_channels(self):
+        """Task that filters out deleted channels from the database every 60 seconds.
+        """
         async for channel in self.channels_rz.find():
             if self.bot.get_guild(channel['guild_id']) is None or self.bot.get_guild(channel['guild_id']).get_channel((channel["id"])) is None:
                 channel_entry = {
@@ -571,11 +625,15 @@ class DB(commands.Cog):
                 }
                 await self.channels_md.find_one_and_delete(channel_entry)
                 
-    
-    # send a list of followed series of a channel
+
     @app_commands.command(name="following")
     @app_commands.guild_only
     async def commands_following(self, i: discord.Interaction):
+        """Check what series this channel is tracking.
+
+        Args:
+            i (discord.Interaction): the interaction that invokes this coroutine
+        """
         series = []
         all_channels = await self.db_channels.list_collection_names()
         for channels in all_channels:
