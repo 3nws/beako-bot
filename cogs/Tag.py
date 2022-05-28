@@ -27,7 +27,7 @@ class Tag(commands.Cog):
         self.tags_list = self.tags_list['tags'] if self.tags_list is not None and 'tags' in self.tags_list.keys() else {}
          
     
-    group = app_commands.Group(name="tag", description="Tag command group...")
+    group = app_commands.Group(name="tag", description="Tag command group...", guild_only=True)
         
         
     async def tag_autocomplete(self,
@@ -51,7 +51,6 @@ class Tag(commands.Cog):
     
     
     @group.command(name="show")
-    @app_commands.guild_only
     @app_commands.autocomplete(tag_name=tag_autocomplete)
     @app_commands.describe(tag_name="The name for this tag, I suppose! So you can find its contents later, in fact!")
     async def get_tag(self, i: discord.Interaction, *, tag_name:str):
@@ -79,7 +78,6 @@ class Tag(commands.Cog):
             
         
     @group.command(name="add")
-    @app_commands.guild_only
     @app_commands.describe(tag_name="The soon to be added tag's name, in fact!", tag_content="Contents of this tag, I suppose!",
                            tag_file="You can also pass a file as the tag's contents, in fact! It will override the previous argument, in fact!")
     @app_commands.checks.has_permissions(manage_guild=True)
@@ -131,7 +129,6 @@ class Tag(commands.Cog):
         
         
     @group.command(name="remove")
-    @app_commands.guild_only
     @app_commands.autocomplete(tag_name=tag_autocomplete)
     @app_commands.describe(tag_name="The tag you want to remove, I suppose!")
     @app_commands.checks.has_permissions(manage_guild=True)
