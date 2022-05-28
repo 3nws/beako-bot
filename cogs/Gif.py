@@ -19,6 +19,11 @@ class Gif(commands.Cog):
 
     @app_commands.command(name="pout")
     async def pout(self, i: discord.Interaction):
+        """Send a pout gif.
+
+        Args:
+            i (discord.Interaction): the interaction that invokes this coroutine
+        """
         async with aiohttp.ClientSession() as session:
             async with session.get("https://g.tenor.com/v1/search?q=%s&key=%s" %
                                    ("anime pout", self.tenor_api_key)) as r:
@@ -40,8 +45,14 @@ class Gif(commands.Cog):
 
 
     @app_commands.command(name="hug")
-    @app_commands.describe(user="The member you want to hug, I suppose!")
-    async def hug(self, i: discord.Interaction, user: discord.Member = None):
+    @app_commands.describe(member="The member you want to hug, I suppose!")
+    async def hug(self, i: discord.Interaction, member: discord.Member = None):
+        """Hug someone.
+
+        Args:
+            i (discord.Interaction): the interaction that invokes this coroutine
+            member (discord.Member, optional): the member to ping. Defaults to None.
+        """
         async with aiohttp.ClientSession() as session:
             async with session.get("https://g.tenor.com/v1/search?q=%s&key=%s" %
                                    ("anime hug", self.tenor_api_key)) as r:
@@ -51,19 +62,19 @@ class Gif(commands.Cog):
                 else:
                     print("Tenor down!")
                     return
-        if not user:
-            user = i.user
+        if not member:
+            member = i.user
         embed = discord.Embed(
             color=discord.Colour.random()
         )
         rand_index = random.randrange(len(hugs['results']))
-        if i.user.id == user.id:
+        if i.user.id == member.id:
             desc = 'Hugging yourself? Pathetic, I suppose!'
-        elif user.id == self.bot.user.id:
+        elif member.id == self.bot.user.id:
             desc = 'How dare you hug me, in fact?! *swoosh* Be gone, I suppose!'
         else:
             desc = '{} hugged {}, I suppose!'.format(
-                i.user.mention, user.mention)
+                i.user.mention, member.mention)
         embed = discord.Embed(description=desc, color=discord.Colour.random())
         embed.set_image(url=(hugs['results'])[rand_index]
                         ['media'][0]['mediumgif']['url'])
@@ -72,6 +83,11 @@ class Gif(commands.Cog):
 
     @app_commands.command(name="smug")
     async def smug(self, i: discord.Interaction):
+        """Be smug.
+
+        Args:
+            i (discord.Interaction): the interaction that invokes this coroutine
+        """
         async with aiohttp.ClientSession() as session:
             async with session.get("https://g.tenor.com/v1/search?q=%s&key=%s" %
                                    ("anime smug", self.tenor_api_key)) as r:
@@ -93,8 +109,14 @@ class Gif(commands.Cog):
 
 
     @app_commands.command(name="pat")
-    @app_commands.describe(user="The user you want to pat, I suppose!")
-    async def pat(self, i: discord.Interaction, user: discord.Member = None):
+    @app_commands.describe(member="The member you want to pat, I suppose!")
+    async def pat(self, i: discord.Interaction, member: discord.Member = None):
+        """Pat someone that deserves it.
+
+        Args:
+            i (discord.Interaction): the interaction that invokes this coroutine
+            member (discord.Member, optional): the member to ping. Defaults to None.
+        """
         async with aiohttp.ClientSession() as session:
             async with session.get("https://g.tenor.com/v1/search?q=%s&key=%s" %
                                    ("anime pat", self.tenor_api_key)) as r:
@@ -108,15 +130,15 @@ class Gif(commands.Cog):
             color=discord.Colour.random()
         )
         rand_index = random.randrange(len(pats['results']))
-        if user is None:
-            user = i.user
-        if i.user.id == user.id:
+        if member is None:
+            member = i.user
+        if i.user.id == member.id:
             desc = 'Why are you patting yourself, I suppose!'
-        elif user.id == self.bot.user.id:
+        elif member.id == self.bot.user.id:
             desc = 'Don\'t get any funny ideas, Betty\'s trying to be nice so she\'ll allow it, in fact!'
         else:
             desc = '{} patted {}, I suppose!'.format(
-                i.user.mention, user.mention)
+                i.user.mention, member.mention)
         embed = discord.Embed(description=desc, color=discord.Colour.random())
         embed.set_image(url=(pats['results'])[rand_index]
                         ['media'][0]['mediumgif']['url'])

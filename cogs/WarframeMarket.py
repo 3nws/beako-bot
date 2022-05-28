@@ -18,6 +18,8 @@ class WarframeMarket(commands.Cog):
         self.image_url = "https://warframe.market/static/assets"
         
     async def sync(self):
+        """Syncs the items information from WarframeMarket.
+        """
         async with aiohttp.ClientSession() as session:
             async with session.get(self.base_url+"/items") as r:
                 if r.status == 200:
@@ -30,6 +32,11 @@ class WarframeMarket(commands.Cog):
     @commands.command()
     @commands.is_owner()
     async def sync_items(self, ctx):
+        """Manual command to sync items.
+
+        Args:
+            ctx (commands.Bot.Context): the context for this command
+        """
         try:
             await self.sync()
             await ctx.send("Items synced, I suppose!")
@@ -42,6 +49,15 @@ class WarframeMarket(commands.Cog):
         interaction: discord.Interaction,
         current: str,
     ) -> List[app_commands.Choice[str]]:
+        """An autocomplete function
+
+        Args:
+            interaction (discord.Interaction): the interaction that invokes this coroutine
+            current (str): whatever the user has typed as the input
+
+        Returns:
+            List[app_commands.Choice[str]]: The list of choices matching the input
+        """
         if not self.is_synced:
             await self.sync()
         return [
@@ -58,6 +74,13 @@ class WarframeMarket(commands.Cog):
     @app_commands.autocomplete(item_name=item_autocomplete)
     @app_commands.describe(choices="Do you want to buy or sell, in fact?!", item_name="Which item, in fact?!")
     async def get_item(self, interaction: discord.Interaction, choices: app_commands.Choice[str], item_name: str):
+        """Get item information and buy/sell orders.
+
+        Args:
+            interaction (discord.Interaction): the interaction that invokes this coroutine
+            choices (app_commands.Choice[str]): buying or selling?
+            item_name (str): item name to search for
+        """
         order_type = choices.value
         if not self.is_synced:
             await self.sync()

@@ -29,6 +29,11 @@ class Util(commands.Cog):
 
     @app_commands.command(name="series")
     async def series(self, i: discord.Interaction):
+        """Get the legacy series information.
+
+        Args:
+            i (discord.Interaction): the interaction that invokes this coroutine
+        """
         series = {
             "Kaguya-sama: Love is War (kaguya)",
             "Oshi no Ko (onk)",
@@ -51,6 +56,12 @@ class Util(commands.Cog):
     @app_commands.command(name="avatar")
     @app_commands.describe(member="The member you want to ~~steal~~borrow their avatar from, in fact!")
     async def avatar(self, i: discord.Interaction, member: discord.Member = None):
+        """Get a member's avatar.
+
+        Args:
+            i (discord.Interaction): the interaction that invokes this coroutine
+            member (discord.Member, optional): the member to take avatar from. Defaults to None.
+        """
         avatar_frame = discord.Embed(
             color=discord.Colour.random()
         )
@@ -69,6 +80,15 @@ class Util(commands.Cog):
     @app_commands.command(name="savatar")
     @app_commands.describe(member="The member you want to ~~steal~~borrow their server specific avatar from, in fact!")
     async def server_avatar(self, i: discord.Interaction, member: discord.Member = None):
+        """Get the member's server specific avatar.
+
+        Args:
+            i (discord.Interaction): the interaction that invokes this coroutine
+            member (discord.Member, optional): the member to take server specific avatar from. Defaults to None.
+
+        Returns:
+            None: None
+        """
         avatar_frame = discord.Embed(
             color=discord.Colour.random()
         )
@@ -91,6 +111,12 @@ class Util(commands.Cog):
     @app_commands.command(name="banner")
     @app_commands.describe(member="The member you want to ~~steal~~borrow their banner from, in fact!")
     async def banner(self, i: discord.Interaction, member: discord.Member = None):
+        """Get the member's banner.
+
+        Args:
+            i (discord.Interaction): the interaction that invokes this coroutine
+            member (discord.Member, optional): the member to take the banner from. Defaults to None.
+        """
         embed = discord.Embed(
             color=discord.Colour.random()
         )
@@ -136,6 +162,12 @@ class Util(commands.Cog):
 
 
     async def send_sauce(self, i: discord.Interaction, url: str):
+        """Sends an embed with the source information of the image.
+
+        Args:
+            i (discord.Interaction): the interaction that invokes this coroutine
+            url (str): url of the image
+        """
         try:
             sauce_frame = discord.Embed(
                 color=discord.Colour.random()
@@ -175,18 +207,38 @@ class Util(commands.Cog):
     @sauce_group.command(name="url")
     @app_commands.describe(url="The url of the image you want to find the source of, in fact!")
     async def reverse_image_search(self, i: discord.Interaction, url: str):
+        """Find the source of the image by url.
+
+        Args:
+            i (discord.Interaction): the interaction that invokes this coroutine
+            url (str): url of the image
+        """
         await self.send_sauce(i, url)
 
 
     @sauce_group.command(name="file")
     @app_commands.describe(file="The image file you want to find the source of, in fact!")
     async def reverse_image_search(self, i: discord.Interaction, file: discord.Attachment):
+        """Find the source of the image by uploading it.
+
+        Args:
+            i (discord.Interaction): the interaction that invokes this coroutine
+            file (discord.Attachment): image file
+        """
         await self.send_sauce(i, file.url)
 
 
     @app_commands.command(name="poll")
     @app_commands.describe(c1="First choice, in fact!", c2="Second choice, in fact!", question="The question this poll is for, in fact!")
     async def poll(self, i: discord.Interaction, c1: str, c2: str, *, question: str=""):
+        """Create a poll.
+
+        Args:
+            i (discord.Interaction): the interaction that invokes this coroutine
+            c1 (str): first choice of the poll
+            c2 (str): second choice of the poll
+            question (str, optional): question this poll is trying to answer. Defaults to "".
+        """
         embed = discord.Embed(
             title=question.upper(),
             description=f":one: {c1}\n\n:two: {c2}\n",

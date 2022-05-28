@@ -20,7 +20,16 @@ class Osu(commands.Cog):
 
     @group.command(name="profile")
     @app_commands.describe(player_name="The player you want to get info on, in fact!")
-    async def osu(self, i: discord.Interaction, player_name:str):
+    async def osu(self, i: discord.Interaction, player_name: str):
+        """Get this player's profile.
+
+        Args:
+            i (discord.Interaction): the interaction that invokes this coroutine
+            player_name (str): the player name to look up
+
+        Returns:
+            None: None
+        """
         mode = "0"
         if player_name is None:
             return await i.response.send_message("Who, in fact?!\nUse `/help osu` for more information, I suppose!")
@@ -64,6 +73,15 @@ class Osu(commands.Cog):
     @group.command(name="recent")
     @app_commands.describe(player_name="The player you want to get the recent plays of, in fact!")
     async def recent(self, i: discord.Interaction, player_name:str):
+        """Get the recent plays of a player.
+
+        Args:
+            i (discord.Interaction): the interaction that invokes this coroutine
+            player_name (str): the player name
+
+        Returns:
+            None: None
+        """
         mode = "0"
         if player_name is None:
             return await i.response.send_message("Who, in fact?!\nUse `/help recent` for more information, I suppose!")
@@ -163,6 +181,15 @@ class Osu(commands.Cog):
     @group.command(name="best")
     @app_commands.describe(player_name="The player you want to get the best plays of, in fact!")
     async def osutop(self, i: discord.Interaction, player_name:str):
+        """Get the best plays of a player.
+
+        Args:
+            i (discord.Interaction): the interaction that invokes this coroutine
+            player_name (str): the player name
+
+        Returns:
+            None: None
+        """
         mode = "0"
         if player_name is None:
             return await i.response.send_message("Who, in fact?!\nUse `/help osutop` for more information, I suppose!")

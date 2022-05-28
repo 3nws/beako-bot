@@ -18,6 +18,15 @@ class TL(commands.Cog):
         interaction: discord.Interaction,
         current: str,
     ) -> List[app_commands.Choice[str]]:
+        """An autocomplete function
+
+        Args:
+            interaction (discord.Interaction): the interaction that invokes this coroutine
+            current (str): whatever the user has typed as the input
+
+        Returns:
+            List[app_commands.Choice[str]]: The list of choices matching the input
+        """
         return [
             app_commands.Choice(name=lang, value=lang)
             for lang in self.langs if current.lower() in lang.lower()
@@ -28,6 +37,13 @@ class TL(commands.Cog):
     @app_commands.autocomplete(language=lang_autocomplete)
     @app_commands.describe(text="The text you want to translate, in fact!", language="The language you want to translate to, I suppose!")
     async def translate(self, i: discord.Interaction, text: str, language: str):
+        """Translate a phrase to wished language.
+
+        Args:
+            i (discord.Interaction): the interaction that invokes this coroutine
+            text (str): the phrase to translate
+            language (str): the languate to translate it to
+        """
         await i.response.defer()
         detected = (await self.g.detect(text))[1].capitalize()
         lang_code = [s for s in async_google_trans_new.constant.LANGUAGES if async_google_trans_new.constant.LANGUAGES[s]==language][0]

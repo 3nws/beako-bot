@@ -18,25 +18,45 @@ class Admin(commands.Cog):
             'd': 'after',
         }
 
-    # kicks member
+
     @app_commands.command(name="kick")
     @commands.has_permissions(kick_members=True)
-    @app_commands.describe(user="The user you want to kick, in fact!", reason="The reason for this kick, I suppose!")
-    async def kick(self, i: discord.Interaction, user: discord.Member, *, reason: str = None):
-        if user.top_role > i.user.top_role:
-            return await i.response.send_message(f"You can't kick this person, I suppose!")
-        await user.kick(reason=reason)
-        return await i.response.send_message(f"{user} has been yeeted, I suppose!")
+    @app_commands.describe(member="The user you want to kick, in fact!", reason="The reason for this kick, I suppose!")
+    async def kick(self, i: discord.Interaction, member: discord.Member, *, reason: str = None):
+        """Yeet a member from this server.
 
-    # bans member
+        Args:
+            i (discord.Interaction): the interaction that invokes this coroutine
+            member (discord.Member): the member to yeet
+            reason (str, optional): the reason this member was yeeted. Defaults to None.
+
+        Returns:
+            _type_: _description_
+        """
+        if member.top_role > i.member.top_role:
+            return await i.response.send_message(f"You can't kick this person, I suppose!")
+        await member.kick(reason=reason)
+        return await i.response.send_message(f"{member} has been yeeted, I suppose!")
+
+
     @app_commands.command(name="ban")
     @commands.has_permissions(ban_members=True)
-    @app_commands.describe(user="The user you want to ban, in fact!", reason="The reason for this ban, I suppose!")
-    async def ban(self, i: discord.Interaction, user: discord.Member, *, reason: str = None):
-        if user.top_role > i.user.top_role:
+    @app_commands.describe(member="The user you want to ban, in fact!", reason="The reason for this ban, I suppose!")
+    async def ban(self, i: discord.Interaction, member: discord.Member, *, reason: str = None):
+        """Ban a member from this server.
+
+        Args:
+            i (discord.Interaction): the interaction that invokes this coroutine
+            member (discord.Member): the member to ban
+            reason (str, optional): the reason this member was banned. Defaults to None.
+
+        Returns:
+            _type_: _description_
+        """
+        if member.top_role > i.member.top_role:
             return await i.response.send_message(f"You can't ban this person, I suppose!")
-        await user.ban(reason=reason)
-        await i.response.send_message(f"{user} has been yeeted forever, I suppose!")
+        await member.ban(reason=reason)
+        await i.response.send_message(f"{member} has been yeeted forever, I suppose!")
 
     @kick.error
     async def kick_error(self, error, ctx):
@@ -48,11 +68,17 @@ class Admin(commands.Cog):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("You don't have permission to do that, I suppose!")
 
-    # unbans user
+
     @app_commands.command(name="unban")
     @commands.has_permissions(ban_members=True)
     @app_commands.describe(user="The user you want to unyeet, in fact!")
     async def unban(self, i: discord.Interaction, *, user: discord.User):
+        """Unban a user on this server.
+
+        Args:
+            i (discord.Interaction): the interaction that invokes this coroutine
+            user (discord.User): the user to unban
+        """
         await i.guild.unban(user)
         await i.response.send_message(f"{user} has been unbanned, I suppose!")
 
@@ -77,14 +103,25 @@ class Admin(commands.Cog):
     @commands.has_permissions(administrator=True)
     @app_commands.describe(limit="Amount of messages you want to delete, in fact!", direction="In which direction you want to start deleting, I suppose?!",
                            msg_id="The message id you want to start deleting from, in fact!")
-    async def clean(self, i: discord.Interaction, limit: int, direction: str = None, msg_id: str = None):
+    async def clean(self, i: discord.Interaction, limit: int, direction: str = None, msg_id: int = None):
+        """Clean this channel's messages.
+
+        Args:
+            i (discord.Interaction): the interaction that invokes this coroutine
+            limit (int): the number of messages to delete
+            direction (str, optional): the direction to delete towards. Defaults to None.
+            msg_id (int, optional): the message id to start deleting from. Defaults to None.
+
+        Returns:
+            None: None
+        """
         direction = self.dir_aliases[direction] if direction in self.dir_aliases else direction
         if direction is not None:
             direction = direction.lower()
         await i.response.defer()
         original = await i.original_message()
         if (msg_id):
-            msg = await i.channel.fetch_message(int(msg_id))
+            msg = await i.channel.fetch_message(msg_id)
             if direction == "after":
                 await i.channel.purge(limit=limit+1, bulk=True, after=msg, oldest_first=True, check=lambda m: m.id != original.id)
             elif direction == "before":
@@ -100,6 +137,12 @@ class Admin(commands.Cog):
     @commands.has_permissions(administrator=True)
     @app_commands.describe(member="The member you want to delete the messages of, in fact!")
     async def purge(self, i: discord.Interaction, member: discord.Member = None):
+        """Purge a member's messages .
+
+        Args:
+            i (discord.Interaction): the interaction that invokes this coroutine
+            member (discord.Member, optional): the member to purge messages of. Defaults to None.
+        """
         if member == self.bot.user:
             await i.response.send_message("Nope, in fact!")
         elif member:
@@ -114,6 +157,11 @@ class Admin(commands.Cog):
     @commands.command()
     @commands.is_owner()
     async def servers(self, ctx):
+        """Send a list of servers and some info about this bot.
+
+        Args:
+            ctx (commands.Bot.Context): the context for this command
+        """
         msg = f'Logged in as: {self.bot.user.name}\n'
         msg += f'Server List ({len(self.bot.guilds)})\n'
         server_counter = 1
@@ -126,6 +174,11 @@ class Admin(commands.Cog):
     @commands.command(aliases=["kill"])
     @commands.is_owner()
     async def terminate(self, ctx):
+        """Terminate or restart the bot.
+
+        Args:
+            ctx (commands.Bot.Context): the context for this command
+        """
         await ctx.send("Betty goes offline, I suppose!")
         await self.bot.close()
 
@@ -133,6 +186,12 @@ class Admin(commands.Cog):
     @commands.command()
     @commands.is_owner()
     async def toggle(self, ctx, cmd):
+        """Toggles commands on and off.
+
+        Args:
+            ctx (commands.Bot.Context): the context for this command
+            cmd (str): the command to toggle
+        """
         cmd = self.bot.get_command(cmd)
 
         if ctx.command == cmd:

@@ -16,6 +16,12 @@ class Fun(commands.Cog):
     @app_commands.command(name="say")
     @app_commands.describe(msg="The thing you want me to repeat, in fact!")
     async def say(self, i: discord.Interaction, *, msg: str=""):
+        """Make me repeat what you say.
+
+        Args:
+            i (discord.Interaction): the interaction that invokes this coroutine
+            msg (str, optional): the phrase to repeat. Defaults to "".
+        """
         if (msg == ""):
             await i.response.send_message("What do you want me to say, in fact?!")
             return
@@ -27,9 +33,15 @@ class Fun(commands.Cog):
     
     @app_commands.command(name="roll")
     @app_commands.describe(num="The upper limit for the roll, in fact!")
-    async def roll(self, i: discord.Interaction, num: str=""):
-        if num.isnumeric():
-            number = random.randint(1, int(num))
+    async def roll(self, i: discord.Interaction, num: int = None):
+        """Roll a number.
+
+        Args:
+            i (discord.Interaction): the interaction that invokes this coroutine
+            num (int, optional): upper limit for the roll. Defaults to None.
+        """
+        if num:
+            number = random.randint(1, num)
         else:
             number = random.randint(1, 100)
         await i.response.send_message(f"{i.user.name} Just rolled **{number}**, I suppose!")
@@ -39,6 +51,15 @@ class Fun(commands.Cog):
         interaction: discord.Interaction,
         current: str,
     ) -> List[app_commands.Choice[str]]:
+        """An autocomplete function
+
+        Args:
+            interaction (discord.Interaction): the interaction that invokes this coroutine
+            current (str): whatever the user has typed as the input
+
+        Returns:
+            List[app_commands.Choice[str]]: The list of choices matching the input
+        """
         choices = ['Rock', 'Paper', 'Scissors']
         return [
             app_commands.Choice(name=choice, value=choice)
@@ -50,6 +71,12 @@ class Fun(commands.Cog):
     @app_commands.autocomplete(choice=rps_autocomplete)
     @app_commands.describe(choice="What do you want to draw against me, in fact?!")
     async def rps(self, i: discord.Interaction, choice: str):
+        """Play rock paper scissors with me.
+
+        Args:
+            i (discord.Interaction): the interaction that invokes this coroutine
+            choice (str): the choice the user makes
+        """
         choice = choice.lower()
         if (choice == 'rock'):
             counter = 'paper'
@@ -70,6 +97,13 @@ class Fun(commands.Cog):
     @app_commands.command(name="coin")
     @app_commands.describe(heads="The thing that represents heads, I suppose!", tails="The thing that represents tails, I suppose!")
     async def coinflip(self, i: discord.Interaction, heads: str = None, tails: str = None):
+        """Throw a coin to decide.
+
+        Args:
+            i (discord.Interaction): the interaction that invokes this coroutine
+            heads (str, optional): the result if heads faces up. Defaults to None.
+            tails (str, optional): the result if tails faces up. Defaults to None.
+        """
         if heads is not None and tails is None:
             embed = discord.Embed(
                 title="Error", description=f"{i.user.mention} tried to flip a coin but didn't specify what for is tails, I suppose!")

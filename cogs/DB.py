@@ -97,6 +97,11 @@ class DB(commands.Cog):
         
     @app_commands.command(name="flip")
     async def commands_flip(self, i: discord.Interaction):
+        """Flip your friends.
+
+        Args:
+            i (discord.Interaction): the interaction that invokes this coroutine
+        """
         pipe = [{"$sample": {"size": 1}}]
         flip = [f async for f in self.flips.aggregate(pipe)][0]["url"]
         await i.response.send_message(flip)
@@ -266,13 +271,12 @@ class DB(commands.Cog):
             print(e)
             
         
-    async def last_chapter(self, series, channel, i):
+    async def last_chapter(self, series, i):
         """Sends the latest chapter info or the reader.
 
         Args:
-            series (str): _description_
-            channel (int): _description_
-            i (discord.Interaction): _description_
+            series (str): the series to check
+            i (discord.Interaction): the interaction that invokes this coroutine
         """
         series = self.aliases[series] if series in self.aliases else series
         if series == "rz":
@@ -337,6 +341,15 @@ class DB(commands.Cog):
         interaction: discord.Interaction,
         current: str,
     ) -> List[app_commands.Choice[str]]:
+        """An autocomplete function
+
+        Args:
+            interaction (discord.Interaction): the interaction that invokes this coroutine
+            current (str): whatever the user has typed as the input
+
+        Returns:
+            List[app_commands.Choice[str]]: The list of choices matching the input
+        """
         await self.sync(current)
         return [
             app_commands.Choice(name=manga['attributes']['title']['en'][:100], value=manga['attributes']['title']['en'][:100])
@@ -360,7 +373,7 @@ class DB(commands.Cog):
         if series == "":
             message = "What series do you want to know about, in fact!"
         else:
-            return await self.last_chapter(series, i.channel_id, i)
+            return await self.last_chapter(series, i)
         await i.response.send_message(message)
 
 

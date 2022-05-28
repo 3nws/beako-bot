@@ -21,6 +21,8 @@ class Timer(commands.Cog):
         
         
     async def sync(self):
+        """Syncs the cities/timezones information.
+        """
         async with aiohttp.ClientSession() as session:
             async with session.get(self.sync_url) as r:
                 if r.status == 200:
@@ -34,6 +36,11 @@ class Timer(commands.Cog):
     @commands.command()
     @commands.is_owner()
     async def sync_cities(self, ctx):
+        """Manual command to sync cities/timezones.
+
+        Args:
+            ctx (commands.Bot.Context): the context for this command
+        """
         try:
             await self.sync()
             await ctx.send("Cities synced, I suppose!")
@@ -44,8 +51,17 @@ class Timer(commands.Cog):
 
     @app_commands.command(name="remind")
     @app_commands.describe(time="After how long should I ping you, in fact?!",
-                           unit="Seconds? Hours? Cows? Give me a unit, in fact! You can concatenate this with the previous argument, I suppose!", reminder="What is this timer about, in fact?!")
-    async def remind(self, i: discord.Interaction, time: str, unit: Literal["s", "h", "d"]=None, *, reminder: str=""):
+                           unit="Seconds? Hours? Cows? Give me a unit, in fact! You can concatenate this with the previous argument, I suppose!",
+                           reminder="What is this timer about, in fact?!")
+    async def remind(self, i: discord.Interaction, time: str, unit: Literal["s", "h", "d"] = None, *, reminder: str=""):
+        """Set up a timer to remind you of something with a ping.
+
+        Args:
+            i (discord.Interaction): the interaction that invokes this coroutine
+            time (str): magnitude of time
+            unit (Literal['s', 'h', 'd'], optional): unit of time. Defaults to None.
+            reminder (str, optional): what this timer is about. Defaults to "".
+        """
         embed = discord.Embed(color=discord.Colour.random(),
                               timestamp=datetime.utcnow())
         if (unit is None):
@@ -95,6 +111,13 @@ class Timer(commands.Cog):
     @app_commands.describe(time="The time you want betty to ping you, in fact! You can use either '.' or ':' to seperate hours and minutes, I suppose!",
                            reminder="What is this alarm about, in fact?!")
     async def alarm(self, i: discord.Interaction, time: str="", *, reminder: str=""):
+        """Set up an alarm at given time.
+
+        Args:
+            i (discord.Interaction): the interaction that invokes this coroutine
+            time (str, optional): hours and minutes seperated by a '.' or a ':'. Defaults to "".
+            reminder (str, optional): what this alarm is about. Defaults to "".
+        """
         try:
             embed = discord.Embed(color=discord.Colour.random(),
                                   timestamp=datetime.utcnow())
@@ -135,6 +158,15 @@ class Timer(commands.Cog):
         interaction: discord.Interaction,
         current: str,
     ) -> List[app_commands.Choice[str]]:
+        """An autocomplete function
+
+        Args:
+            interaction (discord.Interaction): the interaction that invokes this coroutine
+            current (str): whatever the user has typed as the input
+
+        Returns:
+            List[app_commands.Choice[str]]: The list of choices matching the input
+        """
         if not self.is_synced:
             await self.sync()
         return [
@@ -147,6 +179,12 @@ class Timer(commands.Cog):
     @app_commands.autocomplete(city=city_autocomplete)
     @app_commands.describe(city="The timezone/city you want to learn the timezone of, in fact!")
     async def get_time(self, i: discord.Interaction, city:str):
+        """Get the current time in a city/timezone.
+
+        Args:
+            i (discord.Interaction): the interaction that invokes this coroutine
+            city (str): city or the timezone to look up
+        """
         async with aiohttp.ClientSession() as session:
             async with session.get(self.base_url+city) as r:
                 if r.status == 200:

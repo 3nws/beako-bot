@@ -16,6 +16,11 @@ class Tag(commands.Cog):
         
     
     async def sync_tags(self, guild_id):
+        """Sync the tags according to guilds.
+
+        Args:
+            guild_id (int): the id of the guild to sync
+        """
         self.tags_list = await self.tags_coll.find_one({
             "guild_id": guild_id, 
         })
@@ -29,6 +34,15 @@ class Tag(commands.Cog):
         interaction: discord.Interaction,
         current: str,
     ) -> List[app_commands.Choice[str]]:
+        """An autocomplete function
+
+        Args:
+            interaction (discord.Interaction): the interaction that invokes this coroutine
+            current (str): whatever the user has typed as the input
+
+        Returns:
+            List[app_commands.Choice[str]]: The list of choices matching the input
+        """
         await self.sync_tags(interaction.guild.id)
         return [
             app_commands.Choice(name=tag, value=tag)
@@ -41,6 +55,15 @@ class Tag(commands.Cog):
     @app_commands.autocomplete(tag_name=tag_autocomplete)
     @app_commands.describe(tag_name="The name for this tag, I suppose! So you can find its contents later, in fact!")
     async def get_tag(self, i: discord.Interaction, *, tag_name:str):
+        """Get the given tag's content.
+
+        Args:
+            i (discord.Interaction): the interaction that invokes this coroutine
+            tag_name (str): the tag name to look up
+
+        Returns:
+            None: None
+        """
         await i.response.defer()
         try:
             await i.followup.send(self.tags_list[tag_name])
@@ -60,6 +83,17 @@ class Tag(commands.Cog):
     @app_commands.describe(tag_name="The soon to be added tag's name, in fact!", tag_content="Contents of this tag, I suppose!",
                            tag_file="You can also pass a file as the tag's contents, in fact! It will override the previous argument, in fact!")
     async def add_tag(self, i: discord.Interaction, tag_name: str, tag_content: Optional[str], tag_file: Optional[discord.Attachment]):
+        """Add a tag to this guild.
+
+        Args:
+            i (discord.Interaction): the interaction that invokes this coroutine
+            tag_name (str): the tag name
+            tag_content (Optional[str]): the tag's contents
+            tag_file (Optional[discord.Attachment]): the tag's contents as a file
+
+        Returns:
+            None: None
+        """
         if tag_file is not None:
             data = await tag_file.read()
             try:
@@ -100,6 +134,12 @@ class Tag(commands.Cog):
     @app_commands.autocomplete(tag_name=tag_autocomplete)
     @app_commands.describe(tag_name="The tag you want to remove, I suppose!")
     async def remove_tag(self, i: discord.Interaction, tag_name:str):
+        """Remove a tag from this guild.
+
+        Args:
+            i (discord.Interaction): the interaction that invokes this coroutine
+            tag_name (str): the name of the tag to delete 
+        """
         await self.sync_tags(i.guild.id)
         self.tags_list.pop(tag_name)
         await self.tags_coll.find_one_and_update(
