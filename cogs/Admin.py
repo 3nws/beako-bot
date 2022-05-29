@@ -20,7 +20,7 @@ class Admin(commands.Cog):
 
 
     @app_commands.command(name="kick")
-    @commands.has_permissions(kick_members=True)
+    @app_commands.checks.has_permissions(kick_members=True)
     @app_commands.describe(member="The user you want to kick, in fact!", reason="The reason for this kick, I suppose!")
     async def kick(self, i: discord.Interaction, member: discord.Member, *, reason: str = None):
         """Yeet a member from this server.
@@ -40,7 +40,7 @@ class Admin(commands.Cog):
 
 
     @app_commands.command(name="ban")
-    @commands.has_permissions(ban_members=True)
+    @app_commands.checks.has_permissions(ban_members=True)
     @app_commands.describe(member="The user you want to ban, in fact!", reason="The reason for this ban, I suppose!")
     async def ban(self, i: discord.Interaction, member: discord.Member, *, reason: str = None):
         """Ban a member from this server.
@@ -70,7 +70,7 @@ class Admin(commands.Cog):
 
 
     @app_commands.command(name="unban")
-    @commands.has_permissions(ban_members=True)
+    @app_commands.checks.has_permissions(ban_members=True)
     @app_commands.describe(user="The user you want to unyeet, in fact!")
     async def unban(self, i: discord.Interaction, *, user: discord.User):
         """Unban a user on this server.
@@ -100,7 +100,7 @@ class Admin(commands.Cog):
 
     @app_commands.command(name="clean")
     @app_commands.autocomplete(direction=clean_autocomplete)
-    @commands.has_permissions(administrator=True)
+    @app_commands.checks.has_permissions(administrator=True)
     @app_commands.describe(limit="Amount of messages you want to delete, in fact!", direction="In which direction you want to start deleting, I suppose?!",
                            msg_id="The message id you want to start deleting from, in fact!")
     async def clean(self, i: discord.Interaction, limit: int, direction: str = None, msg_id: int = None):
@@ -134,7 +134,7 @@ class Admin(commands.Cog):
 
 
     @app_commands.command(name="purge")
-    @commands.has_permissions(administrator=True)
+    @app_commands.checks.has_permissions(administrator=True)
     @app_commands.describe(member="The member you want to delete the messages of, in fact!")
     async def purge(self, i: discord.Interaction, member: discord.Member = None):
         """Purge a member's messages .

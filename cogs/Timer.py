@@ -53,7 +53,7 @@ class Timer(commands.Cog):
     @app_commands.describe(time="After how long should I ping you, in fact?!",
                            unit="Seconds? Hours? Cows? Give me a unit, in fact! You can concatenate this with the previous argument, I suppose!",
                            reminder="What is this timer about, in fact?!")
-    async def remind(self, i: discord.Interaction, time: str, unit: Literal["s", "h", "d"] = None, *, reminder: str=""):
+    async def remind(self, i: discord.Interaction, time: str, unit: Literal["s", "m", "h", "d"] = None, *, reminder: str=""):
         """Set up a timer to remind you of something with a ping.
 
         Args:
