@@ -8,39 +8,40 @@ from discord.ui import View, Select
 from discord.ext import commands
 from dotenv import load_dotenv
 from OsuMods import num_to_mod
+from typing import List, Dict
 
 load_dotenv()
 
 
 class OsuAPI:
-    def __init__(self, bot):
-        self.API_KEY = os.getenv("OSU_API_KEY")
-        self.bot = bot
-        self.base_url = "https://osu.ppy.sh/api/"
-        self.base_image_url = "http://s.ppy.sh/a/"
-        self.key_query = f"?k={self.API_KEY}"
-        self.base_profile_url = "https://osu.ppy.sh/users/"
-        self.base_beatmap_set_url = "https://osu.ppy.sh/beatmapsets/"
-        self.game_mode_options = [
+    def __init__(self, bot: commands.Bot):
+        self.API_KEY: str = os.getenv("OSU_API_KEY")
+        self.bot: commands.Bot = bot
+        self.base_url: str = "https://osu.ppy.sh/api/"
+        self.base_image_url: str = "http://s.ppy.sh/a/"
+        self.key_query: str = f"?k={self.API_KEY}"
+        self.base_profile_url: str = "https://osu.ppy.sh/users/"
+        self.base_beatmap_set_url: str = "https://osu.ppy.sh/beatmapsets/"
+        self.game_mode_options: List[discord.SelectOption] = [
             discord.SelectOption(value=0, label="osu!"),
             discord.SelectOption(value=1, label="osu!taiko"),
             discord.SelectOption(value=2, label="osu!catch"),
             discord.SelectOption(value=3, label="osu!mania"),
         ]
-        self.game_modes = {
+        self.game_modes: Dict[str, str] = {
             "0": "osu!",
             "1": "osu!taiko",
             "2": "osu!catch",
             "3": "osu!mania",
         }
-        self.stripped_game_modes = {
+        self.stripped_game_modes: Dict[str, str] = {
             "0": "osu",
             "1": "taiko",
             "2": "catch",
             "3": "mania",
         }
 
-    async def get_user(self, username, mode):
+    async def get_user(self, username: str, mode: str):
         url = f"{self.base_url}get_user{self.key_query}&u={username}&m={mode}"
         session = self.bot.session
         async with session.get(url) as r:
@@ -65,7 +66,7 @@ class OsuAPI:
         player['avatar_url'] = self.base_image_url + player['user_id']
         return player
 
-    async def get_beatmap(self, id):
+    async def _get_beatmap(self, id: str):
         url = f"{self.base_url}get_beatmaps{self.key_query}&b={id}"
         session = self.bot.session
         async with session.get(url) as r:
@@ -77,7 +78,7 @@ class OsuAPI:
                 return
         return maps[0]
 
-    async def get_user_recent(self, username, mode, limit):
+    async def get_user_recent(self, username: str, mode: str, limit: str):
         url = f"{self.base_url}get_user_recent{self.key_query}&u={username}&m={mode}&limit={limit}"
         session = self.bot.session
         async with session.get(url) as r:
@@ -89,10 +90,10 @@ class OsuAPI:
                 return
         for score in scores:
             bm_id = score['beatmap_id']
-            score['beatmap'] = await self.get_beatmap(bm_id)
+            score['beatmap'] = await self._get_beatmap(bm_id)
         return scores
 
-    async def get_best(self, username, mode, limit):
+    async def get_best(self, username: str, mode: str, limit: str):
         url = f"{self.base_url}get_user_best{self.key_query}&u={username}&m={mode}&limit={limit}"
         session = self.bot.session
         async with session.get(url) as r:
@@ -104,5 +105,5 @@ class OsuAPI:
                 return
         for score in scores:
             bm_id = score['beatmap_id']
-            score['beatmap'] = await self.get_beatmap(bm_id)
+            score['beatmap'] = await self._get_beatmap(bm_id)
         return scores
