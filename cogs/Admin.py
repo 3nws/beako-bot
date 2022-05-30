@@ -103,14 +103,14 @@ class Admin(commands.Cog):
     @app_commands.checks.has_permissions(administrator=True)
     @app_commands.describe(limit="Amount of messages you want to delete, in fact!", direction="In which direction you want to start deleting, I suppose?!",
                            msg_id="The message id you want to start deleting from, in fact!")
-    async def clean(self, i: discord.Interaction, limit: int, direction: str = None, msg_id: int = None):
+    async def clean(self, i: discord.Interaction, limit: int, direction: str = None, msg_id: str = None):
         """Clean this channel's messages.
 
         Args:
             i (discord.Interaction): the interaction that invokes this coroutine
             limit (int): the number of messages to delete
             direction (str, optional): the direction to delete towards. Defaults to None.
-            msg_id (int, optional): the message id to start deleting from. Defaults to None.
+            msg_id (str, optional): the message id to start deleting from. Defaults to None.
 
         Returns:
             None: None
@@ -121,7 +121,7 @@ class Admin(commands.Cog):
         await i.response.defer()
         original = await i.original_message()
         if (msg_id):
-            msg = await i.channel.fetch_message(msg_id)
+            msg = await i.channel.fetch_message(int(msg_id))
             if direction == "after":
                 await i.channel.purge(limit=limit+1, bulk=True, after=msg, oldest_first=True, check=lambda m: m.id != original.id)
             elif direction == "before":
