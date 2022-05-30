@@ -8,7 +8,7 @@ from ast import literal_eval
 from discord import ui
 from commands.db.classes.MangaDex import MangaDex
 from discord.ext import commands
-from typing import Tuple
+from typing import Tuple, List
 
 class PickView(ui.View):
     
@@ -19,7 +19,7 @@ class PickView(ui.View):
         self.mangas: dict = {}
         self.bot: commands.Bot = bot
         self.md: MangaDex = MangaDex(self.bot)
-        self.info: Tuple[str, str] = info
+        self.info: Tuple[List[str], List[str]] = info
         self.num_of_results: int = len(self.info[0])
         if self.num_of_results != len(self._children):
             for j in range(len(self._children)-1, self.num_of_results-1, -1):
