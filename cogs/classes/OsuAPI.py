@@ -1,13 +1,9 @@
 import discord
 import os
-import aiohttp
-import asyncio
 import json
 
-from discord.ui import View, Select
 from discord.ext import commands
 from dotenv import load_dotenv
-from OsuMods import num_to_mod
 from typing import List, Dict
 
 load_dotenv()

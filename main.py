@@ -1,9 +1,7 @@
 import discord
 import os
-import dns
 import asyncio
 import logging
-import threading
 import typing
 import pymongo
 import motor.motor_asyncio
@@ -12,9 +10,8 @@ import sys
 import aiohttp
 
 from dotenv import load_dotenv
-from discord.ext import tasks, commands
-from discord import app_commands
-from typing import Callable, Awaitable
+from discord.ext import commands
+from typing import Any, List, Type
 from discord.app_commands.checks import cooldown as cooldown_decorator
 from discord.app_commands import CommandTree
 
@@ -48,7 +45,7 @@ class MyTree(CommandTree):
 
     def __init__(self, client):
         super().__init__(client)
-        self._cooldown_predicate: CooldownPredicate = cooldown_decorator(
+        self._cooldown_predicate: Any = cooldown_decorator(
             1, 5)(lambda: None).__discord_app_commands_checks__[0]
         
 
@@ -71,7 +68,7 @@ class MyTree(CommandTree):
 
 
 class Bot(commands.Bot):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: List[Any], **kwargs: List[Any]):
         super().__init__(*args, **kwargs)
         self.client = None
         self.session = None
@@ -88,7 +85,7 @@ class Bot(commands.Bot):
     async def setup_hook(self) -> None:
         self.session = aiohttp.ClientSession()
         try:
-            self.client = motor.motor_asyncio.AsyncIOMotorClient('localhost', 27017, serverSelectionTimeoutMS=5000)
+            self.client: Type[_] = motor.motor_asyncio.AsyncIOMotorClient('localhost', 27017, serverSelectionTimeoutMS=5000)
             print(await self.client.server_info())
         except pymongo.errors.ServerSelectionTimeoutError:
             print("Local not available!")
@@ -99,7 +96,7 @@ class Bot(commands.Bot):
         await self.load_cogs()
 
 
-    def get_client(self):
+    def get_client(self) -> Any:
         return self.client
 
 
@@ -113,19 +110,19 @@ bot = Bot(command_prefix="r.", intents=intents, tree_cls=MyTree, help_command=No
 
 @bot.tree.command(name='beakohelp', guild=None)
 async def help(interaction: discord.Interaction):
-    await commands_help(bot, interaction, Help(bot))
+    await commands_help(interaction, Help(bot))
 
 
 @bot.event
-async def on_command_error(ctx, error):
-    if isinstance(error, discord.ext.commands.errors.CommandNotFound):
+async def on_command_error(ctx: commands.Context[Any], error: commands.CommandError):
+    if isinstance(error, commands.CommandNotFound):
         await ctx.send("What is that, I suppose?!\nTry `/beakohelp`, in fact!")
     else:
         print(error)
 
 
 @bot.event
-async def on_guild_join(guild):
+async def on_guild_join(guild: discord.Guild):
     msg = f"Just joined {guild.name} with {guild.member_count} members, in fact!"
     user = bot.get_user(442715989310832650)
     await user.send(msg)
@@ -133,7 +130,7 @@ async def on_guild_join(guild):
 
 
 @bot.event
-async def on_guild_remove(guild):
+async def on_guild_remove(guild: discord.Guild):
     msg = f"Just left {guild.name}, in fact!\n\
             They didn't like Betty, I suppose!"
     user = bot.get_user(442715989310832650)
@@ -143,7 +140,7 @@ async def on_guild_remove(guild):
 
 @bot.command()
 @commands.is_owner()
-async def sync(ctx: commands.Context, guilds: commands.Greedy[discord.Object], spec: typing.Optional[typing.Literal["~"]] = None) -> None:
+async def sync(ctx: commands.Context[Any], guilds: commands.Greedy[discord.Object], spec: typing.Optional[typing.Literal["~"]] = None) -> None:
     if not guilds:
         if spec == "~":
             fmt = await ctx.bot.tree.sync(guild=ctx.guild)
@@ -174,6 +171,6 @@ async def on_ready():
 
 async def main():
     async with bot:
-        await bot.start(os.getenv("TOKEN"))
+        await bot.start(os.getenv("TOKEN", "no"))
 
 asyncio.run(main())

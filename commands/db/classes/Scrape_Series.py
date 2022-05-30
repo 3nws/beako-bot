@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 class Scrape_Series(ABC):
 
     @abstractmethod
-    def __init__(self, url):
+    def __init__(self, url: str):
         self.url = url
 
     @abstractmethod

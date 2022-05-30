@@ -1,20 +1,22 @@
-import aiohttp
 import html5lib
 
 from bs4 import BeautifulSoup
-
+from typing import Tuple, Union, Any
+from aiohttp import ClientSession
+from discord.ext.commands import Bot
 from commands.db.classes.Scrape_Series import Scrape_Series
 
 
 class Guya_moe(Scrape_Series):
-    def __init__(self, url, bot):
+    def __init__(self, url: str, bot: Bot):
         self.url = url
         self.bot = bot
 
-    async def scrape(self):
+
+    async def scrape(self) -> Union[Tuple[str, str], Any]:
         try:
             # web scraping for guya.moe
-            session = self.bot.session
+            session: ClientSession = self.bot.session
             async with session.get(self.url) as r:
                 if r.status == 200:
                     page = await r.read()
@@ -27,7 +29,7 @@ class Guya_moe(Scrape_Series):
             most_recent_chapter = soup.find_all("td", "chapter-title")[0]
 
             chapter_link = most_recent_chapter.find("a")
-
+            chapter_anchor = ""
             if "href" in chapter_link.attrs:
                 chapter_anchor = "https://guya.moe"
                 chapter_anchor += chapter_link.get("href")
@@ -48,7 +50,8 @@ class Guya_moe(Scrape_Series):
         except Exception as e:
             print(e)
 
-    async def latest_chapter(self):
+
+    async def latest_chapter(self) -> Union[str, None]:
         try:
             scrape_results = await self.scrape()
             title = scrape_results[0]

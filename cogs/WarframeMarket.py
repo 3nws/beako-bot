@@ -1,7 +1,4 @@
 import discord
-import random
-import os
-import aiohttp
 import json
 
 from discord.ext import commands

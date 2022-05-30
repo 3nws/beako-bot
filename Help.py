@@ -1,12 +1,11 @@
 import discord
-import os
-import aiohttp
-import asyncio
-import json
 
-from Help_Messages import messages, aliases
-from discord.ui import View, Select
+from Help_Messages import messages
+from discord.ui import View
 from discord.ext import commands
+from typing import TypeVar
+
+T = TypeVar("T")
 
 track_cmds = ["add", "remove", "manga", "last"]
 admin_cmds = ["kick", "ban", "unban", "clean", "purge"]
@@ -42,25 +41,26 @@ modes = [
 ]
         
 class Dropdown(discord.ui.Select):
-    def __init__(self, mode, bot):
+    def __init__(self, mode: str, bot: commands.Bot):
         cmd_options = [
-            discord.SelectOption(value=0, label="Series tracking", emoji="<a:_:459105999618572308>"),
-            discord.SelectOption(value=1, label="Admin", emoji="<:_:596577110982918146>"),
-            discord.SelectOption(value=2, label="Tag", emoji="<:_:576499016376909854>"),
-            discord.SelectOption(value=3, label="Fun", emoji="<:_:586291133059956908>"),
-            discord.SelectOption(value=4, label="Gif", emoji="<a:_:662661255278100489>"),
-            discord.SelectOption(value=5, label="osu!", emoji="<:_:979258962731995136>"),
-            discord.SelectOption(value=6, label="Timer", emoji="⌛"),
-            discord.SelectOption(value=7, label="Util", emoji="<:_:979259589633654837>"),
-            discord.SelectOption(value=8, label="Warframe", emoji="<:_:979258513429782588>"),
+            discord.SelectOption(value="0", label="Series tracking", emoji="<a:_:459105999618572308>"),
+            discord.SelectOption(value="1", label="Admin", emoji="<:_:596577110982918146>"),
+            discord.SelectOption(value="2", label="Tag", emoji="<:_:576499016376909854>"),
+            discord.SelectOption(value="3", label="Fun", emoji="<:_:586291133059956908>"),
+            discord.SelectOption(value="4", label="Gif", emoji="<a:_:662661255278100489>"),
+            discord.SelectOption(value="5", label="osu!", emoji="<:_:979258962731995136>"),
+            discord.SelectOption(value="6", label="Timer", emoji="⌛"),
+            discord.SelectOption(value="7", label="Util", emoji="<:_:979259589633654837>"),
+            discord.SelectOption(value="8", label="Warframe", emoji="<:_:979258513429782588>"),
         ]
 
-        self.bot = bot
-        self.mode = mode
+        self.bot: commands.Bot = bot
+        self.mode: str = mode
         
         super().__init__(placeholder="Select a category.", custom_id="persistent_view:help", options=cmd_options)
 
-    async def callback(self, i: discord.Interaction):
+    
+    async def callback(self, i: discord.Interaction) -> None:
         self.mode = (i.data['values'])[0]
         new_desc = ""
         for cmd in modes[int(self.mode)]:
@@ -75,18 +75,18 @@ class Dropdown(discord.ui.Select):
         await i.response.edit_message(embed=new_embed)
 
 class PersistentViewHelp(View):
-    def __init__(self, mode, bot):
+    def __init__(self, mode: str, bot: commands.Bot):
         super().__init__(timeout=None)
         self.add_item(Dropdown(mode, bot))
 
 
 class Help:
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    async def get_help(self, i: discord.Interaction, bot):
-        mode = 0
-        msg = await i.channel.send("Loading, I suppose!")
+    async def get_help(self, i: discord.Interaction) -> None:
+        mode = "0"
+        msg: discord.Message = await i.channel.send("Loading, I suppose!")
         try:
             desc = ""
             for cmd in modes[int(mode)]:

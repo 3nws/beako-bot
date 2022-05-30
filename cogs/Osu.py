@@ -1,6 +1,4 @@
 import discord
-import os
-import asyncio
 
 from discord.ui import View, Select
 from discord.ext import commands

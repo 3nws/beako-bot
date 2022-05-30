@@ -1,7 +1,6 @@
 import discord
 import random
 import os
-import aiohttp
 import json
 
 from dotenv import load_dotenv

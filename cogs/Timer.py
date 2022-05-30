@@ -1,6 +1,5 @@
 import discord
 import asyncio
-import aiohttp
 import json
 
 from datetime import datetime

@@ -2,14 +2,11 @@ import requests
 import random
 import shutil
 import discord
-import asyncio
 import pymongo
 import os
-import aiohttp
 import json
 
 from ast import literal_eval
-from bs4 import BeautifulSoup
 from commands.db.classes.Re_zero import Re_zero
 from commands.db.classes.Guya_moe import Guya_moe
 from commands.db.classes.Grand_Blue import Grand_Blue

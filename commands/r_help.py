@@ -1,2 +1,5 @@
-async def commands_help(bot, i, help_ins):
-    message = await help_ins.get_help(i, bot)
+from ..Help import Help
+from discord import Interaction
+
+async def commands_help(i: Interaction, help_ins: Help) -> None:
+    await help_ins.get_help(i)

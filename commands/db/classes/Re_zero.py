@@ -1,21 +1,23 @@
-import aiohttp
 import html5lib
 
 from bs4 import BeautifulSoup
-
+from typing import Tuple, Union, Any
+from aiohttp import ClientSession
+from discord.ext.commands import Bot
 from commands.db.classes.Scrape_Series import Scrape_Series
 
 
 class Re_zero(Scrape_Series):
 
-    def __init__(self, url, bot):
+    def __init__(self, url: str, bot: Bot):
         self.url = url
         self.bot = bot
 
-    async def scrape(self):
+
+    async def scrape(self) -> Union[Tuple[str, str], Any]:
         try:
             # web scraping for re zero
-            session = self.bot.session
+            session: ClientSession = self.bot.session
             async with session.get(self.url) as r:
                 if r.status == 200:
                     page = await r.read()
@@ -38,15 +40,16 @@ class Re_zero(Scrape_Series):
                 most_recent_post_str += most_recent_post_array[i] + " "
 
             most_recent_post_str = most_recent_post_str.strip()
-
+            chapter_link = ""
             if 'href' in post_link.attrs:
                 chapter_link = post_link.get('href')
 
             return [most_recent_post_str, chapter_link]
         except Exception as e:
             print(e)
+            
 
-    async def latest_chapter(self):
+    async def latest_chapter(self) -> Union[str, None]:
         try:
             scrape_results = await self.scrape()
             title = scrape_results[0]

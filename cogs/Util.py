@@ -1,14 +1,12 @@
 import discord
 import asyncio
 import os
-import aiohttp
 import json
 
-from datetime import datetime
 from discord.ext import commands
 from discord import app_commands
 from dotenv import load_dotenv
-from pysaucenao import SauceNao, PixivSource, GenericSource
+from pysaucenao import SauceNao, PixivSource
 
 # no idea why but I can't import TwitterSource class on the line above
 import pysaucenao
