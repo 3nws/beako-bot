@@ -12,8 +12,8 @@ class Source(menus.ListPageSource):
 class MangaReader(ui.View, menus.MenuPages):
     def __init__(self, source):
         super().__init__(timeout=60)
-        self._source = source
-        self.current_page = 0
+        self._source: Source = source
+        self.current_page: int = 0
         self.i: discord.Interaction = None
         self.msg: discord.Message = None
         self.embed: discord.Embed = None
@@ -32,13 +32,13 @@ class MangaReader(ui.View, menus.MenuPages):
         self.group = group
         self.i = interaction
 
-    async def _get_kwargs_from_page(self, page):
+    async def _get_kwargs_from_page(self, page: str):
         value = {}
         if 'view' not in value:
             value['view'] = self
         return value
 
-    async def interaction_check(self, interaction):
+    async def interaction_check(self, interaction: discord.Interaction):
         return True if self.i is None else interaction.user == self.i.user
 
     async def on_timeout(self):
@@ -46,7 +46,7 @@ class MangaReader(ui.View, menus.MenuPages):
         await self.msg.edit(content=self.text, embed=self.embed, view=self.disabled())
         await self.msg.reply("This view just timed out, I suppose! You need to interact with it to keep it up, in fact!")
 
-    async def turn_page(self, page_num:int):
+    async def turn_page(self, page_num: int):
         page = await self._source.get_page(page_num)
         self.current_page = page_num
         kwargs = await self._get_kwargs_from_page(page)
@@ -62,28 +62,28 @@ class MangaReader(ui.View, menus.MenuPages):
         return self
 
     @ui.button(emoji='<:before_fast_check:754948796139569224>', style=discord.ButtonStyle.blurple)
-    async def first_page(self, interaction, button):
+    async def first_page(self, interaction: discord.Interaction, button: discord.ui.Button):
         await interaction.response.defer()
         await self.turn_page(0)
 
     @ui.button(emoji='<:before_check:754948796487565332>', style=discord.ButtonStyle.blurple)
-    async def before_page(self, interaction, button):
+    async def before_page(self, interaction: discord.Interaction, button: discord.ui.Button):
         await interaction.response.defer()
         await self.turn_page(self.current_page - 1)
 
     @ui.button(emoji='<:stop_check:754948796365930517>', style=discord.ButtonStyle.blurple)
-    async def stop_page(self, interaction, button):
+    async def stop_page(self, interaction: discord.Interaction, button: discord.ui.Button):
         self.stop()
         await interaction.response.defer()
         await self.msg.edit(content=self.text, embed=self.embed, view=self.disabled())
 
     @ui.button(emoji='<:next_check:754948796361736213>', style=discord.ButtonStyle.blurple)
-    async def next_page(self, interaction, button):
+    async def next_page(self, interaction: discord.Interaction, button: discord.ui.Button):
         await interaction.response.defer()
         await self.turn_page(self.current_page + 1)
 
     @ui.button(emoji='<:next_fast_check:754948796391227442>', style=discord.ButtonStyle.blurple)
-    async def last_page(self, interaction, button):
+    async def last_page(self, interaction: discord.Interaction, button: discord.ui.Button):
         await interaction.response.defer()
         await self.turn_page(self._source.get_max_pages() - 1)
 
