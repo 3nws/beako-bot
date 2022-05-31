@@ -5,7 +5,7 @@ from discord.ui import View
 from discord.ext import commands
 from typing import TypeVar
 
-T = TypeVar("T")
+T = TypeVar("T", bound="View", covariant=True)
 
 track_cmds = ["add", "remove", "manga", "last"]
 admin_cmds = ["kick", "ban", "unban", "clean", "purge"]
@@ -40,7 +40,7 @@ modes = [
     warframe_cmds
 ]
         
-class Dropdown(discord.ui.Select):
+class Dropdown(discord.ui.Select[T]):
     def __init__(self, mode: str, bot: commands.Bot):
         cmd_options = [
             discord.SelectOption(value="0", label="Series tracking", emoji="<a:_:459105999618572308>"),
@@ -60,8 +60,8 @@ class Dropdown(discord.ui.Select):
         super().__init__(placeholder="Select a category.", custom_id="persistent_view:help", options=cmd_options)
 
     
-    async def callback(self, i: discord.Interaction) -> None:
-        self.mode = (i.data['values'])[0]
+    async def callback(self, interaction: discord.Interaction) -> None:
+        self.mode = self.values[0]
         new_desc = ""
         for cmd in modes[int(self.mode)]:
             new_desc += f"**/{cmd}**\n"
@@ -71,8 +71,8 @@ class Dropdown(discord.ui.Select):
             title=f"{mode_titles[int(self.mode)]}",
             description=new_desc,
         )
-        new_embed.set_thumbnail(url=self.bot.user.avatar.url)
-        await i.response.edit_message(embed=new_embed)
+        new_embed.set_thumbnail(url=self.bot.user.avatar.url)  # type: ignore
+        await interaction.response.edit_message(embed=new_embed)
 
 class PersistentViewHelp(View):
     def __init__(self, mode: str, bot: commands.Bot):
@@ -86,7 +86,7 @@ class Help:
 
     async def get_help(self, i: discord.Interaction) -> None:
         mode = "0"
-        msg: discord.Message = await i.channel.send("Loading, I suppose!")
+        await i.response.defer()
         try:
             desc = ""
             for cmd in modes[int(mode)]:
@@ -97,11 +97,10 @@ class Help:
                 title=f"{mode_titles[int(mode)]}",
                 description=desc,
             )
-            embed.set_thumbnail(url=self.bot.user.avatar.url)
+            embed.set_thumbnail(url=self.bot.user.avatar.url)  # type: ignore
 
             selectView = PersistentViewHelp(mode, self.bot)
-            await msg.delete()
-            await i.response.send_message(content='', embed=embed, view=selectView)
+            await i.followup.send(content='', embed=embed, view=selectView)
         except Exception as e:
             print(e)
-            await i.response.send_message("Something went wrong, in fact!")
+            await i.followup.send("Something went wrong, in fact!")

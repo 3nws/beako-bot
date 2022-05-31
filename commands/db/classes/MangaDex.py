@@ -1,7 +1,7 @@
 import discord
 import json
 
-from typing import Union, List
+from typing import Union, List, Dict
 from aiohttp import ClientSession
 from discord.ext.commands import Bot
 class Chapter:
@@ -37,11 +37,11 @@ class MangaDex:
         self.scanlation_base_url = 'https://api.mangadex.org/group/'
         self.bot = bot
                          
-    async def search(self, query: str, limit: str):
+    async def search(self, query: str, limit: str) -> Union[List[Union[List[str], discord.Embed]], None]:
         url = self.base_manga_url + \
             f'?limit={limit}&title={query}&availableTranslatedLanguage%5B%5D=en'
 
-        session: ClientSession = self.bot.session
+        session: ClientSession = self.bot.session  # type: ignore
         async with session.get(url) as res:
             if res.status == 200:
                 resp = await res.read()
@@ -55,8 +55,8 @@ class MangaDex:
             color=discord.Colour.random(),
         )
 
-        titles = []
-        manga_ids = []
+        titles: List[str] = []
+        manga_ids: List[str] = []
         for i, rs in enumerate(r):
             manga_ids.append(rs['id'])
             info = rs['attributes']
@@ -74,9 +74,9 @@ class MangaDex:
     def get_following(self, channel_id: str):
         pass
 
-    async def get_manga_title(self, id):
+    async def get_manga_title(self, id: str) -> Union[str, None]:
         url: str = self.base_manga_url + id
-        session: ClientSession = self.bot.session
+        session: ClientSession = self.bot.session  # type: ignore
         async with session.get(url) as res:
             if res.status == 200:
                 resp = await res.read()
@@ -87,9 +87,9 @@ class MangaDex:
         r = r['data']
         return r['attributes']['title']['en']
     
-    async def get_scanlation_group(self, id):
+    async def get_scanlation_group(self, id: str) -> Union[Dict[str, str], None]:
         url: str = self.scanlation_base_url+id
-        session: ClientSession = self.bot.session
+        session: ClientSession = self.bot.session  # type: ignore
         async with session.get(url) as res:
                 if res.status == 200:
                     resp = await res.read()
@@ -99,10 +99,10 @@ class MangaDex:
                     print("Something went wrong with the MangaDex request!")
                     return
 
-    async def get_latest(self, id) -> Chapter:
+    async def get_latest(self, id: str) -> Union[Chapter, None]:
         url: str = self.base_chapter_url + '?limit=5&manga=' + id + \
             '&translatedLanguage%5B%5D=en&order%5Bvolume%5D=desc&order%5Bchapter%5D=desc&excludedGroups%5B%5D=4f1de6a2-f0c5-4ac5-bce5-02c7dbb67deb'
-        session: ClientSession = self.bot.session
+        session: ClientSession = self.bot.session  # type: ignore
         async with session.get(url) as res:
                 if res.status == 200:
                     resp = await res.read()
@@ -114,7 +114,7 @@ class MangaDex:
         if len(data)==0:
             url = self.base_chapter_url + '?limit=5&manga=' + id + \
             '&translatedLanguage%5B%5D=en&order%5Bvolume%5D=desc&order%5Bchapter%5D=desc'
-            session = self.bot.session
+            session = self.bot.session  # type: ignore
             async with session.get(url) as res:
                     if res.status == 200:
                         resp = await res.read()
@@ -133,8 +133,8 @@ class MangaDex:
         chapter_link = self.base_read_url + data[0]['id'] + '/1'
         
         url = f"https://api.mangadex.org/at-home/server/{chapter_id}"
-        image_urls = []
-        session: ClientSession = self.bot.session
+        image_urls: List[str] = []
+        session: ClientSession = self.bot.session  # type: ignore
         async with session.get(url) as res:
                 if res.status == 200:
                     resp = await res.read()
@@ -155,7 +155,7 @@ class MangaDex:
         if query:
             url = self.base_manga_url + \
                 f'?limit=1&title={query}&availableTranslatedLanguage%5B%5D=en'
-            session: ClientSession = self.bot.session
+            session: ClientSession = self.bot.session  # type: ignore
             async with session.get(url) as res:
                 if res.status == 200:
                         resp = await res.read()
@@ -168,7 +168,7 @@ class MangaDex:
             manga_id = rs['id']
             manga_info_url = self.base_manga_url + manga_id +\
                 "?includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist"
-            session = self.bot.session
+            session = self.bot.session  # type: ignore
             async with session.get(manga_info_url) as res:
                 if res.status == 200:
                         resp = await res.read()

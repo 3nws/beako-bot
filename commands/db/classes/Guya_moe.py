@@ -1,4 +1,4 @@
-import html5lib
+import html5lib  # type: ignore
 
 from bs4 import BeautifulSoup
 from typing import Tuple, Union, Any
@@ -16,7 +16,7 @@ class Guya_moe(Scrape_Series):
     async def scrape(self) -> Union[Tuple[str, str], Any]:
         try:
             # web scraping for guya.moe
-            session: ClientSession = self.bot.session
+            session: ClientSession = self.bot.session  # type: ignore
             async with session.get(self.url) as r:
                 if r.status == 200:
                     page = await r.read()

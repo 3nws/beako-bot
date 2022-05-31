@@ -11,11 +11,11 @@ from commands.db.classes.MangaDex import Chapter
 
 class PickView(ui.View):
     
-    def __init__(self, i: discord.Interaction, channels: Collection, info: Tuple[str, str], bot: Bot):
+    def __init__(self, i: discord.Interaction, channels: Collection[Any], info: Tuple[str, str], bot: Bot):
         super().__init__(timeout=60)
         self.i = i
         self.channels = channels
-        self.mangas: dict = {}
+        self.mangas: Dict[str, str] = {}
         self.bot = bot
         self.md: MangaDex = MangaDex(self.bot)
         self.info = info

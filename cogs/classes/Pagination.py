@@ -48,7 +48,7 @@ class MangaReader(ui.View, menus.MenuPages):
         await self.msg.reply("This view just timed out, I suppose! You need to interact with it to keep it up, in fact!")
 
     async def turn_page(self, page_num: int):
-        page = await self._source.get_page(page_num)
+        page: Union[Any, List[Any]] = await self._source.get_page(page_num)
         self.current_page = page_num
         kwargs = await self._get_kwargs_from_page(page)
         kwargs['content'] = self.text
