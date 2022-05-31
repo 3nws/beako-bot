@@ -46,7 +46,7 @@ class Tag(commands.Cog):
         await self.sync_tags(interaction.guild.id)
         return [
             app_commands.Choice(name=tag, value=tag)
-            for tag in self.tags_list if current.lower() in tag or current.lower() in self.tags_list[tag]
+            for tag in self.tags_list if current.lower() in tag or (isinstance(self.tags_list[tag], str) and current.lower() in self.tags_list[tag])
         ][:25]
     
     
