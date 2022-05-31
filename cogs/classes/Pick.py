@@ -1,12 +1,12 @@
 import discord
-import pymongo
+from discord.ui.item import Item
 
 from pymongo.collection import Collection
 from ast import literal_eval
 from discord import ui
 from commands.db.classes.MangaDex import MangaDex
 from discord.ext.commands import Bot
-from typing import Tuple, Dict, Any
+from typing import Tuple, Dict, Any, List
 from commands.db.classes.MangaDex import Chapter
 
 class PickView(ui.View):
@@ -20,18 +20,19 @@ class PickView(ui.View):
         self.md: MangaDex = MangaDex(self.bot)
         self.info = info
         self.num_of_results: int = len(self.info[0])
-        if self.num_of_results != len(self._children):
-            for j in range(len(self._children)-1, self.num_of_results-1, -1):
-                self.remove_item(self._children[j])
+        self.__children: List[Item[Any]]
+        if self.num_of_results != len(self.__children):
+            for j in range(len(self.__children)-1, self.num_of_results-1, -1):
+                self.remove_item(self.__children[j])
         
         
     async def on_timeout(self):
         self.stop()
-        await self.msg.edit(content=self.text, embed=self.embed, view=self.disabled())
-        await self.msg.reply("This view just timed out, I suppose! You need to interact with it to keep it up, in fact!")
+        await self.msg.edit(content=self.text, embed=self.embed, view=self.disabled())  # type: ignore
+        await self.msg.reply("This view just timed out, I suppose! You need to interact with it to keep it up, in fact!")  # type: ignore
         
-    async def interaction_check(self, interaction: discord.Interaction):
-        return interaction.user == self.i.user
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        return interaction.user == self.i.user  # type: ignore
     
     async def find_one(self):
         channel_exist: Dict[str, str] = await self.channels.find_one(
@@ -58,7 +59,7 @@ class PickView(ui.View):
         res = await self.find_one()
         titles = self.info[0]
         manga_ids = self.info[1]
-        if self.i.command.name == "add":
+        if self.i.command.name == "add":  # type: ignore
             if manga_ids[choice] not in res:
                 chapter_response: Chapter = await self.md.get_latest(manga_ids[choice])
                 title_response = chapter_response.get_title()
@@ -75,14 +76,14 @@ class PickView(ui.View):
                         }
                     }
                 )
-                await self.i.channel.send(f"This channel will receive notifications on new chapters of {titles[choice]}, I suppose!")
+                await self.i.channel.send(f"This channel will receive notifications on new chapters of {titles[choice]}, I suppose!")  # type: ignore
         else:
             if manga_ids[choice] in res:
                 res.pop(manga_ids[choice])
                 await self.channels.find_one_and_update(
                     {
-                        'channel_id': self.i.channel_id,
-                        "guild_id": self.i.guild.id,
+                        'channel_id': self.i.channel_id,  # type: ignore
+                        "guild_id": self.i.guild.id,  # type: ignore
                         },
                     {
                         '$set': {
@@ -91,7 +92,7 @@ class PickView(ui.View):
                     }
                 )
                 title = titles[choice]
-                await self.i.channel.send(f"This channel will no longer receive notifications on new chapters of {title}, I suppose!")
+                await self.i.channel.send(f"This channel will no longer receive notifications on new chapters of {title}, I suppose!")  # type: ignore
             
         
     @ui.button(emoji='1️⃣', style=discord.ButtonStyle.blurple)
