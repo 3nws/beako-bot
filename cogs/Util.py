@@ -167,6 +167,7 @@ class Util(commands.Cog):
             i (discord.Interaction): the interaction that invokes this coroutine
             url (str): url of the image
         """
+        await i.response.defer()
         try:
             sauce_frame = discord.Embed(
                 color=discord.Colour.random()
@@ -198,9 +199,9 @@ class Util(commands.Cog):
             sauce_frame.set_footer(
                 text=f"on {str(i.user)}'s request, I suppose!", icon_url=i.user.avatar.url)  # type: ignore
 
-            await i.response.send_message(embed=sauce_frame)
+            await i.followup.send(embed=sauce_frame)
         except BaseException:
-            await i.response.send_message("It's not Betty's fault. Something went wrong, in fact!")
+            await i.followup.send("It's not Betty's fault. Something went wrong, in fact!")
 
 
     @sauce_group.command(name="url")
