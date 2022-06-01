@@ -87,5 +87,5 @@ class MangaReader(ui.View, menus.MenuPages):
     @ui.button(emoji='<:next_fast_check:754948796391227442>', style=discord.ButtonStyle.blurple)
     async def last_page(self, interaction: discord.Interaction, button: discord.ui.Button[Any]):
         await interaction.response.defer()
-        await self.turn_page(self._source.get_max_pages() - 1)
+        await self.turn_page(self._source.get_max_pages() - 1)  # type: ignore
 
