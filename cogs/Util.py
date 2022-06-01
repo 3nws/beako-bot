@@ -7,12 +7,10 @@ from discord.ext import commands
 from discord import app_commands
 from aiohttp import ClientSession
 from dotenv import load_dotenv  # type: ignore
-from pysaucenao import SauceNao, PixivSource  # type: ignore
+from pysaucenao import SauceNao, PixivSource, TwitterSource  # type: ignore
 from pysaucenao.containers import SauceNaoResults
 from typing import Optional, Any, Dict
 
-# no idea why but I can't import TwitterSource class on the line above
-import pysaucenao
 
 load_dotenv()
 
@@ -20,7 +18,6 @@ load_dotenv()
 class Util(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.TwitterSource = pysaucenao.containers.TwitterSource  # type: ignore
         self.saucenao_api_key = os.getenv('SAUCENAO_API_KEY')
         self.TOKEN = os.getenv('TOKEN')
 
@@ -179,7 +176,7 @@ class Util(commands.Cog):
             for result in results:  # type: ignore
                 if isinstance(result, PixivSource):
                     pixiv_result = result  # type: ignore
-                elif isinstance(result, self.TwitterSource):  # type: ignore
+                elif isinstance(result, TwitterSource):  # type: ignore
                     twitter_result = result  # type: ignore
             if pixiv_result != "" and twitter_result != "":
                 sauce_frame.add_field(name=f"{pixiv_result.title} by {pixiv_result.author_name} with {str(pixiv_result.similarity)} similarity",  # type: ignore

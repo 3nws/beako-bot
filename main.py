@@ -3,18 +3,18 @@ import os
 import asyncio
 import logging
 import typing
-from discord.app_commands.models import AppCommand
-import pymongo
 import motor.motor_asyncio
 import traceback
 import sys
 import aiohttp
 
+from discord.app_commands.models import AppCommand
 from dotenv import load_dotenv  # type: ignore
 from discord.ext import commands
 from typing import Any, List
 from discord.app_commands.checks import cooldown as cooldown_decorator
 from discord.app_commands import CommandTree
+from pymongo.errors import ServerSelectionTimeoutError
 
 # classes import
 from Help import Help, PersistentViewHelp
@@ -87,7 +87,7 @@ class Bot(commands.Bot):
         try:
             self.client: Any = motor.motor_asyncio.AsyncIOMotorClient('localhost', 27017, serverSelectionTimeoutMS=5000)  # type: ignore
             print(await self.client.server_info())
-        except pymongo.errors.ServerSelectionTimeoutError:  # type: ignore
+        except ServerSelectionTimeoutError:  # type: ignore
             print("Local not available!")
             self.client = motor.motor_asyncio.AsyncIOMotorClient(os.getenv("DB_URL"))  # type: ignore
             

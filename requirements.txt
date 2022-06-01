@@ -14,7 +14,7 @@ idna==2.8
 multidict==6.0.2
 motor==3.0.0
 pymongo==4.1.1
-pysaucenao==1.6.1
+pysaucenao @ git+https://github.com/3nws/pysaucenao
 python-dotenv==0.17.1
 requests==2.21.0
 soupsieve==2.3.2
