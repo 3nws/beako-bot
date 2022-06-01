@@ -1,9 +1,12 @@
-def num_to_mod(number):
+from typing import List
+
+
+def num_to_mod(number: int) -> List[str]:
     """This is the way pyttanko does it. (https://github.com/AznStevy/owo/blob/6d7b63494aa4534d93b32a16f03db8ed1dbbb47a/cogs/osu.py#L3211)
     Just as an actual bitwise instead of list.
     Deal with it."""
-    number = int(number)
-    mod_list = []
+    number = number
+    mod_list: List[str] = []
 
     if number & 1 << 0:
         mod_list.append('NF')

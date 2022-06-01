@@ -1,7 +1,7 @@
 import html5lib  # type: ignore
 
 from bs4 import BeautifulSoup
-from typing import Tuple, Union, Any
+from typing import Tuple, Union, Any, Optional
 from aiohttp import ClientSession
 from discord.ext.commands import Bot
 from commands.db.classes.Scrape_Series import Scrape_Series
@@ -41,7 +41,7 @@ class Grand_Blue(Scrape_Series):
         except Exception as e:
             print(e)
 
-    async def latest_chapter(self) -> Union[str, None]:
+    async def latest_chapter(self) -> Optional[str]:
         try:
             scrape_results = await self.scrape()
             title = scrape_results[0]

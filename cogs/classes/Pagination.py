@@ -2,7 +2,7 @@ import discord
 
 from discord import ui
 from discord.ext import menus
-from typing import Union, Any
+from typing import Union, Any, Optional
 
 class Source(menus.ListPageSource):
     async def format_page(self, menu, entries):
@@ -13,11 +13,11 @@ class MangaReader(ui.View, menus.MenuPages):
         super().__init__(timeout=60)
         self._source: Source = source
         self.current_page: int = 0
-        self.i: Union[discord.Interaction, None] = None
-        self.msg: Union[discord.Message, None] = None
-        self.embed: Union[discord.Embed, None] = None
-        self.text: Union[str, None] = None
-        self.group: Union[str, None] = None
+        self.i: Optional[discord.Interaction] = None
+        self.msg: Optional[discord.Message] = None
+        self.embed: Optional[discord.Embed] = None
+        self.text: Optional[str] = None
+        self.group: Optional[str] = None
 
     async def start(self, *, interaction: discord.Interaction, channel: discord.TextChannel, text: str, embed: discord.Embed, group: str):
         await self._source._prepare_once()

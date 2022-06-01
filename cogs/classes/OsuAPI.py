@@ -4,7 +4,7 @@ import json
 
 from discord.ext import commands
 from dotenv import load_dotenv  # type: ignore
-from typing import List, Dict, Union
+from typing import List, Dict, Optional
 from aiohttp import ClientSession
 
 load_dotenv()
@@ -12,7 +12,7 @@ load_dotenv()
 
 class OsuAPI:
     def __init__(self, bot: commands.Bot):
-        self.API_KEY: Union[str, None] = os.getenv("OSU_API_KEY")
+        self.API_KEY: Optional[str] = os.getenv("OSU_API_KEY")
         self.bot: commands.Bot = bot
         self.base_url: str = "https://osu.ppy.sh/api/"
         self.base_image_url: str = "http://s.ppy.sh/a/"
@@ -38,7 +38,7 @@ class OsuAPI:
             "3": "mania",
         }
 
-    async def get_user(self, username: str, mode: str):
+    async def get_user(self, username: str, mode: str) -> Optional[Dict[str, str]]:
         url = f"{self.base_url}get_user{self.key_query}&u={username}&m={mode}"
         session: ClientSession = self.bot.session  # type: ignore
         async with session.get(url) as r:

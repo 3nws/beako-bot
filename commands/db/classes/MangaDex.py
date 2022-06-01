@@ -1,7 +1,7 @@
 import discord
 import json
 
-from typing import Union, List, Dict
+from typing import Optional, Union, List, Dict
 from aiohttp import ClientSession
 from discord.ext.commands import Bot
 class Chapter:
@@ -37,7 +37,7 @@ class MangaDex:
         self.scanlation_base_url = 'https://api.mangadex.org/group/'
         self.bot = bot
                          
-    async def search(self, query: str, limit: str) -> Union[List[Union[List[str], discord.Embed]], None]:
+    async def search(self, query: str, limit: str) -> Optional[List[Union[List[str], discord.Embed]]]:
         url = self.base_manga_url + \
             f'?limit={limit}&title={query}&availableTranslatedLanguage%5B%5D=en'
 
@@ -74,7 +74,7 @@ class MangaDex:
     def get_following(self, channel_id: str):
         pass
 
-    async def get_manga_title(self, id: str) -> Union[str, None]:
+    async def get_manga_title(self, id: str) -> Optional[str]:
         url: str = self.base_manga_url + id
         session: ClientSession = self.bot.session  # type: ignore
         async with session.get(url) as res:
@@ -87,7 +87,7 @@ class MangaDex:
         r = r['data']
         return r['attributes']['title']['en']
     
-    async def get_scanlation_group(self, id: str) -> Union[Dict[str, str], None]:
+    async def get_scanlation_group(self, id: str) -> Optional[Dict[str, str]]:
         url: str = self.scanlation_base_url+id
         session: ClientSession = self.bot.session  # type: ignore
         async with session.get(url) as res:
@@ -99,7 +99,7 @@ class MangaDex:
                     print("Something went wrong with the MangaDex request!")
                     return
 
-    async def get_latest(self, id: str) -> Union[Chapter, None]:
+    async def get_latest(self, id: str) -> Optional[Chapter]:
         url: str = self.base_chapter_url + '?limit=5&manga=' + id + \
             '&translatedLanguage%5B%5D=en&order%5Bvolume%5D=desc&order%5Bchapter%5D=desc&excludedGroups%5B%5D=4f1de6a2-f0c5-4ac5-bce5-02c7dbb67deb'
         session: ClientSession = self.bot.session  # type: ignore
@@ -151,7 +151,7 @@ class MangaDex:
         
         return chapter
 
-    async def get_info(self, query: str) -> Union[discord.Embed, None]:
+    async def get_info(self, query: str) -> Optional[discord.Embed]:
         if query:
             url = self.base_manga_url + \
                 f'?limit=1&title={query}&availableTranslatedLanguage%5B%5D=en'
