@@ -200,7 +200,7 @@ class Osu(commands.Cog):
             return await i.followup.send("Who, in fact?!\nUse `/help osutop` for more information, I suppose!")
         try:
             player = await self.osu.get_user(player_name, mode)
-            best_scores = await self.osu.get_best(player_name, mode, 5)
+            best_scores = await self.osu.get_best(player_name, mode, "5")
             game_mode = self.osu.game_modes[mode]
             stripped_game_mode = self.osu.stripped_game_modes[mode]
             desc = ""
