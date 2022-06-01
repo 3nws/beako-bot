@@ -1,4 +1,4 @@
-from ..Help import Help
+from Help import Help
 from discord import Interaction
 
 async def commands_help(i: Interaction, help_ins: Help) -> None:

@@ -12,7 +12,7 @@ from commands.db.classes.Guya_moe import Guya_moe
 from commands.db.classes.Grand_Blue import Grand_Blue
 from commands.db.classes.MangaDex import MangaDex
 from discord import app_commands
-from discord.ext import commands
+from discord.ext import commands, tasks
 from typing import List
 from .classes.Pagination import MangaReader, Source
 from .classes.Pick import PickView
@@ -130,7 +130,7 @@ class DB(commands.Cog):
                             f"The channel with id {channel['id']} is private, I suppose!")
     
 
-    @discord.ext.tasks.loop(seconds=60)
+    @tasks.loop(seconds=60)
     async def tasks_check_chapter(self):
         """Checks for the newest chapters every minute.
         """
@@ -568,7 +568,7 @@ class DB(commands.Cog):
             await i.response.send_message(msg)
         
     
-    @discord.ext.tasks.loop(hours=24)
+    @tasks.loop(hours=24)
     async def tasks_change_avatar(self):
         """Task that changes the bot's avatar once a day.
         """
@@ -601,7 +601,7 @@ class DB(commands.Cog):
             print(e)
 
 
-    @discord.ext.tasks.loop(seconds=60)
+    @tasks.loop(seconds=60)
     async def tasks_filter_channels(self):
         """Task that filters out deleted channels from the database every 60 seconds.
         """
