@@ -9,7 +9,7 @@ from aiohttp import ClientSession
 from dotenv import load_dotenv  # type: ignore
 from pysaucenao import SauceNao, PixivSource, TwitterSource  # type: ignore
 from pysaucenao.containers import SauceNaoResults
-from typing import Optional, Any, Dict
+from typing import Optional, Any, Dict, List
 
 
 load_dotenv()
@@ -227,8 +227,9 @@ class Util(commands.Cog):
 
 
     @app_commands.command(name="poll")
+    @app_commands.guild_only
     @app_commands.describe(c1="First choice, in fact!", c2="Second choice, in fact!", question="The question this poll is for, in fact!")
-    async def poll(self, i: discord.Interaction, c1: str, c2: str, *, question: str=""):
+    async def poll(self, i: discord.Interaction, c1: str, c2: str, *, question: str, anonymous: Optional[bool]):
         """Create a poll.
 
         Args:
@@ -238,39 +239,73 @@ class Util(commands.Cog):
             question (str, optional): question this poll is trying to answer. Defaults to "".
         """
         embed = discord.Embed(
-            title=question.upper(),
-            description=f":one: {c1}\n\n:two: {c2}\n",
-            color=discord.Colour.random(),
-        )
-
+                title=question.upper(),
+                description=f":one: {c1}\n\n:two: {c2}\n",
+                color=discord.Colour.random(),
+            )
         embed.set_footer(
-            text=f"Poll created by {i.user.nick}", icon_url=i.user.avatar.url)  # type: ignore
+                text=f"Poll created by {i.user.nick}", icon_url=i.user.avatar.url)  # type: ignore
+        members_first_choice: List[int] = []
+        members_second_choice: List[int] = []
+        if anonymous:
+            button_one: discord.ui.Button[Any] = discord.ui.Button(emoji="1️⃣", style=discord.ButtonStyle.blurple, custom_id="one")
+            button_two: discord.ui.Button[Any] = discord.ui.Button(emoji="2️⃣", style=discord.ButtonStyle.blurple, custom_id="two")
+            
+            async def callback(interaction: discord.Interaction):
+                choice: str = interaction.data['custom_id']  # type: ignore
+                user_id: int = interaction.user.id  # type: ignore
+                if choice == "one" and user_id not in members_first_choice + members_second_choice:
+                    members_first_choice.append(user_id)
+                elif choice == "two" and user_id not in members_first_choice + members_second_choice:
+                    members_second_choice.append(user_id)
+                await interaction.response.defer()
 
-        msg: discord.Message = await i.channel.send(embed=embed)  # type: ignore
+            view = discord.ui.View(timeout=180)
+            
+            async def on_timeout():
+                results = discord.Embed(
+                    title="Results",
+                    description=f"{c1}: {len(members_first_choice)}\n\n{c2}: {len(members_second_choice)}",
+                    color=discord.Colour.random()
+                )
+                results.set_footer(
+                    text=f"For the poll '{question}'", icon_url=i.user.avatar.url)  # type: ignore
+                for item in view.children:
+                    item.disabled = True  # type: ignore
+                await i.edit_original_message(embed=embed, view=view)
+                await i.channel.send(embed=results)  # type: ignore
+                
+            button_one.callback = callback
+            button_two.callback = callback
+            view.add_item(button_one)
+            view.add_item(button_two)
+            view.on_timeout = on_timeout
+            await i.response.send_message("I'll be back with the results in three minutes, I suppose!", embed=embed, view=view)  # type: ignore
+        else:
+            msg: discord.Message = await i.channel.send(embed=embed)  # type: ignore
+            emojis = ['1️⃣', '2️⃣']
 
-        emojis = ['1️⃣', '2️⃣']
+            for emoji in emojis:
+                await msg.add_reaction(emoji)
 
-        for emoji in emojis:
-            await msg.add_reaction(emoji)
+            await i.response.send_message("I'll be back with the results in three minutes, I suppose!")
+            
+            await asyncio.sleep(180)
 
-        await i.response.send_message("I'll be back with the results in three minutes, I suppose!")
-        
-        await asyncio.sleep(180)
+            message_1: discord.Message = await i.channel.fetch_message(msg.id)  # type: ignore
 
-        message_1: discord.Message = await i.channel.fetch_message(msg.id)  # type: ignore
+            reactions: Dict[Any, Any] = {react.emoji: react.count for react in message_1.reactions}  # type: ignore
 
-        reactions: Dict[Any, Any] = {react.emoji: react.count for react in message_1.reactions}  # type: ignore
+            results = discord.Embed(
+                title="Results",
+                description=f"{c1}: {int(reactions[emojis[0]])-1}\n\n{c2}: {int(reactions[emojis[1]])-1}",
+                color=discord.Colour.random()
+            )
 
-        results = discord.Embed(
-            title="Results",
-            description=f"{c1}: {reactions[emojis[0]]}\n\n{c2}: {reactions[emojis[1]]}",
-            color=discord.Colour.random()
-        )
+            results.set_footer(
+                text=f"For the poll '{question}'", icon_url=i.user.avatar.url)  # type: ignore
 
-        results.set_footer(
-            text=f"For the poll '{question}'", icon_url=i.user.avatar.url)  # type: ignore
-
-        await i.channel.send(embed=results)  # type: ignore
+            await i.channel.send(embed=results)  # type: ignore
 
 
 async def setup(bot: commands.Bot):
