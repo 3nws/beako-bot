@@ -2,10 +2,10 @@ import discord
 
 from discord import ui
 from discord.ext import menus
-from typing import Union, Any, Optional
+from typing import Union, Any, Optional, List
 
 class Source(menus.ListPageSource):
-    async def format_page(self, menu, entries):
+    async def format_page(self, menu, entries):  # type: ignore
         return f"This is number {entries}."
 
 class MangaReader(ui.View, menus.MenuPages):
@@ -19,46 +19,47 @@ class MangaReader(ui.View, menus.MenuPages):
         self.text: Optional[str] = None
         self.group: Optional[str] = None
 
-    async def start(self, *, interaction: discord.Interaction, channel: discord.TextChannel, text: str, embed: discord.Embed, group: str):
-        await self._source._prepare_once()
-        page = await self._source.get_page(0)
-        kwargs = await self._get_kwargs_from_page(page)
+    async def start(self, *, interaction: Optional[discord.Interaction], channel: Any,  # type: ignore
+                    text: str, embed: discord.Embed, group: str):
+        await self._source._prepare_once()  # type: ignore
+        page = await self._source.get_page(0)  # type: ignore
+        kwargs = await self._get_kwargs_from_page(page)  # type: ignore
         kwargs['content'] = text
         kwargs['embed'] = embed
-        self.msg = await channel.send(**kwargs)
+        self.msg = await channel.send(**kwargs)  # type: ignore
         self.embed = embed
         self.text = text
         self.group = group
         self.i = interaction
 
-    async def _get_kwargs_from_page(self, page: str):
+    async def _get_kwargs_from_page(self, page: str):  # type: ignore
         value = {}
         if 'view' not in value:
             value['view'] = self
-        return value
+        return value  # type: ignore
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        btn_usr: discord.User = interaction.user
-        i_usr: discord.User = self.i.user
+        btn_usr: discord.User = interaction.user  # type: ignore
+        i_usr: discord.User = self.i.user  # type: ignore
         return True if self.i is None else btn_usr == i_usr
 
     async def on_timeout(self):
         self.stop()
-        await self.msg.edit(content=self.text, embed=self.embed, view=self.disabled())
-        await self.msg.reply("This view just timed out, I suppose! You need to interact with it to keep it up, in fact!")
+        await self.msg.edit(content=self.text, embed=self.embed, view=self.disabled())  # type: ignore
+        await self.msg.reply("This view just timed out, I suppose! You need to interact with it to keep it up, in fact!")  # type: ignore
 
     async def turn_page(self, page_num: int):
-        page: Union[Any, List[Any]] = await self._source.get_page(page_num)
+        page: Union[Any, List[Any]] = await self._source.get_page(page_num)  # type: ignore
         self.current_page = page_num
-        kwargs = await self._get_kwargs_from_page(page)
+        kwargs = await self._get_kwargs_from_page(page)  # type: ignore
         kwargs['content'] = self.text
-        self.embed.set_image(url=page)
-        self.embed.set_footer(text=(f"Page {page_num+1}/{self._source._max_pages}. Translated by " + self.group))
+        self.embed.set_image(url=page)  # type: ignore
+        self.embed.set_footer(text=(f"Page {page_num+1}/{self._source._max_pages}. Translated by " + self.group))  # type: ignore
         kwargs['embed'] = self.embed
-        await self.msg.edit(**kwargs)
+        await self.msg.edit(**kwargs)  # type: ignore
 
     def disabled(self):
-        for btn in self._children:
+        for btn in self._children:  # type: ignore
             btn.disabled = True
         return self
 
@@ -76,7 +77,7 @@ class MangaReader(ui.View, menus.MenuPages):
     async def stop_page(self, interaction: discord.Interaction, button: discord.ui.Button[Any]):
         self.stop()
         await interaction.response.defer()
-        await self.msg.edit(content=self.text, embed=self.embed, view=self.disabled())
+        await self.msg.edit(content=self.text, embed=self.embed, view=self.disabled())  # type: ignore
 
     @ui.button(emoji='<:next_check:754948796361736213>', style=discord.ButtonStyle.blurple)
     async def next_page(self, interaction: discord.Interaction, button: discord.ui.Button[Any]):

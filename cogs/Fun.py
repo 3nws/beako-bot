@@ -3,7 +3,7 @@ import random
 
 from discord.ext import commands
 from discord import app_commands
-from typing import List
+from typing import List, Optional
 
 
 class Fun(commands.Cog):
@@ -25,14 +25,14 @@ class Fun(commands.Cog):
             await i.response.send_message("What do you want me to say, in fact?!")
             return
         if random.randint(1, 100) % 2 == 0:
-            await i.channel.send(msg + ", in fact!")
+            await i.channel.send(msg + ", in fact!")  # type: ignore
         else:
-            await i.channel.send(msg + ", I suppose!")
+            await i.channel.send(msg + ", I suppose!")  # type: ignore
 
     
     @app_commands.command(name="roll")
     @app_commands.describe(num="The upper limit for the roll, in fact!")
-    async def roll(self, i: discord.Interaction, num: int = None):
+    async def roll(self, i: discord.Interaction, num: Optional[int]):
         """Roll a number.
 
         Args:
@@ -43,7 +43,7 @@ class Fun(commands.Cog):
             number = random.randint(1, num)
         else:
             number = random.randint(1, 100)
-        await i.response.send_message(f"{i.user.name} Just rolled **{number}**, I suppose!")
+        await i.response.send_message(f"{i.user.name} Just rolled **{number}**, I suppose!")  # type: ignore
 
 
     async def rps_autocomplete(self,
@@ -95,7 +95,7 @@ class Fun(commands.Cog):
 
     @app_commands.command(name="coin")
     @app_commands.describe(heads="The thing that represents heads, I suppose!", tails="The thing that represents tails, I suppose!")
-    async def coinflip(self, i: discord.Interaction, heads: str = None, tails: str = None):
+    async def coinflip(self, i: discord.Interaction, heads: Optional[str], tails: Optional[str]):
         """Throw a coin to decide.
 
         Args:
@@ -105,28 +105,28 @@ class Fun(commands.Cog):
         """
         if heads is not None and tails is None:
             embed = discord.Embed(
-                title="Error", description=f"{i.user.mention} tried to flip a coin but didn't specify what for is tails, I suppose!")
+                title="Error", description=f"{i.user.mention} tried to flip a coin but didn't specify what for is tails, I suppose!")  # type: ignore
             await i.response.send_message(embed=embed)
 
         elif heads is None or tails is None:
             if random.choice(self.determine_flip) == 1:
                 embed = discord.Embed(
-                    title="Coinflip", description=f"{i.user.mention} flipped a coin, and got **Heads**, I suppose!")
+                    title="Coinflip", description=f"{i.user.mention} flipped a coin, and got **Heads**, I suppose!")  # type: ignore
                 await i.response.send_message(embed=embed)
 
             else:
                 embed = discord.Embed(
-                    title="Coinflip", description=f"{i.user.mention} flipped a coin, and got **Tails**, I suppose!")
+                    title="Coinflip", description=f"{i.user.mention} flipped a coin, and got **Tails**, I suppose!")  # type: ignore
                 await i.response.send_message(embed=embed)
         else:
             if random.choice(self.determine_flip) == 1:
                 embed = discord.Embed(
-                    title="Coinflip", description=f"{i.user.mention} flipped a coin, and got **Heads** for **{heads}**, I suppose!")
+                    title="Coinflip", description=f"{i.user.mention} flipped a coin, and got **Heads** for **{heads}**, I suppose!")  # type: ignore
                 await i.response.send_message(embed=embed)
 
             else:
                 embed = discord.Embed(
-                    title="Coinflip", description=f"{i.user.mention} flipped a coin, and got **Tails** for **{tails}**, I suppose!")
+                    title="Coinflip", description=f"{i.user.mention} flipped a coin, and got **Tails** for **{tails}**, I suppose!")  # type: ignore
                 await i.response.send_message(embed=embed)
 
 

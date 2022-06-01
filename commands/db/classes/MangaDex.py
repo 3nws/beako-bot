@@ -1,7 +1,7 @@
 import discord
 import json
 
-from typing import Optional, Union, List, Dict
+from typing import Optional, Any, List, Dict
 from aiohttp import ClientSession
 from discord.ext.commands import Bot
 class Chapter:
@@ -37,7 +37,7 @@ class MangaDex:
         self.scanlation_base_url = 'https://api.mangadex.org/group/'
         self.bot = bot
                          
-    async def search(self, query: str, limit: str) -> Optional[List[Union[List[str], discord.Embed]]]:
+    async def search(self, query: str, limit: str) -> Optional[List[Any]]:
         url = self.base_manga_url + \
             f'?limit={limit}&title={query}&availableTranslatedLanguage%5B%5D=en'
 

@@ -2,55 +2,58 @@ import requests
 import random
 import shutil
 import discord
-import pymongo
 import os
 import json
 
 from ast import literal_eval
 from commands.db.classes.Re_zero import Re_zero
+from aiohttp import ClientSession
 from commands.db.classes.Guya_moe import Guya_moe
 from commands.db.classes.Grand_Blue import Grand_Blue
 from commands.db.classes.MangaDex import MangaDex
 from discord import app_commands
-from discord.ext import commands, tasks
-from typing import List
+from discord.ext import commands, tasks  # type: ignore
+from typing import List, Any, Dict, Union, Optional, Tuple
 from .classes.Pagination import MangaReader, Source
 from .classes.Pick import PickView
+from aiohttp import ClientSession
+from pymongo.collection import Collection
+from discord.ext.commands import Bot
 
 
 class DB(commands.Cog):
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: Bot):
         self.bot = bot
-        self.client = self.bot.get_client()
+        self.client: ClientSession = self.bot.get_client()  # type: ignore
         
         # channels db
-        self.db_channels = self.client.channel_id
+        self.db_channels = self.client.channel_id  # type: ignore
         # chapter db
-        db_chapter = self.client.chapter
+        db_chapter = self.client.chapter  # type: ignore
         # chapters data
-        self.data_rz = db_chapter.data
-        self.data_kaguya = db_chapter.data_kaguya
-        self.data_onk = db_chapter.data_onk
-        self.data_gb = db_chapter.data_gb
+        self.data_rz: Collection[Any] = db_chapter.data  # type: ignore
+        self.data_kaguya: Collection[Any] = db_chapter.data_kaguya  # type: ignore
+        self.data_onk: Collection[Any] = db_chapter.data_onk  # type: ignore
+        self.data_gb: Collection[Any] = db_chapter.data_gb  # type: ignore
         
         # flip image urls db
-        db_flips = self.client.flips
+        db_flips = self.client.flips  # type: ignore
         # flip image urls data
-        self.flips = db_flips.data
+        self.flips = db_flips.data  # type: ignore
         
         # avatars url db
-        self.db_avatars = self.client.avatars.data
+        self.db_avatars = self.client.avatars.data  # type: ignore
         # avatars path
         self.avatars = os.path.join(os.getcwd(), "avatars")
         
         # channels data
-        self.channels_md = db_chapter.data_mangadex
-        self.channels_rz = self.db_channels.data
-        self.channels_kaguya = self.db_channels.data_kaguya
-        self.channels_onk = self.db_channels.data_onk
-        self.channels_gb = self.db_channels.data_gb
+        self.channels_md: Collection[Any] = db_chapter.data_mangadex  # type: ignore
+        self.channels_rz: Collection[Any] = self.db_channels.data  # type: ignore
+        self.channels_kaguya: Collection[Any] = self.db_channels.data_kaguya  # type: ignore
+        self.channels_onk: Collection[Any] = self.db_channels.data_onk  # type: ignore
+        self.channels_gb: Collection[Any] = self.db_channels.data_gb  # type: ignore
 
-        self.collection_aliases = {
+        self.collection_aliases: Dict[str, str] = {
             "data": "Re:Zero",
             "data_kaguya": "Kaguya-sama",
             "data_onk": "Oshi No Ko",
@@ -83,13 +86,13 @@ class DB(commands.Cog):
         
         self.mangas_list = {}
         
-    #     self.tasks_change_avatar.start()
+        self.tasks_change_avatar.start()  # type: ignore
         
         
-    # @commands.Cog.listener()
-    # async def on_ready(self):
-    #     self.tasks_filter_channels.start()
-    #     self.tasks_check_chapter.start()
+    @commands.Cog.listener()
+    async def on_ready(self):
+        self.tasks_filter_channels.start()  # type: ignore
+        self.tasks_check_chapter.start()  # type: ignore
 
         
     @app_commands.command(name="flip")
@@ -100,11 +103,11 @@ class DB(commands.Cog):
             i (discord.Interaction): the interaction that invokes this coroutine
         """
         pipe = [{"$sample": {"size": 1}}]
-        flip = [f async for f in self.flips.aggregate(pipe)][0]["url"]
+        flip: List[str] = [f async for f in self.flips.aggregate(pipe)][0]["url"]  # type: ignore
         await i.response.send_message(flip)
     
     
-    async def send_messages(self, channels, title, data, db_rec, anchor):
+    async def send_messages(self, channels: Collection[Any], title: str, data: Collection[Any], db_rec: Dict[str, str], anchor: str):
         """Sends the notification messages to all the relevant guild channels.
 
         Args:
@@ -115,22 +118,22 @@ class DB(commands.Cog):
             anchor (str): link to the chapter
         """
         if db_rec["title"] != title:
-            await data.find_one_and_update(
+            await data.find_one_and_update(  # type: ignore
                 {"title": str(db_rec["title"])}, {"$set": {"title": title}}
             )
-            async for channel in channels.find():
-                channel_if_exists = self.bot.get_guild(channel["guild_id"]).get_channel((channel["id"]))
+            async for channel in channels.find():  # type: ignore
+                channel_if_exists = self.bot.get_guild(channel["guild_id"]).get_channel((channel["id"]))  # type: ignore
                 if channel_if_exists:
                     try:
-                        await channel_if_exists.send(
+                        await channel_if_exists.send(  # type: ignore
                             f"'{title}' has been translated.\n{anchor}, I suppose!"
                         )
                     except Exception as e:
                         print(
-                            f"The channel with id {channel['id']} is private, I suppose!")
+                            f"The channel with id {channel['id']} is private, I suppose!", e)
     
 
-    @tasks.loop(seconds=60)
+    @tasks.loop(seconds=60)  # type: ignore
     async def tasks_check_chapter(self):
         """Checks for the newest chapters every minute.
         """
@@ -142,7 +145,7 @@ class DB(commands.Cog):
             most_recent_post_str = scrapes[0]
             latest_chapter_translated_link = scrapes[1]
 
-            last_chapter = await self.data_rz.find_one()
+            last_chapter: Dict[str, str] = await self.data_rz.find_one()  # type: ignore
 
             await self.send_messages(
                 self.channels_rz,
@@ -159,7 +162,7 @@ class DB(commands.Cog):
             most_recent_post_str = scrapes[0]
             latest_chapter_translated_link = scrapes[1]
 
-            last_chapter = await self.data_kaguya.find_one()
+            last_chapter = await self.data_kaguya.find_one()  # type: ignore
 
             await self.send_messages(
                 self.channels_kaguya,
@@ -176,7 +179,7 @@ class DB(commands.Cog):
             most_recent_post_str = scrapes[0]
             latest_chapter_translated_link = scrapes[1]
 
-            last_chapter = await self.data_onk.find_one()
+            last_chapter = await self.data_onk.find_one()  # type: ignore
 
             await self.send_messages(
                 self.channels_onk,
@@ -193,7 +196,7 @@ class DB(commands.Cog):
             most_recent_post_str = scrapes[0]
             latest_chapter_translated_link = scrapes[1]
 
-            last_chapter = await self.data_gb.find_one()
+            last_chapter = await self.data_gb.find_one()  # type: ignore
 
             await self.send_messages(
                 self.channels_gb,
@@ -205,7 +208,7 @@ class DB(commands.Cog):
 
             # for mangadex
             md = MangaDex(self.bot)
-            records_exist = await self.channels_md.find().to_list(None)
+            records_exist: Any = await self.channels_md.find().to_list(None)  # type: ignore
             if records_exist:
                 for record in records_exist:
                     mangas_on_channel = (record)['mangas']
@@ -213,13 +216,13 @@ class DB(commands.Cog):
                     for manga_id in mangas_dict:
                         chapter = mangas_dict[manga_id]
                         chapter_response = await md.get_latest(manga_id)
-                        title_response = chapter_response.get_title()
+                        title_response = chapter_response.get_title()  # type: ignore
                         latest = title_response[0]
                         is_title = title_response[1]
-                        chapter_link = chapter_response.get_link()
+                        chapter_link = chapter_response.get_link()  # type: ignore
                         if latest != chapter:
                             mangas_dict.update({f"{manga_id}": str(latest)})
-                            new_doc = await self.channels_md.find_one_and_update(
+                            await self.channels_md.find_one_and_update(  # type: ignore
                                 {
                                     'channel_id': record['channel_id'],
                                     'guild_id': record['guild_id'],
@@ -228,34 +231,33 @@ class DB(commands.Cog):
                                     '$set': {
                                         'mangas': str(mangas_dict)
                                     }
-                                },
-                                return_document=pymongo.ReturnDocument.AFTER
+                                }
                             )
                             channel = record['channel_id']
                             chp_title = await md.get_manga_title(manga_id)
-                            scanlation_group = await md.get_scanlation_group(chapter_response.scanlation)
+                            scanlation_group = await md.get_scanlation_group(chapter_response.scanlation)  # type: ignore
                             embed = discord.Embed(
                                 color=discord.Colour.random(),
                                 title=str(latest),
                             )
-                            num_of_pages = len(chapter_response.images)
+                            num_of_pages = len(chapter_response.images)  # type: ignore
                             if num_of_pages==0:
                                 if is_title:
-                                    msg = await self.bot.get_channel(channel).send(f"'{chp_title} - {latest}' has been translated, I suppose \n{chapter_link}")
+                                    await self.bot.get_channel(channel).send(f"'{chp_title} - {latest}' has been translated, I suppose \n{chapter_link}")  # type: ignore
                                 else:
-                                    msg = await self.bot.get_channel(channel).send(f"A new chapter of '{chp_title}' has been translated, I suppose \n{chapter_link}")
+                                    await self.bot.get_channel(channel).send(f"A new chapter of '{chp_title}' has been translated, I suppose \n{chapter_link}")  # type: ignore
                                 continue
                             current_page = 0
-                            group = scanlation_group['data']['attributes']['name']
+                            group: str = scanlation_group['data']['attributes']['name']  # type: ignore
                             embed.set_footer(text=(f"Page {current_page+1}/{num_of_pages}. Translated by " + group))
                             embed.set_image(
-                                url=chapter_response.images[current_page])
+                                url=chapter_response.images[current_page])  # type: ignore
                         
 
-                            data = chapter_response.images
+                            data = chapter_response.images  # type: ignore
                             formatter = Source(data, per_page=1)
                             menu = MangaReader(formatter)
-                            chnl = self.bot.get_channel(channel)
+                            chnl: Union[discord.abc.GuildChannel, discord.Thread, discord.abc.PrivateChannel] = self.bot.get_channel(channel)  # type: ignore
                             
                             if is_title:
                                 text, embed = f"'{chp_title} - {latest}' has been translated, I suppose \n{chapter_link}", embed
@@ -268,7 +270,7 @@ class DB(commands.Cog):
             print(e)
             
         
-    async def last_chapter(self, series, i):
+    async def last_chapter(self, series: str, i: discord.Interaction) -> None:
         """Sends the latest chapter info or the reader.
 
         Args:
@@ -277,29 +279,32 @@ class DB(commands.Cog):
         """
         series = self.aliases[series] if series in self.aliases else series
         if series == "rz":
-            await i.response.send_message(await Re_zero(self.rz_url).latest_chapter())
+            await i.response.send_message(await Re_zero(self.rz_url, self.bot).latest_chapter())
         elif series == "kaguya":
-            await i.response.send_message(await Guya_moe(self.kaguya_url).latest_chapter())
+            await i.response.send_message(await Guya_moe(self.kaguya_url, self.bot).latest_chapter())
         elif series == "onk":
-            await i.response.send_message(await Guya_moe(self.onk_url).latest_chapter())
+            await i.response.send_message(await Guya_moe(self.onk_url, self.bot).latest_chapter())
         elif series == "gb":
-            await i.response.send_message(await Grand_Blue(self.gb_url).latest_chapter())
+            await i.response.send_message(await Grand_Blue(self.gb_url, self.bot).latest_chapter())
         else:
             md = MangaDex(self.bot)
-            search = (await md.search(series, 1))[-1][0]
-            chapter_response = await md.get_latest(search)
-            chp_title = await md.get_manga_title(search)
-            scanlation_group = await md.get_scanlation_group(chapter_response.scanlation)
-            title_response = chapter_response.get_title()
+            search: Optional[List[Any]] = await md.search(series, "1")
+            search_query: str = ""
+            if search:
+                search_query = search[-1][0]
+            chapter_response = await md.get_latest(search_query)
+            chp_title = await md.get_manga_title(search_query)
+            scanlation_group = await md.get_scanlation_group(chapter_response.scanlation)  # type: ignore
+            title_response = chapter_response.get_title()  # type: ignore
             latest = title_response[0]
             is_title = title_response[1]
-            chapter_link = chapter_response.get_link()
+            chapter_link = chapter_response.get_link()  # type: ignore
             embed = discord.Embed(
                 color=discord.Colour.random(),
                 title=str(latest),
             )
-            directions = ['⬅️', '➡️']
-            num_of_pages = len(chapter_response.images)
+            
+            num_of_pages = len(chapter_response.images)  # type: ignore
             if num_of_pages==0:
                 if is_title:
                     await i.response.send_message(f"'{chp_title} - {latest}' has been translated, I suppose \n{chapter_link}")
@@ -307,13 +312,13 @@ class DB(commands.Cog):
                     await i.response.send_message(f"A new chapter of '{chp_title}' has been translated, I suppose \n{chapter_link}")
                 return
             current_page = 0
-            group = scanlation_group['data']['attributes']['name']
+            group: str = scanlation_group['data']['attributes']['name']  # type: ignore
             embed.set_footer(text=(f"Page {current_page+1}/{num_of_pages}. Translated by " + group))
             embed.set_image(
-                url=chapter_response.images[current_page])
+                url=chapter_response.images[current_page])  # type: ignore
             await i.response.send_message("Read away, I suppose!")
             
-            data = chapter_response.images
+            data = chapter_response.images  # type: ignore
             formatter = Source(data, per_page=1)
             menu = MangaReader(formatter)
             
@@ -349,8 +354,8 @@ class DB(commands.Cog):
         """
         await self.sync(current)
         return [
-            app_commands.Choice(name=manga['attributes']['title']['en'][:100], value=manga['attributes']['title']['en'][:100])
-            for manga in self.mangas_list if 'en' in manga['attributes']['title'].keys() and current.lower() in manga['attributes']['title']['en'].lower()
+            app_commands.Choice(name=manga['attributes']['title']['en'][:100], value=manga['attributes']['title']['en'][:100])  # type: ignore
+            for manga in self.mangas_list if 'en' in manga['attributes']['title'].keys() and current.lower() in manga['attributes']['title']['en'].lower()  # type: ignore
         ][:25]
     
 
@@ -387,7 +392,8 @@ class DB(commands.Cog):
         """
         md = MangaDex(self.bot)
         embed = await md.get_info(series)
-        await i.response.send_message(embed=embed)
+        if embed:
+            await i.response.send_message(embed=embed)
         
         
     async def sync(self, query:str):
@@ -396,7 +402,7 @@ class DB(commands.Cog):
         Args:
             query (str): query that will be sent to the api
         """
-        session = self.bot.session
+        session: ClientSession = self.bot.session  # type: ignore
         async with session.get(f"https://api.mangadex.org/manga?limit=25&title={query}&\
             includedTagsMode=AND&excludedTagsMode=OR&availableTranslatedLanguage%5B%5D=en&\
             contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&\
@@ -421,39 +427,39 @@ class DB(commands.Cog):
             series (str): the series to add this channel's tracking list
         """
         md = MangaDex(self.bot)
-        channel_entry = {
-            "id": i.channel_id,
-            "guild_id": i.guild.id,
+        channel_entry: Dict[str, int] = {
+            "id": i.channel_id,  # type: ignore
+            "guild_id": i.guild.id,  # type: ignore
         }
         series = self.aliases[series] if series in self.aliases else series
         success_msg = "This text channel will receive notifications, I suppose!"
         failure_msg = "This text channel is already on the receiver list, in fact!"
-        is_in_list = self.channels_rz.count_documents(channel_entry, limit=1) != 0
-        is_in_kaguya_list = self.channels_kaguya.count_documents(
+        is_in_list = self.channels_rz.count_documents(channel_entry, limit=1) != 0  # type: ignore
+        is_in_kaguya_list = self.channels_kaguya.count_documents(  # type: ignore
             channel_entry, limit=1) != 0
-        is_in_onk_list = self.channels_onk.count_documents(channel_entry, limit=1) != 0
-        is_in_gb_list = self.channels_gb.count_documents(channel_entry, limit=1) != 0
+        is_in_onk_list = self.channels_onk.count_documents(channel_entry, limit=1) != 0  # type: ignore
+        is_in_gb_list = self.channels_gb.count_documents(channel_entry, limit=1) != 0  # type: ignore
         if series == "rz":
             if not is_in_list:
-                await self.channels_rz.insert_one(channel_entry)
+                await self.channels_rz.insert_one(channel_entry)  # type: ignore
                 msg = success_msg
             else:
                 msg = failure_msg
         elif series == "kaguya":
             if not is_in_kaguya_list:
-                await self.channels_kaguya.insert_one(channel_entry)
+                await self.channels_kaguya.insert_one(channel_entry)  # type: ignore
                 msg = success_msg
             else:
                 msg = failure_msg
         elif series == "onk":
             if not is_in_onk_list:
-                await self.channels_onk.insert_one(channel_entry)
+                await self.channels_onk.insert_one(channel_entry)  # type: ignore
                 msg = success_msg
             else:
                 msg = failure_msg
         elif series == "gb":
             if not is_in_gb_list:
-                await self.channels_gb.insert_one(channel_entry)
+                await self.channels_gb.insert_one(channel_entry)  # type: ignore
                 msg = success_msg
             else:
                 msg = failure_msg
@@ -461,11 +467,10 @@ class DB(commands.Cog):
             msg = "To what list do you want to add this channel, in fact?!"
         else:
             md = MangaDex(self.bot)
-            results = await md.search(series, 5)
+            results = await md.search(series, "5")
             msg = results
             
         if isinstance(msg, list):
-            emojis = msg[0]
             titles = msg[2]
             manga_ids = msg[3]
             msg = msg[1]
@@ -487,57 +492,57 @@ class DB(commands.Cog):
             series (str, optional): the series to remove from this channel's tracking list. Defaults to "".
         """
         md = MangaDex(self.bot)
-        channel_entry = {
-            "id": i.channel_id,
-            "guild_id": i.guild.id,
+        channel_entry: Dict[str, int] = {
+            "id": i.channel_id,  # type: ignore
+            "guild_id": i.guild.id,  # type: ignore
         }
         series = self.aliases[series] if series in self.aliases else series
         success_msg = "This text channel will no longer receive notifications, I suppose!"
         failure_msg = "This text channel is not on the receiver list, in fact!"
-        is_in_list = self.channels_rz.count_documents(channel_entry, limit=1) != 0
-        is_in_kaguya_list = self.channels_kaguya.count_documents(
+        is_in_list = self.channels_rz.count_documents(channel_entry, limit=1) != 0  # type: ignore
+        is_in_kaguya_list = self.channels_kaguya.count_documents(  # type: ignore
             channel_entry, limit=1) != 0
-        is_in_onk_list = self.channels_onk.count_documents(channel_entry, limit=1) != 0
-        is_in_gb_list = self.channels_gb.count_documents(channel_entry, limit=1) != 0
+        is_in_onk_list = self.channels_onk.count_documents(channel_entry, limit=1) != 0  # type: ignore
+        is_in_gb_list = self.channels_gb.count_documents(channel_entry, limit=1) != 0  # type: ignore
         if series == "rz":
             if is_in_list:
-                await self.channels_rz.find_one_and_delete(channel_entry)
+                await self.channels_rz.find_one_and_delete(channel_entry)  # type: ignore
                 msg = success_msg
             else:
                 msg = failure_msg
         elif series == "kaguya":
             if is_in_kaguya_list:
-                await self.channels_kaguya.find_one_and_delete(channel_entry)
+                await self.channels_kaguya.find_one_and_delete(channel_entry)  # type: ignore
                 msg = success_msg
             else:
                 msg = failure_msg
         elif series == "onk":
             if is_in_onk_list:
-                await self.channels_onk.find_one_and_delete(channel_entry)
+                await self.channels_onk.find_one_and_delete(channel_entry)  # type: ignore
                 msg = success_msg
             else:
                 msg = failure_msg
         elif series == "gb":
             if is_in_gb_list:
-                await self.channels_gb.find_one_and_delete(channel_entry)
+                await self.channels_gb.find_one_and_delete(channel_entry)  # type: ignore
                 msg = success_msg
             else:
                 msg = failure_msg
         else:
-            channel_exists = True if await self.channels_md.find_one(
+            channel_exists: Dict[str, Union[str, int]] = True if await self.channels_md.find_one(  # type: ignore
                 {
-                    "channel_id": i.channel_id,
-                    "guild_id": i.guild.id,
+                    "channel_id": i.channel_id,  # type: ignore
+                    "guild_id": i.guild.id,  # type: ignore
                     }) else False
             if not channel_exists:
                 msg = "This channel is not on any receiver list, in fact!"
 
-            mangas_on_channel = (await self.channels_md.find_one(
+            mangas_on_channel: str = (await self.channels_md.find_one(  # type: ignore
                 {
-                    "channel_id": i.channel_id,
-                    "guild_id": i.guild.id,
+                    "channel_id": i.channel_id,  # type: ignore
+                    "guild_id": i.guild.id,  # type: ignore
                     }))['mangas']
-            mangas_dict = literal_eval(mangas_on_channel)
+            mangas_dict: Dict[str, str] = literal_eval(mangas_on_channel)
 
             embed = discord.Embed(
                 title=f"Pick one of the series you wish to unfollow, I suppose!" if len(
@@ -545,38 +550,39 @@ class DB(commands.Cog):
                 color=discord.Colour.random(),
             )
 
-            titles = []
-            manga_ids = []
+            titles: List[str] = []
+            manga_ids: List[str] = []
             emojis = md.emojis
             for j, rs in enumerate(mangas_dict):
                 manga_ids.append(rs)
                 title = await md.get_manga_title(rs)
-                titles.append(title)
-                title += f' {emojis[j]}'
+                if title:
+                    titles.append(title)
+                    title += f' {emojis[j]}'
                 embed.add_field(name=title, value='\u200b', inline=False)
 
             msg = [embed, manga_ids, titles, emojis]
 
         if isinstance(msg, list):
             emojis = msg[3]
-            manga_ids = msg[1]
-            titles = msg[2]
+            manga_ids = msg[1]  # type: ignore
+            titles = msg[2]  # type: ignore
             msg = msg[0]
-            manga_infos = (titles, manga_ids)
-            await i.response.send_message("Pick a series to follow, I suppose!", embed=msg, view=PickView(i, self.channels_md, manga_infos, self.bot))
+            manga_infos: Tuple[List[str], List[str]] = (titles, manga_ids)
+            await i.response.send_message("Pick a series to follow, I suppose!", embed=msg, view=PickView(i, self.channels_md, manga_infos, self.bot))  # type: ignore
         else:
             await i.response.send_message(msg)
         
     
-    @tasks.loop(hours=24)
+    @tasks.loop(hours=24)  # type: ignore
     async def tasks_change_avatar(self):
         """Task that changes the bot's avatar once a day.
         """
         try:
-            async for image_record in self.db_avatars.find():
-                url = image_record["url"]
+            async for image_record in self.db_avatars.find():  # type: ignore
+                url: str = image_record["url"]
                 file_name = os.path.join(
-                    os.path.join(os.getcwd(), "avatars"), url.split("/")[-1]
+                    os.path.join(os.getcwd(), "avatars"), url.split("/")[-1]  # type: ignore
                 )
                 res = requests.get(url, stream=True)
 
@@ -595,47 +601,47 @@ class DB(commands.Cog):
                 print(file)
                 new_avatar = file.read()
                 await self.bot.wait_until_ready()
-                await self.bot.user.edit(avatar=new_avatar)
+                await self.bot.user.edit(avatar=new_avatar)  # type: ignore
                 print("Avatar changed successfully!")
         except Exception as e:
             print(e)
 
 
-    @tasks.loop(seconds=60)
+    @tasks.loop(seconds=60)  # type: ignore
     async def tasks_filter_channels(self):
         """Task that filters out deleted channels from the database every 60 seconds.
         """
-        async for channel in self.channels_rz.find():
-            if self.bot.get_guild(channel['guild_id']) is None or self.bot.get_guild(channel['guild_id']).get_channel((channel["id"])) is None:
+        async for channel in self.channels_rz.find():  # type: ignore
+            if self.bot.get_guild(channel['guild_id']) is None or self.bot.get_guild(channel['guild_id']).get_channel((channel["id"])) is None:  # type: ignore
+                channel_entry: Dict[str, Any] = {
+                    "id": channel["id"],
+                }
+                await self.channels_rz.find_one_and_delete(channel_entry)  # type: ignore
+        async for channel in self.channels_kaguya.find():  # type: ignore
+            if self.bot.get_guild(channel['guild_id']) is None or self.bot.get_guild(channel['guild_id']).get_channel((channel["id"])) is None:  # type: ignore
                 channel_entry = {
                     "id": channel["id"],
                 }
-                await self.channels_rz.find_one_and_delete(channel_entry)
-        async for channel in self.channels_kaguya.find():
-            if self.bot.get_guild(channel['guild_id']) is None or self.bot.get_guild(channel['guild_id']).get_channel((channel["id"])) is None:
+                await self.channels_kaguya.find_one_and_delete(channel_entry)  # type: ignore
+        async for channel in self.channels_onk.find():  # type: ignore
+            if self.bot.get_guild(channel['guild_id']) is None or self.bot.get_guild(channel['guild_id']).get_channel((channel["id"])) is None:  # type: ignore
                 channel_entry = {
                     "id": channel["id"],
                 }
-                await self.channels_kaguya.find_one_and_delete(channel_entry)
-        async for channel in self.channels_onk.find():
-            if self.bot.get_guild(channel['guild_id']) is None or self.bot.get_guild(channel['guild_id']).get_channel((channel["id"])) is None:
+                await self.channels_onk.find_one_and_delete(channel_entry)  # type: ignore
+        async for channel in self.channels_gb.find():  # type: ignore
+            if self.bot.get_guild(channel['guild_id']) is None or self.bot.get_guild(channel['guild_id']).get_channel((channel["id"])) is None:  # type: ignore
                 channel_entry = {
                     "id": channel["id"],
                 }
-                await self.channels_onk.find_one_and_delete(channel_entry)
-        async for channel in self.channels_gb.find():
-            if self.bot.get_guild(channel['guild_id']) is None or self.bot.get_guild(channel['guild_id']).get_channel((channel["id"])) is None:
-                channel_entry = {
-                    "id": channel["id"],
-                }
-                await self.channels_gb.find_one_and_delete(channel_entry)
-        async for channel in self.channels_md.find():
-            if self.bot.get_guild(channel['guild_id']) is None or self.bot.get_guild(channel['guild_id']).get_channel((channel["channel_id"])) is None:
+                await self.channels_gb.find_one_and_delete(channel_entry)  # type: ignore
+        async for channel in self.channels_md.find():  # type: ignore
+            if self.bot.get_guild(channel['guild_id']) is None or self.bot.get_guild(channel['guild_id']).get_channel((channel["channel_id"])) is None:  # type: ignore
                 channel_entry = {
                     "channel_id": channel["channel_id"],
                     "guild_id": channel['guild_id']
                 }
-                await self.channels_md.find_one_and_delete(channel_entry)
+                await self.channels_md.find_one_and_delete(channel_entry)  # type: ignore
                 
 
     @app_commands.command(name="following")
@@ -646,28 +652,30 @@ class DB(commands.Cog):
         Args:
             i (discord.Interaction): the interaction that invokes this coroutine
         """
-        series = []
-        all_channels = await self.db_channels.list_collection_names()
+        series: List[str] = []
+        all_channels: List[str] = await self.db_channels.list_collection_names()  # type: ignore
         for channels in all_channels:
-            async for channel in self.db_channels[channels].find():
-                if self.bot.get_channel(channel['id']) == i.channel:
+            async for channel in self.db_channels[channels].find():  # type: ignore
+                if self.bot.get_channel(channel['id']) == i.channel:  # type: ignore
                     series.append(self.collection_aliases[channels])
 
-        channel_exists = await self.channels_md.find_one(
+        channel_exists: Dict[str, Any] = await self.channels_md.find_one(  # type: ignore
             {
-                "channel_id": i.channel_id,
-                "guild_id": i.guild.id,
-                }) if await self.channels_md.find_one(
+                "channel_id": i.channel_id,  # type: ignore
+                "guild_id": i.guild.id,  # type: ignore
+                }) if await self.channels_md.find_one(  # type: ignore
             {
-                "channel_id": i.channel_id,
-                "guild_id": i.guild.id,
+                "channel_id": i.channel_id,  # type: ignore
+                "guild_id": i.guild.id,  # type: ignore
                 }) else False
         if channel_exists:
             md = MangaDex(self.bot)
             mangas_on_channel = (channel_exists)['mangas']
             mangas_dict = literal_eval(mangas_on_channel)
             for manga_id in mangas_dict:
-                series.append(await md.get_manga_title(manga_id))
+                manga_title = await md.get_manga_title(manga_id)
+                if manga_title:
+                    series.append(manga_title)
 
         frame = discord.Embed(
             color=discord.Colour.random(),
@@ -682,9 +690,9 @@ class DB(commands.Cog):
             for s in series:
                 desc += f"**{counter}.** {s}\n"
                 counter += 1
-            frame.description = desc
+            frame.description = desc  # type: ignore
         await i.response.send_message(embed=frame)
 
     
-async def setup(bot: commands.Bot):
-    await bot.add_cog(DB(bot))
+async def setup(bot: Bot):
+    await bot.add_cog(DB(bot))  # type: ignore

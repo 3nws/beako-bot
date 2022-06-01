@@ -6,7 +6,8 @@ from datetime import datetime
 from datetime import timedelta
 from discord import app_commands
 from discord.ext import commands
-from typing import List, Literal
+from typing import List, Literal, Any, Optional
+from aiohttp import ClientSession
 
 
 class Timer(commands.Cog):
@@ -22,7 +23,7 @@ class Timer(commands.Cog):
     async def sync(self):
         """Syncs the cities/timezones information.
         """
-        session = self.bot.session
+        session: ClientSession = self.bot.session  # type: ignore
         async with session.get(self.sync_url) as r:
             if r.status == 200:
                 response = await r.read()
@@ -34,7 +35,7 @@ class Timer(commands.Cog):
                     
     @commands.command()
     @commands.is_owner()
-    async def sync_cities(self, ctx):
+    async def sync_cities(self, ctx: commands.Context[Any]):
         """Manual command to sync cities/timezones.
 
         Args:
@@ -52,7 +53,7 @@ class Timer(commands.Cog):
     @app_commands.describe(time="After how long should I ping you, in fact?!",
                            unit="Seconds? Hours? Cows? Give me a unit, in fact! You can concatenate this with the previous argument, I suppose!",
                            reminder="What is this timer about, in fact?!")
-    async def remind(self, i: discord.Interaction, time: str, unit: Literal["s", "m", "h", "d"] = None, *, reminder: str=""):
+    async def remind(self, i: discord.Interaction, time: str, unit: Optional[Literal["s", "m", "h", "d"]], *, reminder: str=""):
         """Set up a timer to remind you of something with a ping.
 
         Args:
@@ -64,29 +65,31 @@ class Timer(commands.Cog):
         embed = discord.Embed(color=discord.Colour.random(),
                               timestamp=datetime.utcnow())
         if (unit is None):
-            unit = time[-1]
+            unit = time[-1]  # type: ignore
             time = time[:-1]
-        if (len(unit) > 1 or time[-1].isalpha() and len(unit) == 1):
-            reminder = unit
-            unit = time[-1]
-            time = time[:-1]
+        if unit:
+            if (len(unit) > 1 or time[-1].isalpha() and len(unit) == 1):
+                reminder = unit
+                unit = time[-1]  # type: ignore
+                time = time[:-1]
         seconds = 0
-        if unit.lower().endswith("d"):
+        if unit.lower().endswith("d"):  # type: ignore
             seconds += int(float(time)) * 60 * 60 * 24
             counter = f"{time} days" if int(
                 float(time)) != 1 else f"{time} day"
-        if unit.lower().endswith("h"):
+        if unit.lower().endswith("h"):  # type: ignore
             seconds += int(float(time)) * 60 * 60
             counter = f"{time} hours" if int(
                 float(time)) != 1 else f"{time} hour"
-        elif unit.lower().endswith("m"):
+        elif unit.lower().endswith("m"):  # type: ignore
             seconds += int(float(time) * 60)
             counter = f"{time} minutes" if int(
                 float(time)) != 1 else f"{time} minute"
-        elif unit.lower().endswith("s"):
+        elif unit.lower().endswith("s"):  # type: ignore
             seconds += int(float(time))
             counter = f"{time} seconds" if int(
                 float(time)) != 1 else f"{time} second"
+        counter: str = ""
         if seconds == 0:
             embed.add_field(name='Warning', value="What is this, in fact?!")
         elif seconds > 7776000:
@@ -99,9 +102,9 @@ class Timer(commands.Cog):
                 await i.response.send_message(f"I'll ping you in {counter} about '{reminder}', I suppose!")
             await asyncio.sleep(seconds)
             if reminder == '':
-                await i.channel.send(f"Hey {i.user.mention}, what up, in fact!")
+                await i.channel.send(f"Hey {i.user.mention}, what up, in fact!")  # type: ignore
             else:
-                await i.channel.send(f"Hey {i.user.mention}, what up, in fact! You asked me to remind you about '{reminder}' {counter} ago, I suppose!")
+                await i.channel.send(f"Hey {i.user.mention}, what up, in fact! You asked me to remind you about '{reminder}' {counter} ago, I suppose!")  # type: ignore
             return
         await i.response.send_message(embed=embed)
 
@@ -144,9 +147,9 @@ class Timer(commands.Cog):
                     await i.response.send_message(f"Your Betty alarm is set for {time} about '{reminder}', I suppose!")
                 await asyncio.sleep(time_left)
                 if reminder == '':
-                    await i.channel.send(f"Hey {i.user.mention}, what up, in fact!")
+                    await i.channel.send(f"Hey {i.user.mention}, what up, in fact!")  # type: ignore
                 else:
-                    await i.channel.send(f"Hey {i.user.mention}, what up, in fact! This is your Betty alarm for '{reminder}', I suppose!")
+                    await i.channel.send(f"Hey {i.user.mention}, what up, in fact! This is your Betty alarm for '{reminder}', I suppose!")  # type: ignore
                 return
             await i.response.send_message(embed=embed)
         except Exception as e:
@@ -169,8 +172,8 @@ class Timer(commands.Cog):
         if not self.is_synced:
             await self.sync()
         return [
-            app_commands.Choice(name=city, value=city)
-            for city in self.cities_list if current.lower() in city.lower()
+            app_commands.Choice(name=city, value=city)  # type: ignore
+            for city in self.cities_list if current.lower() in city.lower()  # type: ignore
         ][:25]
 
     
@@ -184,21 +187,21 @@ class Timer(commands.Cog):
             i (discord.Interaction): the interaction that invokes this coroutine
             city (str): city or the timezone to look up
         """
-        session = self.bot.session
+        session: ClientSession = self.bot.session  # type: ignore
         async with session.get(self.base_url+city) as r:
             if r.status == 200:
                 response = await r.read()
                 time_json = json.loads(response)
             else:
                 print("timeapi down!")
-        date = time_json['date'].split('/')
+        date = time_json['date'].split('/')  # type: ignore
         date[0], date[1] = date[1], date[0]
-        month = self.months[int(date[1])-1]
-        day = date[0]
-        year = date[2]
-        date = "/".join(date)
-        time = time_json['time'] + " - " + date + " - " + time_json['dayOfWeek']
-        time = time_json['dayOfWeek'] + ", " + month + " " + day + ", " + year + " " + time_json['time']
+        month = self.months[int(date[1])-1]  # type: ignore
+        day = date[0]  # type: ignore
+        year = date[2]  # type: ignore
+        date = "/".join(date)  # type: ignore
+        time = time_json['time'] + " - " + date + " - " + time_json['dayOfWeek']  # type: ignore
+        time = time_json['dayOfWeek'] + ", " + month + " " + day + ", " + year + " " + time_json['time']  # type: ignore
         desc = f"It's {time} in {city}, I suppose!"
         embed = discord.Embed(
             color=discord.Colour.random(),

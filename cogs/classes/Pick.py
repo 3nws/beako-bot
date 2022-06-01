@@ -6,12 +6,12 @@ from ast import literal_eval
 from discord import ui
 from commands.db.classes.MangaDex import MangaDex
 from discord.ext.commands import Bot
-from typing import Tuple, Dict, Any, List
+from typing import Tuple, Dict, Any, List, Optional
 from commands.db.classes.MangaDex import Chapter
 
 class PickView(ui.View):
     
-    def __init__(self, i: discord.Interaction, channels: Collection[Any], info: Tuple[str, str], bot: Bot):
+    def __init__(self, i: discord.Interaction, channels: Collection[Any], info: Tuple[List[str], List[str]], bot: Bot):
         super().__init__(timeout=60)
         self.i = i
         self.channels = channels
@@ -35,22 +35,22 @@ class PickView(ui.View):
         return interaction.user == self.i.user  # type: ignore
     
     async def find_one(self):
-        channel_exist: Dict[str, str] = await self.channels.find_one(
+        channel_exist: Dict[str, str] = await self.channels.find_one(  # type: ignore
                         {
-                        "channel_id": self.i.channel_id,
-                        "guild_id": self.i.guild.id,
+                        "channel_id": self.i.channel_id,  # type: ignore
+                        "guild_id": self.i.guild.id,  # type: ignore
                         }
                     )
         if not channel_exist:
-            channel_exist: Dict[str, str] = await self.channels.insert_one({
-                'channel_id': self.i.channel_id,
-                "guild_id": self.i.guild.id,
+            channel_exist: Dict[str, str] = await self.channels.insert_one({  # type: ignore
+                'channel_id': self.i.channel_id,  # type: ignore
+                "guild_id": self.i.guild.id,  # type: ignore
                 'mangas': '{}',
             })
-            channel_exist: Dict[str, str] = await self.channels.find_one(
+            channel_exist: Dict[str, str] = await self.channels.find_one(  # type: ignore
                         {
-                        "channel_id": self.i.channel_id,
-                        "guild_id": self.i.guild.id,
+                        "channel_id": self.i.channel_id,  # type: ignore
+                        "guild_id": self.i.guild.id,  # type: ignore
                         }
                     )
         return literal_eval(channel_exist['mangas'])
@@ -61,14 +61,14 @@ class PickView(ui.View):
         manga_ids = self.info[1]
         if self.i.command.name == "add":  # type: ignore
             if manga_ids[choice] not in res:
-                chapter_response: Chapter = await self.md.get_latest(manga_ids[choice])
-                title_response = chapter_response.get_title()
+                chapter_response: Optional[Chapter] = await self.md.get_latest(manga_ids[choice])
+                title_response = chapter_response.get_title()  # type: ignore
                 latest = title_response[0]
                 res.update({f"{manga_ids[choice]}": str(latest)})
-                await self.channels.find_one_and_update(
+                await self.channels.find_one_and_update(  # type: ignore
                     {
-                        'channel_id': self.i.channel_id,
-                        "guild_id": self.i.guild.id,
+                        'channel_id': self.i.channel_id,  # type: ignore
+                        "guild_id": self.i.guild.id,  # type: ignore
                         },
                     {
                         '$set': {
@@ -80,7 +80,7 @@ class PickView(ui.View):
         else:
             if manga_ids[choice] in res:
                 res.pop(manga_ids[choice])
-                await self.channels.find_one_and_update(
+                await self.channels.find_one_and_update(  # type: ignore
                     {
                         'channel_id': self.i.channel_id,  # type: ignore
                         "guild_id": self.i.guild.id,  # type: ignore
