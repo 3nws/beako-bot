@@ -10,6 +10,7 @@ from dotenv import load_dotenv  # type: ignore
 from pysaucenao import SauceNao, PixivSource, TwitterSource  # type: ignore
 from pysaucenao.containers import SauceNaoResults
 from typing import Optional, Any, Dict, List
+from typing_extensions import Self
 
 
 load_dotenv()
@@ -248,8 +249,8 @@ class Util(commands.Cog):
         members_first_choice: List[int] = []
         members_second_choice: List[int] = []
         if anonymous:
-            button_one: discord.ui.Button[Any] = discord.ui.Button(emoji="1️⃣", style=discord.ButtonStyle.blurple, custom_id="one")
-            button_two: discord.ui.Button[Any] = discord.ui.Button(emoji="2️⃣", style=discord.ButtonStyle.blurple, custom_id="two")
+            button_one: discord.ui.Button[Self] = discord.ui.Button(emoji="1️⃣", style=discord.ButtonStyle.blurple, custom_id="one")
+            button_two: discord.ui.Button[Self] = discord.ui.Button(emoji="2️⃣", style=discord.ButtonStyle.blurple, custom_id="two")
             
             async def callback(interaction: discord.Interaction):
                 choice: str = interaction.data['custom_id']  # type: ignore

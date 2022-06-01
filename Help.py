@@ -3,9 +3,7 @@ import discord
 from Help_Messages import messages
 from discord.ui import View
 from discord.ext import commands
-from typing import TypeVar
 
-T = TypeVar("T", bound="View", covariant=True)
 
 track_cmds = ["add", "remove", "manga", "last"]
 admin_cmds = ["kick", "ban", "unban", "clean", "purge"]
@@ -39,8 +37,15 @@ modes = [
     util_cmds,
     warframe_cmds
 ]
+  
+
+class PersistentViewHelp(View):
+    def __init__(self, mode: str, bot: commands.Bot):
+        super().__init__(timeout=None)
+        self.add_item(Dropdown(mode, bot))
+
         
-class Dropdown(discord.ui.Select[T]):
+class Dropdown(discord.ui.Select[PersistentViewHelp]):
     def __init__(self, mode: str, bot: commands.Bot):
         cmd_options = [
             discord.SelectOption(value="0", label="Series tracking", emoji="<a:_:459105999618572308>"),
@@ -73,12 +78,6 @@ class Dropdown(discord.ui.Select[T]):
         )
         new_embed.set_thumbnail(url=self.bot.user.avatar.url)  # type: ignore
         await interaction.response.edit_message(embed=new_embed)
-
-class PersistentViewHelp(View):
-    def __init__(self, mode: str, bot: commands.Bot):
-        super().__init__(timeout=None)
-        self.add_item(Dropdown(mode, bot))
-
 
 class Help:
     def __init__(self, bot: commands.Bot):

@@ -5,7 +5,8 @@ from discord.ext import commands
 from discord import app_commands
 from cogs.classes.OsuAPI import OsuAPI
 from OsuMods import num_to_mod
-from typing import Dict, Optional, Any
+from typing import Dict, Optional
+from typing_extensions import Self
 
 
 class Osu(commands.Cog):
@@ -46,7 +47,7 @@ class Osu(commands.Cog):
                 )
                 embed.set_thumbnail(url=player['avatar_url'])
                 
-            select: Select[Any] = Select(options=self.osu.game_mode_options,
+            select: Select[Self] = Select(options=self.osu.game_mode_options,
                             placeholder="Select a game mode.",
                             custom_id="persistent_view:osu")
 
@@ -129,7 +130,7 @@ class Osu(commands.Cog):
                 )
                 embed.set_thumbnail(url=player['avatar_url'])
 
-            select: Select[Any] = Select(options=self.osu.game_mode_options,
+            select: Select[Self] = Select(options=self.osu.game_mode_options,
                             placeholder="Select a game mode.",
                             custom_id="persistent_view:recent")
 
@@ -240,7 +241,7 @@ class Osu(commands.Cog):
                 )
                 embed.set_thumbnail(url=player['avatar_url'])
 
-            select: Select[Any] = Select(options=self.osu.game_mode_options,
+            select: Select[Self] = Select(options=self.osu.game_mode_options,
                             placeholder="Select a game mode.",
                             custom_id="persistent_view:best")
 

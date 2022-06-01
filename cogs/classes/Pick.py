@@ -8,6 +8,7 @@ from commands.db.classes.MangaDex import MangaDex
 from discord.ext.commands import Bot
 from typing import Tuple, Dict, Any, List, Optional
 from commands.db.classes.MangaDex import Chapter
+from typing_extensions import Self
 
 class PickView(ui.View):
     
@@ -96,27 +97,27 @@ class PickView(ui.View):
             
         
     @ui.button(emoji='1️⃣', style=discord.ButtonStyle.blurple)
-    async def opt_one(self, interaction: discord.Interaction, button: discord.ui.Button[Any]):
+    async def opt_one(self, interaction: discord.Interaction, button: discord.ui.Button[Self]):
         await interaction.response.defer()
         await self.update(0)
         
     @ui.button(emoji='2️⃣', style=discord.ButtonStyle.blurple)
-    async def opt_two(self, interaction: discord.Interaction, button: discord.ui.Button[Any]):
+    async def opt_two(self, interaction: discord.Interaction, button: discord.ui.Button[Self]):
         await interaction.response.defer()
         await self.update(1)
         
     @ui.button(emoji='3️⃣', style=discord.ButtonStyle.blurple)
-    async def opt_three(self, interaction: discord.Interaction, button: discord.ui.Button[Any]):
+    async def opt_three(self, interaction: discord.Interaction, button: discord.ui.Button[Self]):
         await interaction.response.defer()
         await self.update(2)
         
     @ui.button(emoji='4️⃣', style=discord.ButtonStyle.blurple)
-    async def opt_four(self, interaction: discord.Interaction, button: discord.ui.Button[Any]):
+    async def opt_four(self, interaction: discord.Interaction, button: discord.ui.Button[Self]):
         await interaction.response.defer()
         await self.update(3)
         
     @ui.button(emoji='5️⃣', style=discord.ButtonStyle.blurple)
-    async def opt_five(self, interaction: discord.Interaction, button: discord.ui.Button[Any]):
+    async def opt_five(self, interaction: discord.Interaction, button: discord.ui.Button[Self]):
         await interaction.response.defer()
         await self.update(4)
         
