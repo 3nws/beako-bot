@@ -39,7 +39,7 @@ class MangaDex:
                          
     async def search(self, query: str, limit: str) -> Optional[List[Any]]:
         url = self.base_manga_url + \
-            f'?limit={limit}&title={query}&availableTranslatedLanguage%5B%5D=en'
+            f'?limit={limit}&title={query}&availableTranslatedLanguage%5B%5D=en&order%5Btitle%5D=asc'
 
         session: ClientSession = self.bot.session  # type: ignore
         async with session.get(url) as res:
