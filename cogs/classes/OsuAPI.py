@@ -1,21 +1,18 @@
 import discord
 import os
-import aiohttp
-import asyncio
 import json
 
-from discord.ui import View, Select
 from discord.ext import commands
-from dotenv import load_dotenv
-from OsuMods import num_to_mod
-from typing import List, Dict
+from dotenv import load_dotenv  # type: ignore
+from typing import List, Dict, Optional
+from aiohttp import ClientSession
 
 load_dotenv()
 
 
 class OsuAPI:
     def __init__(self, bot: commands.Bot):
-        self.API_KEY: str = os.getenv("OSU_API_KEY")
+        self.API_KEY: Optional[str] = os.getenv("OSU_API_KEY")
         self.bot: commands.Bot = bot
         self.base_url: str = "https://osu.ppy.sh/api/"
         self.base_image_url: str = "http://s.ppy.sh/a/"
@@ -23,10 +20,10 @@ class OsuAPI:
         self.base_profile_url: str = "https://osu.ppy.sh/users/"
         self.base_beatmap_set_url: str = "https://osu.ppy.sh/beatmapsets/"
         self.game_mode_options: List[discord.SelectOption] = [
-            discord.SelectOption(value=0, label="osu!"),
-            discord.SelectOption(value=1, label="osu!taiko"),
-            discord.SelectOption(value=2, label="osu!catch"),
-            discord.SelectOption(value=3, label="osu!mania"),
+            discord.SelectOption(value="0", label="osu!"),
+            discord.SelectOption(value="1", label="osu!taiko"),
+            discord.SelectOption(value="2", label="osu!catch"),
+            discord.SelectOption(value="3", label="osu!mania"),
         ]
         self.game_modes: Dict[str, str] = {
             "0": "osu!",
@@ -41,9 +38,9 @@ class OsuAPI:
             "3": "mania",
         }
 
-    async def get_user(self, username: str, mode: str):
+    async def get_user(self, username: str, mode: str) -> Optional[Dict[str, str]]:
         url = f"{self.base_url}get_user{self.key_query}&u={username}&m={mode}"
-        session = self.bot.session
+        session: ClientSession = self.bot.session  # type: ignore
         async with session.get(url) as r:
             if r.status == 200:
                 response = await r.read()
@@ -68,7 +65,7 @@ class OsuAPI:
 
     async def _get_beatmap(self, id: str):
         url = f"{self.base_url}get_beatmaps{self.key_query}&b={id}"
-        session = self.bot.session
+        session: ClientSession = self.bot.session  # type: ignore
         async with session.get(url) as r:
             if r.status == 200:
                 response = await r.read()
@@ -80,7 +77,7 @@ class OsuAPI:
 
     async def get_user_recent(self, username: str, mode: str, limit: str):
         url = f"{self.base_url}get_user_recent{self.key_query}&u={username}&m={mode}&limit={limit}"
-        session = self.bot.session
+        session: ClientSession = self.bot.session  # type: ignore
         async with session.get(url) as r:
             if r.status == 200:
                 response = await r.read()
@@ -95,7 +92,7 @@ class OsuAPI:
 
     async def get_best(self, username: str, mode: str, limit: str):
         url = f"{self.base_url}get_user_best{self.key_query}&u={username}&m={mode}&limit={limit}"
-        session = self.bot.session
+        session: ClientSession = self.bot.session  # type: ignore
         async with session.get(url) as r:
             if r.status == 200:
                 response = await r.read()

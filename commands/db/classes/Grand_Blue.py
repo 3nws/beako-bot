@@ -1,20 +1,21 @@
-import aiohttp
-import html5lib
+import html5lib  # type: ignore
 
 from bs4 import BeautifulSoup
-
+from typing import Tuple, Union, Any, Optional
+from aiohttp import ClientSession
+from discord.ext.commands import Bot
 from commands.db.classes.Scrape_Series import Scrape_Series
 
 
 class Grand_Blue(Scrape_Series):
-    def __init__(self, url, bot):
+    def __init__(self, url: str, bot: Bot):
         self.url = url
         self.bot = bot
 
-    async def scrape(self):
+    async def scrape(self) -> Union[Tuple[str, str], Any]:
         try:
             # web scraping for grand-blue mangareader
-            session = self.bot.session
+            session: ClientSession = self.bot.session  # type: ignore
             async with session.get(self.url) as r:
                 if r.status == 200:
                     page = await r.read()
@@ -28,7 +29,7 @@ class Grand_Blue(Scrape_Series):
                 "li", "item reading-item chapter-item")[0]
 
             chapter_link = most_recent_chapter.find("a")
-
+            chapter_anchor = ""
             if "href" in chapter_link.attrs:
                 chapter_anchor = "https://mangareader.to"
                 chapter_anchor += chapter_link.get("href")
@@ -40,7 +41,7 @@ class Grand_Blue(Scrape_Series):
         except Exception as e:
             print(e)
 
-    async def latest_chapter(self):
+    async def latest_chapter(self) -> Optional[str]:
         try:
             scrape_results = await self.scrape()
             title = scrape_results[0]

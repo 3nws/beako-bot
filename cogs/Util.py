@@ -1,17 +1,16 @@
 import discord
 import asyncio
 import os
-import aiohttp
 import json
 
-from datetime import datetime
 from discord.ext import commands
 from discord import app_commands
-from dotenv import load_dotenv
-from pysaucenao import SauceNao, PixivSource, GenericSource
+from aiohttp import ClientSession
+from dotenv import load_dotenv  # type: ignore
+from pysaucenao import SauceNao, PixivSource, TwitterSource  # type: ignore
+from pysaucenao.containers import SauceNaoResults
+from typing import Optional, Any, Dict
 
-# no idea why but I can't import TwitterSource class on the line above
-import pysaucenao
 
 load_dotenv()
 
@@ -19,12 +18,11 @@ load_dotenv()
 class Util(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.TwitterSource = pysaucenao.containers.TwitterSource
         self.saucenao_api_key = os.getenv('SAUCENAO_API_KEY')
         self.TOKEN = os.getenv('TOKEN')
 
         # add 'db' parameter for specific databases
-        self.saucenao = SauceNao(api_key=self.saucenao_api_key)
+        self.saucenao: SauceNao = SauceNao(api_key=self.saucenao_api_key)
 
 
     @app_commands.command(name="series")
@@ -49,13 +47,13 @@ class Util(commands.Cog):
         for s in series:
             desc += f"**{counter}.** {s}\n"
             counter += 1
-        frame.description = desc
+        frame.description = desc  # type: ignore
         await i.response.send_message(embed=frame)
 
 
     @app_commands.command(name="avatar")
     @app_commands.describe(member="The member you want to ~~steal~~borrow their avatar from, in fact!")
-    async def avatar(self, i: discord.Interaction, member: discord.Member = None):
+    async def avatar(self, i: discord.Interaction, member: Optional[discord.Member]):
         """Get a member's avatar.
 
         Args:
@@ -67,19 +65,19 @@ class Util(commands.Cog):
         )
         if member:
             avatar_frame.add_field(name=str(
-                i.user) + " requested", value=member.mention + "'s avatar, I suppose!")
-            avatar_frame.set_image(url=f'{member.avatar.url}')
+                i.user) + " requested", value=member.mention + "'s avatar, I suppose!")  # type: ignore
+            avatar_frame.set_image(url=f'{member.avatar.url}')  # type: ignore
         else:
             avatar_frame.add_field(
-                name=str(i.user) + " requested", value=" their own avatar, I suppose!")
-            avatar_frame.set_image(url=f'{i.user.avatar.url}')
+                name=str(i.user) + " requested", value=" their own avatar, I suppose!")  # type: ignore
+            avatar_frame.set_image(url=f'{i.user.avatar.url}')  # type: ignore
 
         await i.response.send_message(embed=avatar_frame)
         
 
     @app_commands.command(name="savatar")
     @app_commands.describe(member="The member you want to ~~steal~~borrow their server specific avatar from, in fact!")
-    async def server_avatar(self, i: discord.Interaction, member: discord.Member = None):
+    async def server_avatar(self, i: discord.Interaction, member: Optional[discord.Member]) -> Any:
         """Get the member's server specific avatar.
 
         Args:
@@ -94,23 +92,23 @@ class Util(commands.Cog):
         )
         if member:
             if member.display_avatar is None:
-                return await self.avatar(i, member)
+                return await self.avatar(i, member)  # type: ignore
             avatar_frame.add_field(name=str(
-                i.user) + " requested", value=member.mention + "'s server avatar, I suppose!")
+                i.user) + " requested", value=member.mention + "'s server avatar, I suppose!")  # type: ignore
             avatar_frame.set_image(url=f'{member.display_avatar.url}')
         else:
-            if i.user.display_avatar is None:
-                return await self.avatar(i, member)
+            if i.user.display_avatar is None:  # type: ignore
+                return await self.avatar(i, member)  # type: ignore
             avatar_frame.add_field(
-                name=str(i.user) + " requested", value=" their own server avatar, I suppose!")
-            avatar_frame.set_image(url=f'{i.user.display_avatar.url}')
+                name=str(i.user) + " requested", value=" their own server avatar, I suppose!")  # type: ignore
+            avatar_frame.set_image(url=f'{i.user.display_avatar.url}')  # type: ignore
 
         await i.response.send_message(embed=avatar_frame)
 
 
     @app_commands.command(name="banner")
     @app_commands.describe(member="The member you want to ~~steal~~borrow their banner from, in fact!")
-    async def banner(self, i: discord.Interaction, member: discord.Member = None):
+    async def banner(self, i: discord.Interaction, member: Optional[discord.Member]):
         """Get the member's banner.
 
         Args:
@@ -121,11 +119,11 @@ class Util(commands.Cog):
             color=discord.Colour.random()
         )
         image_size = '?size=1024'
-        member = i.user if not member else member
+        member = i.user if not member else member  # type: ignore
         base_url = 'https://discord.com/api'
-        users_endpoint = f'/users/{member.id}'
+        users_endpoint = f'/users/{member.id}'  # type: ignore
         headers = {'Authorization': f'Bot {self.TOKEN}'}
-        session = self.bot.session
+        session: ClientSession = self.bot.session  # type: ignore
         async with session.get(f'{base_url}{users_endpoint}', headers=headers) as r:
             if r.status == 200:
                 response = await r.read()
@@ -140,19 +138,19 @@ class Util(commands.Cog):
         else:
             file_extension = 'png'
         image_base_url = 'https://cdn.discordapp.com/'
-        banners_endpoint = f'banners/{member.id}/{banner_hash}.{file_extension}'
+        banners_endpoint = f'banners/{member.id}/{banner_hash}.{file_extension}'  # type: ignore
         r = f'{image_base_url}{banners_endpoint}{image_size}'
 
         if f'None.{file_extension}' in r:
             embed.add_field(name=str(
-                i.user) + " requested", value=member.mention + "'s banner, I suppose! Shame they don't have any, in fact!")
-        elif member != i.user:
+                i.user) + " requested", value=member.mention + "'s banner, I suppose! Shame they don't have any, in fact!")  # type: ignore
+        elif member != i.user:  # type: ignore
             embed.add_field(name=str(
-                i.user) + " requested", value=member.mention + "'s banner, I suppose!")
+                i.user) + " requested", value=member.mention + "'s banner, I suppose!")  # type: ignore
             embed.set_image(url=f'{r}')
         else:
             embed.add_field(
-                name=str(i.user) + " requested", value=" their own banner, I suppose!")
+                name=str(i.user) + " requested", value=" their own banner, I suppose!")  # type: ignore
             embed.set_image(url=f'{r}')
 
         await i.response.send_message(embed=embed)
@@ -172,32 +170,32 @@ class Util(commands.Cog):
             sauce_frame = discord.Embed(
                 color=discord.Colour.random()
             )
-            results = await self.saucenao.from_url(url)
+            results: SauceNaoResults = await self.saucenao.from_url(url)  # type: ignore
             pixiv_result = ""
             twitter_result = ""
-            for result in results:
+            for result in results:  # type: ignore
                 if isinstance(result, PixivSource):
-                    pixiv_result = result
-                elif isinstance(result, self.TwitterSource):
-                    twitter_result = result
+                    pixiv_result = result  # type: ignore
+                elif isinstance(result, TwitterSource):  # type: ignore
+                    twitter_result = result  # type: ignore
             if pixiv_result != "" and twitter_result != "":
-                sauce_frame.add_field(name=f"{pixiv_result.title} by {pixiv_result.author_name} with {str(pixiv_result.similarity)} similarity",
-                                      value=f"on [Pixiv]({pixiv_result.source_url}),\non [Twitter]({twitter_result.source_url})")
-                sauce_frame.set_thumbnail(url=pixiv_result.thumbnail)
+                sauce_frame.add_field(name=f"{pixiv_result.title} by {pixiv_result.author_name} with {str(pixiv_result.similarity)} similarity",  # type: ignore
+                                      value=f"on [Pixiv]({pixiv_result.source_url}),\non [Twitter]({twitter_result.source_url})")  # type: ignore
+                sauce_frame.set_thumbnail(url=pixiv_result.thumbnail)  # type: ignore
             elif pixiv_result == "" and twitter_result == "":
                 sauce_frame = discord.Embed(
                     title="No results!", description=f"I couldn't find that on pixiv or twitter, I suppose!")
             elif twitter_result == "":
-                sauce_frame.add_field(name=f"{pixiv_result.title} by {pixiv_result.author_name} with {str(pixiv_result.similarity)} similarity",
-                                      value=f"on [Pixiv]({pixiv_result.source_url})")
-                sauce_frame.set_thumbnail(url=pixiv_result.thumbnail)
+                sauce_frame.add_field(name=f"{pixiv_result.title} by {pixiv_result.author_name} with {str(pixiv_result.similarity)} similarity",  # type: ignore
+                                      value=f"on [Pixiv]({pixiv_result.source_url})")  # type: ignore
+                sauce_frame.set_thumbnail(url=pixiv_result.thumbnail)  # type: ignore
             else:
-                sauce_frame.add_field(name=f"Image posted by {twitter_result.author_name} with {str(twitter_result.similarity)} similarity",
-                                      value=f"on [Twitter]({twitter_result.source_url})")
-                sauce_frame.set_thumbnail(url=twitter_result.thumbnail)
+                sauce_frame.add_field(name=f"Image posted by {twitter_result.author_name} with {str(twitter_result.similarity)} similarity",  # type: ignore
+                                      value=f"on [Twitter]({twitter_result.source_url})")  # type: ignore
+                sauce_frame.set_thumbnail(url=twitter_result.thumbnail)  # type: ignore
 
             sauce_frame.set_footer(
-                text=f"on {str(i.user)}'s request, I suppose!", icon_url=i.user.avatar.url)
+                text=f"on {str(i.user)}'s request, I suppose!", icon_url=i.user.avatar.url)  # type: ignore
 
             await i.response.send_message(embed=sauce_frame)
         except BaseException:
@@ -206,7 +204,7 @@ class Util(commands.Cog):
 
     @sauce_group.command(name="url")
     @app_commands.describe(url="The url of the image you want to find the source of, in fact!")
-    async def reverse_image_search(self, i: discord.Interaction, url: str):
+    async def reverse_image_search_w_url(self, i: discord.Interaction, url: str):
         """Find the source of the image by url.
 
         Args:
@@ -218,14 +216,14 @@ class Util(commands.Cog):
 
     @sauce_group.command(name="file")
     @app_commands.describe(file="The image file you want to find the source of, in fact!")
-    async def reverse_image_search(self, i: discord.Interaction, file: discord.Attachment):
+    async def reverse_image_search_w_file(self, i: discord.Interaction, file: discord.Attachment):
         """Find the source of the image by uploading it.
 
         Args:
             i (discord.Interaction): the interaction that invokes this coroutine
             file (discord.Attachment): image file
         """
-        await self.send_sauce(i, file.url)
+        await self.send_sauce(i, file.url)  # type: ignore
 
 
     @app_commands.command(name="poll")
@@ -246,9 +244,9 @@ class Util(commands.Cog):
         )
 
         embed.set_footer(
-            text=f"Poll created by {i.user.nick}", icon_url=i.user.avatar.url)
+            text=f"Poll created by {i.user.nick}", icon_url=i.user.avatar.url)  # type: ignore
 
-        msg = await i.channel.send(embed=embed)
+        msg: discord.Message = await i.channel.send(embed=embed)  # type: ignore
 
         emojis = ['1️⃣', '2️⃣']
 
@@ -259,9 +257,9 @@ class Util(commands.Cog):
         
         await asyncio.sleep(180)
 
-        message_1 = await i.channel.fetch_message(msg.id)
+        message_1: discord.Message = await i.channel.fetch_message(msg.id)  # type: ignore
 
-        reactions = {react.emoji: react.count for react in message_1.reactions}
+        reactions: Dict[Any, Any] = {react.emoji: react.count for react in message_1.reactions}  # type: ignore
 
         results = discord.Embed(
             title="Results",
@@ -270,9 +268,9 @@ class Util(commands.Cog):
         )
 
         results.set_footer(
-            text=f"For the poll '{question}'", icon_url=i.user.avatar.url)
+            text=f"For the poll '{question}'", icon_url=i.user.avatar.url)  # type: ignore
 
-        await i.channel.send(embed=results)
+        await i.channel.send(embed=results)  # type: ignore
 
 
 async def setup(bot: commands.Bot):

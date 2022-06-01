@@ -1,26 +1,24 @@
 import discord
-import random
-import os
-import aiohttp
 import json
 
 from discord.ext import commands
 from discord import app_commands
-from typing import List
+from aiohttp import ClientSession
+from typing import List, Any, Dict, Union
 
 
 class WarframeMarket(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.base_url = "https://api.warframe.market/v1"
-        self.items_list = {}
-        self.is_synced = False
-        self.image_url = "https://warframe.market/static/assets"
+        self.base_url: str = "https://api.warframe.market/v1"
+        self.items_list: List[Dict[str, str]] = []
+        self.is_synced: bool = False
+        self.image_url: str = "https://warframe.market/static/assets"
         
     async def sync(self):
         """Syncs the items information from WarframeMarket.
         """
-        session = self.bot.session
+        session: ClientSession = self.bot.session  # type: ignore
         async with session.get(self.base_url+"/items") as r:
             if r.status == 200:
                 response = await r.read()
@@ -31,7 +29,7 @@ class WarframeMarket(commands.Cog):
 
     @commands.command()
     @commands.is_owner()
-    async def sync_items(self, ctx):
+    async def sync_items(self, ctx: commands.Context[Any]):
         """Manual command to sync items.
 
         Args:
@@ -81,7 +79,7 @@ class WarframeMarket(commands.Cog):
             choices (app_commands.Choice[str]): buying or selling?
             item_name (str): item name to search for
         """
-        order_type = choices.value
+        order_type: str = choices.value  # type: ignore
         if not self.is_synced:
             await self.sync()
         item_info = None
@@ -90,26 +88,28 @@ class WarframeMarket(commands.Cog):
                 item_info = item
         if item_info is not None:
             url_name = item_info['url_name']
-            session = self.bot.session
+            session: ClientSession = self.bot.session  # type: ignore
+            item_detail: Dict[str, Any] = {}
             async with session.get(self.base_url+"/items/"+url_name) as r:
                 if r.status == 200:
                     response = await r.read()
                     item_detail = json.loads(response)['payload']['item']['items_in_set'][0]
                 else:
                     print("WarframeMarket down!")
-            trading_tax = item_detail['trading_tax'] if 'trading_tax' in item_detail.keys() else "No trading tax value"
-            ducats = item_detail['ducats'] if 'ducats' in item_detail.keys() else "No ducats value"
-            mastery_level = item_detail['mastery_level'] if 'mastery_level' in item_detail.keys() else "No mastery level"
-            item_description = item_detail['en']['description']
-            wikilink = item_detail['en']['wiki_link']
-            drop_list = item_detail['en']['drop']
-            desc = f"Requires mastery rank {mastery_level}\n"
+            trading_tax: str = item_detail['trading_tax'] if 'trading_tax' in item_detail.keys() else "No trading tax value"
+            ducats: str = item_detail['ducats'] if 'ducats' in item_detail.keys() else "No ducats value"
+            mastery_level: str = item_detail['mastery_level'] if 'mastery_level' in item_detail.keys() else "No mastery level"
+            item_description: str = item_detail['en']['description']
+            wikilink: str = item_detail['en']['wiki_link']
+            drop_list: List[Dict[str, str]] = item_detail['en']['drop']
+            desc: str = f"Requires mastery rank {mastery_level}\n"
             desc += f"Trading tax: {trading_tax}, Ducats value: {ducats}\n"
             desc += f"```{item_description}```\n"
             desc += f"Drops from " if len(drop_list)>0 else ""
             for i in range(len(drop_list)):
                 desc += drop_list[i]['name']+', ' if i < len(drop_list)-1 else drop_list[i]['name']
-            session = self.bot.session
+            session = self.bot.session  # type: ignore
+            orders_sorted: List[Dict[Union[Dict[str, Any], str], Any]] = []
             async with session.get(self.base_url+"/items/"+url_name+"/orders") as r:
                 if r.status == 200:
                     response = await r.read()
