@@ -94,6 +94,10 @@ class Bot(commands.Bot):
         self.add_view(PersistentViewHelp("0", self))
         
         await self.load_cogs()
+        
+    async def close(self):
+        await super().close()
+        await self.session.close()  # type: ignore
 
 
     def get_client(self) -> Any:
@@ -160,7 +164,7 @@ async def sync(ctx: commands.Context[Any], guilds: commands.Greedy[discord.Objec
             fmt += 1
 
     await ctx.send(f"Synced the tree to {fmt}/{len(guilds)} guilds.")
-
+  
 
 @bot.event
 async def on_ready():
