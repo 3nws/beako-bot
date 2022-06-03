@@ -12,7 +12,7 @@ from typing_extensions import Self
 
 class PickView(ui.View):
     
-    def __init__(self, i: discord.Interaction, channels: Collection[Any], info: Tuple[List[str], List[str]], bot: Bot):
+    def __init__(self, i: discord.Interaction, channels: Collection[Any], info: Tuple[List[str], List[str]], bot: Bot, embed: discord.Embed):
         super().__init__(timeout=60)
         self.i = i
         self.channels = channels
@@ -21,16 +21,21 @@ class PickView(ui.View):
         self.md: MangaDex = MangaDex(self.bot)
         self.info = info
         self.num_of_results: int = len(self.info[0])
-        self.__children: List[Item[Any]]
-        if self.num_of_results != len(self.__children):
-            for j in range(len(self.__children)-1, self.num_of_results-1, -1):
-                self.remove_item(self.__children[j])
+        self.embed = embed
+        if self.num_of_results != len(self.children):
+            for j in range(len(self.children)-1, self.num_of_results-1, -1):
+                self.remove_item(self.children[j])
         
+    def disabled(self):
+        for btn in self.children:  # type: ignore
+            btn.disabled = True  # type: ignore
+        return self
         
     async def on_timeout(self):
         self.stop()
-        await self.msg.edit(content=self.text, embed=self.embed, view=self.disabled())  # type: ignore
-        await self.msg.reply("This view just timed out, I suppose! You need to interact with it to keep it up, in fact!")  # type: ignore
+        await self.i.edit_original_message(embed=self.embed, view=self.disabled())  # type: ignore
+        msg = await self.i.original_message()
+        await msg.reply("This view just timed out, I suppose! You need to interact with it to keep it up, in fact!")  # type: ignore
         
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         return interaction.user == self.i.user  # type: ignore

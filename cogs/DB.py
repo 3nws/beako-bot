@@ -480,7 +480,7 @@ class DB(commands.Cog):
             manga_ids = msg[3]
             msg = msg[1]
             manga_infos = (titles, manga_ids)
-            await i.response.send_message("Pick a series to follow, I suppose!", embed=msg, view=PickView(i, self.channels_md, manga_infos, self.bot))
+            await i.response.send_message("Pick a series to follow, I suppose!", embed=msg, view=PickView(i, self.channels_md, manga_infos, self.bot, msg))
         else:
             await i.response.send_message(msg)
 
@@ -574,7 +574,7 @@ class DB(commands.Cog):
             titles = msg[2]  # type: ignore
             msg = msg[0]
             manga_infos: Tuple[List[str], List[str]] = (titles, manga_ids)
-            await i.response.send_message("Pick a series to follow, I suppose!", embed=msg, view=PickView(i, self.channels_md, manga_infos, self.bot))  # type: ignore
+            await i.response.send_message("Pick a series to follow, I suppose!", embed=msg, view=PickView(i, self.channels_md, manga_infos, self.bot, msg))  # type: ignore
         else:
             await i.response.send_message(msg)
         
