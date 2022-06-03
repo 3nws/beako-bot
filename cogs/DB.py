@@ -39,7 +39,7 @@ class DB(commands.Cog):
         # flip image urls db
         db_flips = self.client.flips  # type: ignore
         # flip image urls data
-        self.flips = db_flips.data  # type: ignore
+        self.flips_col = db_flips.data  # type: ignore
         
         # avatars url db
         self.db_avatars = self.client.avatars.data  # type: ignore
@@ -83,7 +83,8 @@ class DB(commands.Cog):
             "grand-blue-dreaming": "gb"
         }
         
-        
+        self.flips: List[Dict[str, str]] = []
+        self.avatar_urls: List[str] = []
         self.mangas_list = {}
         
         self.tasks_change_avatar.start()  # type: ignore
@@ -94,6 +95,10 @@ class DB(commands.Cog):
         self.tasks_filter_channels.start()  # type: ignore
         self.tasks_check_chapter.start()  # type: ignore
 
+    async def cog_load(self) -> None:
+        await super().cog_load()
+        self.flips = [flip async for flip in self.flips_col.find()]  # type: ignore
+        
         
     @app_commands.command(name="flip")
     async def commands_flip(self, i: discord.Interaction):
@@ -102,9 +107,9 @@ class DB(commands.Cog):
         Args:
             i (discord.Interaction): the interaction that invokes this coroutine
         """
-        pipe = [{"$sample": {"size": 1}}]
-        flip: List[str] = [f async for f in self.flips.aggregate(pipe)][0]["url"]  # type: ignore
-        await i.response.send_message(flip)
+        flip_dict: Dict[str, str] = random.choice(self.flips)
+        flip_url: str = flip_dict.get('url', '')
+        await i.response.send_message(flip_url)
     
     
     async def send_messages(self, channels: Collection[Any], title: str, data: Collection[Any], db_rec: Dict[str, str], anchor: str):
@@ -574,29 +579,30 @@ class DB(commands.Cog):
             await i.response.send_message(msg)
         
     
-    @tasks.loop(hours=24)  # type: ignore
+    @tasks.loop(hours=12)  # type: ignore
     async def tasks_change_avatar(self):
         """Task that changes the bot's avatar once a day.
         """
         try:
             async for image_record in self.db_avatars.find():  # type: ignore
                 url: str = image_record["url"]
-                file_name = os.path.join(
-                    os.path.join(os.getcwd(), "avatars"), url.split("/")[-1]  # type: ignore
-                )
-                res = requests.get(url, stream=True)
+                if url not in self.avatar_urls:
+                    self.avatar_urls.append(url)
+                    file_name = os.path.join(
+                        os.path.join(os.getcwd(), "avatars"), url.split("/")[-1]  # type: ignore
+                    )
+                    res = requests.get(url, stream=True)
 
-                if res.status_code == 200:
-                    file_exists = os.path.exists(file_name)
-                    if not file_exists:
-                        with open(file_name, "wb") as f:
-                            shutil.copyfileobj(res.raw, f)
-                        print("Image successfully downloaded: ", file_name)
+                    if res.status_code == 200:
+                        file_exists = os.path.exists(file_name)
+                        if not file_exists:
+                            with open(file_name, "wb") as f:
+                                shutil.copyfileobj(res.raw, f)
+                            print("Image successfully downloaded: ", file_name)
+                        else:
+                            print("This image already exists!")
                     else:
-                        print("This image already exists!")
-                else:
-                    print("Image Couldn't be retrieved")
-
+                        print("Image Couldn't be retrieved")
             with open(self.select_random_image_path(), "rb") as file:
                 print(file)
                 new_avatar = file.read()
