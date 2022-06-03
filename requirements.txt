@@ -1,5 +1,6 @@
 aiohttp==3.7.4.post0
 aiohttp-proxy==0.1.2
+aiofiles==0.8.0
 async-timeout==3.0.1
 async_google_trans_new==1.4.5
 attrs==21.4.0
@@ -21,3 +22,4 @@ soupsieve==2.3.2
 typing_extensions==4.1.1
 urllib3==1.24.3
 yarl==1.7.2
+Wand==0.6.7

@@ -11,6 +11,7 @@ from pysaucenao import SauceNao, PixivSource, TwitterSource  # type: ignore
 from pysaucenao.containers import SauceNaoResults
 from typing import Optional, Any, Dict, List
 from typing_extensions import Self
+from .classes.FilterView import FilterView 
 
 
 load_dotenv()
@@ -73,7 +74,10 @@ class Util(commands.Cog):
                 name=str(i.user) + " requested", value=" their own avatar, I suppose!")  # type: ignore
             avatar_frame.set_image(url=f'{i.user.avatar.url}')  # type: ignore
 
-        await i.response.send_message(embed=avatar_frame)
+
+        if i.user.avatar.is_animated():
+            return await i.response.send_message(embed=avatar_frame)
+        await i.response.send_message(embed=avatar_frame, view=FilterView(i, avatar_frame, self.bot))
         
 
     @app_commands.command(name="savatar")
