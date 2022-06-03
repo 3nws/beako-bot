@@ -33,7 +33,8 @@ messages = {
                  \n-sauce\
                  \n-rps, in fact!```",
 
-        'avatar': "```Betty will send a member's(author's if no member is passed) avatar to the text channel, in fact!```",
+        'avatar': "```Betty will send a member's(author's if no member is passed) avatar to the text channel, in fact!\
+                   \nStatic avatars will include filters, I suppose!```",
 
         'savatar': "```Betty will send a member's(author's if no member is passed) server avatar to the text channel, in fact!```",
 
