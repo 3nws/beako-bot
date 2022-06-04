@@ -28,6 +28,14 @@ class WarframeMarket(commands.Cog):
             else:
                 print("WarframeMarket down!")
 
+
+    async def cog_load(self) -> None:
+        try:
+            await self.sync()
+        except Exception as e:
+            print(e)
+
+
     @commands.command()
     @commands.is_owner()
     async def sync_items(self, ctx: commands.Context[Bot]):
