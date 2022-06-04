@@ -1,8 +1,10 @@
 import discord
 import random
+import json
 
 from discord.ext import commands
 from discord import app_commands
+from aiohttp import ClientSession
 from typing import List, Optional
 from Bot import Bot
 
@@ -11,6 +13,29 @@ class Fun(commands.Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
         self.determine_flip = [1, 0]
+        self.normal_API: str = "https://normal-api.tk/image-search?redirect=false&query="
+
+
+    @app_commands.command(name="imagesearch")
+    @app_commands.describe(query="What the image is going to be about, in fact!")
+    async def image_api(self, i: discord.Interaction, *, query: str):
+        """I'll send you an image. What it contains? IDK.
+
+        Args:
+            i (discord.Interaction): the interaction that invokes this coroutine
+            query (str): the phrase to look for. Defaults to "".
+        """
+        await i.response.defer()
+        session: ClientSession = self.bot.session  # type: ignore
+        async with session.get(self.normal_API+query) as r:
+            if r.status == 200:
+                response = await r.read()
+                image: str = json.loads(response)['image']
+                embed = discord.Embed(colour=discord.Colour.random())
+                embed.set_image(url=image)
+                await i.followup.send(embed=embed)
+            else:
+                print("NormalAPI down!")
 
 
     @app_commands.command(name="say")

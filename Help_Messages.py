@@ -70,6 +70,9 @@ messages = {
 
         'osu recent': "```Betty will tell you a player's 5 most recent plays, I suppose!\
                     \nThe format for this is 'osu recent player', in fact!```",
+                    
+        'imagesearch': "```Betty will look for an image on what you want, in fact!\
+                        \nNo getting angry if it doesn't match your taste, I suppose!```",
 
         'alarm': "```Betty will set an alarm for you, I suppose!\
                    \nThe format for this is 'alarm time reason'\

@@ -58,6 +58,7 @@ I use [pysaucenao](https://github.com/FujiMakoto/pysaucenao) for reverse image s
 - `/rps choice` (has choices) (play rock-paper-scissors with Betty)
 - `/roll x` (rolls a random number between 1 and x(100 if no argument is passed))
 - `/say message` (make the bot say something)
+- `/imagesearch query` (look for an image using [the normal api](https://normal-api.tk/))
 
 ## Gif commands
 
