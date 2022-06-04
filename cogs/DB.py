@@ -408,10 +408,7 @@ class DB(commands.Cog):
             query (str): query that will be sent to the api
         """
         session: ClientSession = self.bot.session  # type: ignore
-        async with session.get(f"https://api.mangadex.org/manga?limit=25&title={query}&\
-            includedTagsMode=AND&excludedTagsMode=OR&availableTranslatedLanguage%5B%5D=en&\
-            contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&\
-            order%5BlatestUploadedChapter%5D=desc") as r:
+        async with session.get(f"https://api.mangadex.org/manga?limit=25&title={query}&availableTranslatedLanguage%5B%5D=en&order%5BlatestUploadedChapter%5D=desc") as r:
             if r.status == 200:
                 response = await r.read()
                 self.mangas_list = json.loads(response)['data']
