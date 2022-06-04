@@ -5,10 +5,11 @@ from discord.ext import commands
 from discord import app_commands
 from aiohttp import ClientSession
 from typing import List, Any, Dict, Union
+from Bot import Bot
 
 
 class WarframeMarket(commands.Cog):
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: Bot):
         self.bot = bot
         self.base_url: str = "https://api.warframe.market/v1"
         self.items_list: List[Dict[str, str]] = []
@@ -29,7 +30,7 @@ class WarframeMarket(commands.Cog):
 
     @commands.command()
     @commands.is_owner()
-    async def sync_items(self, ctx: commands.Context[discord.Message]):
+    async def sync_items(self, ctx: commands.Context[Bot]):
         """Manual command to sync items.
 
         Args:
@@ -137,5 +138,5 @@ class WarframeMarket(commands.Cog):
             await interaction.response.send_message("I couldn't find that item, in fact!")
 
 
-async def setup(bot: commands.Bot):
+async def setup(bot: Bot):
     await bot.add_cog(WarframeMarket(bot))

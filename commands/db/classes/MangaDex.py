@@ -3,7 +3,8 @@ import json
 
 from typing import Optional, Any, List, Dict
 from aiohttp import ClientSession
-from discord.ext.commands import Bot
+
+from Bot import Bot
 class Chapter:
 
     def __init__(self, id: str, title: str, num: str, lang: str, pages: str, link: str, images: List[str], scanlation: str):

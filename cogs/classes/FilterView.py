@@ -4,7 +4,7 @@ import aiofiles
 from wand.image import Image
 from discord import ui
 from aiohttp.client import ClientSession
-from discord.ext.commands import Bot
+from Bot import Bot
 from typing import List
 from typing_extensions import Self
 
@@ -43,42 +43,42 @@ class FilterView(ui.View):
     
     
     async def apply_filter(self, choice: int):
-        with Image(filename="original_user_avatar.png") as img:
+        with Image(filename="original_user_avatar.png") as img:  # type: ignore
             if choice == 0:
-                img.blur(radius=0, sigma=3)
+                img.blur(radius=0, sigma=3)  # type: ignore
             elif choice == 1:
-                img.shade(gray=True,
+                img.shade(gray=True,  # type: ignore
                           azimuth=286.0,
                           elevation=45.0
                             )
             elif choice == 2:
-                img.sharpen(radius=8, sigma=4)
+                img.sharpen(radius=8, sigma=4)  # type: ignore
             elif choice == 3:
-                img.spread(radius=8.0)
+                img.spread(radius=8.0)  # type: ignore
             elif choice == 4:
-                img.transform_colorspace('gray')
-                img.edge(radius=1)
+                img.transform_colorspace('gray')  # type: ignore
+                img.edge(radius=1)  # type: ignore
             elif choice == 5:
-                img.transform_colorspace('gray')
-                img.emboss(radius=3.0, sigma=1.75)
+                img.transform_colorspace('gray')  # type: ignore
+                img.emboss(radius=3.0, sigma=1.75)  # type: ignore
             elif choice == 6:
-                img.charcoal(radius=1.5, sigma=0.5)
+                img.charcoal(radius=1.5, sigma=0.5)  # type: ignore
             elif choice == 7:
-                img.wave(amplitude=img.height / 32,
-                        wave_length=img.width / 4)
+                img.wave(amplitude=img.height / 32,  # type: ignore
+                        wave_length=img.width / 4)  # type: ignore
             elif choice == 8:
-                img.colorize(color="yellow", alpha="rgb(10%, 0%, 20%)")
+                img.colorize(color="yellow", alpha="rgb(10%, 0%, 20%)")  # type: ignore
             elif choice == 9:
-                img.sepia_tone(threshold=0.8)
+                img.sepia_tone(threshold=0.8)  # type: ignore
             elif choice == 10:
-                img.transform_colorspace("gray")
-                img.sketch(0.5, 0.0, 98.0)
+                img.transform_colorspace("gray")  # type: ignore
+                img.sketch(0.5, 0.0, 98.0)  # type: ignore
             elif choice == 11:
-                img.solarize(threshold=0.5 * img.quantum_range)
+                img.solarize(threshold=0.5 * img.quantum_range)  # type: ignore
             elif choice == 12:
-                img.swirl(degree=-90)
+                img.swirl(degree=-90)  # type: ignore
             elif choice == 13:
-                img.tint(color="yellow", alpha="rgb(40%, 60%, 80%)")
+                img.tint(color="yellow", alpha="rgb(40%, 60%, 80%)")  # type: ignore
             else:
                 f = discord.File("./original_user_avatar.png", filename="original_user_avatar.png")
         
@@ -89,7 +89,7 @@ class FilterView(ui.View):
                 
                 await self.i.edit_original_message(attachments=[f], embed=self.new_embed)
             
-            img.save(filename="user_avatar.png")
+            img.save(filename="user_avatar.png")  # type: ignore
         
         f = discord.File("./user_avatar.png", filename="user_avatar.png")
         

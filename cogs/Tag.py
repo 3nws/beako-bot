@@ -6,10 +6,11 @@ from typing import List, Optional, Any, Dict, Mapping
 from aiohttp import ClientSession
 from pymongo.collection import Collection
 from io import BytesIO
+from Bot import Bot
 
 
 class Tag(commands.Cog):
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: Bot):
         self.bot = bot
         self.client: ClientSession = self.bot.get_client()  # type: ignore
         db_tags: Collection[Mapping[str, Any]] = self.client.tags  # type: ignore
@@ -157,5 +158,5 @@ class Tag(commands.Cog):
         await i.response.send_message("Tag removed, in fact!")
      
         
-async def setup(bot: commands.Bot):
+async def setup(bot: Bot):
     await bot.add_cog(Tag(bot))

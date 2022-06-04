@@ -7,11 +7,12 @@ from cogs.classes.OsuAPI import OsuAPI
 from OsuMods import num_to_mod
 from typing import Dict, Optional
 from typing_extensions import Self
+from Bot import Bot
 
 
 class Osu(commands.Cog):
 
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: Bot):
         self.bot = bot
         self.osu: OsuAPI = OsuAPI(self.bot)
 
@@ -295,5 +296,5 @@ class Osu(commands.Cog):
             await i.followup.send("Something went wrong, in fact!")
 
 
-async def setup(bot: commands.Bot):
+async def setup(bot: Bot):
     await bot.add_cog(Osu(bot))

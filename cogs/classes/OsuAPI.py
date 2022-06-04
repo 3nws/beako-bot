@@ -2,18 +2,19 @@ import discord
 import os
 import json
 
-from discord.ext import commands
 from dotenv import load_dotenv  # type: ignore
 from typing import List, Dict, Optional
 from aiohttp import ClientSession
+from Bot import Bot
+
 
 load_dotenv()
 
 
 class OsuAPI:
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: Bot):
         self.API_KEY: Optional[str] = os.getenv("OSU_API_KEY")
-        self.bot: commands.Bot = bot
+        self.bot: Bot = bot
         self.base_url: str = "https://osu.ppy.sh/api/"
         self.base_image_url: str = "http://s.ppy.sh/a/"
         self.key_query: str = f"?k={self.API_KEY}"

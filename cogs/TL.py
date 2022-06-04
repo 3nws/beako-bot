@@ -4,10 +4,11 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 from typing import List
+from Bot import Bot
 
 
 class TL(commands.Cog):
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: Bot):
         self.bot = bot
         self.g = async_google_trans_new.AsyncTranslator()  # type: ignore
         self.is_synced = False
@@ -52,5 +53,5 @@ class TL(commands.Cog):
         await i.followup.send(f'"{text}" ({detected}) translates to "{res}" in {language}, in fact!')
         
 
-async def setup(bot: commands.Bot):
+async def setup(bot: Bot):
     await bot.add_cog(TL(bot))

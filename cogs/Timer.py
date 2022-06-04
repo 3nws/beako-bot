@@ -8,10 +8,11 @@ from discord import app_commands
 from discord.ext import commands
 from typing import List, Literal, Optional
 from aiohttp import ClientSession
+from Bot import Bot
 
 
 class Timer(commands.Cog):
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: Bot):
         self.bot = bot
         self.cities_list = []
         self.is_synced = False
@@ -35,7 +36,7 @@ class Timer(commands.Cog):
                     
     @commands.command()
     @commands.is_owner()
-    async def sync_cities(self, ctx: commands.Context[discord.Message]):
+    async def sync_cities(self, ctx: commands.Context[Bot]):
         """Manual command to sync cities/timezones.
 
         Args:
@@ -73,6 +74,7 @@ class Timer(commands.Cog):
                 unit = time[-1]  # type: ignore
                 time = time[:-1]
         seconds = 0
+        counter: str = ""
         if unit.lower().endswith("d"):  # type: ignore
             seconds += int(float(time)) * 60 * 60 * 24
             counter = f"{time} days" if int(
@@ -89,7 +91,6 @@ class Timer(commands.Cog):
             seconds += int(float(time))
             counter = f"{time} seconds" if int(
                 float(time)) != 1 else f"{time} second"
-        counter: str = ""
         if seconds == 0:
             embed.add_field(name='Warning', value="What is this, in fact?!")
         elif seconds > 7776000:
@@ -112,7 +113,7 @@ class Timer(commands.Cog):
     @app_commands.command(name="alarm")
     @app_commands.describe(time="The time you want betty to ping you, in fact! You can use either '.' or ':' to seperate hours and minutes, I suppose!",
                            reminder="What is this alarm about, in fact?!")
-    async def alarm(self, i: discord.Interaction, time: str="", *, reminder: str=""):
+    async def alarm(self, i: discord.Interaction, time: str, *, reminder: str=""):
         """Set up an alarm at given time.
 
         Args:
@@ -210,5 +211,5 @@ class Timer(commands.Cog):
         )
         await i.response.send_message(embed=embed)
 
-async def setup(bot: commands.Bot):
+async def setup(bot: Bot):
     await bot.add_cog(Timer(bot))

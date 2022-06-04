@@ -3,10 +3,11 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 from typing import List, Optional
+from Bot import Bot
 
 
 class Admin(commands.Cog):
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: Bot):
         self.bot = bot
         self.dir_aliases = {
             'b': 'before',
@@ -141,7 +142,7 @@ class Admin(commands.Cog):
 
     @commands.command()
     @commands.is_owner()
-    async def servers(self, ctx: commands.Context[discord.Message]):
+    async def servers(self, ctx: commands.Context[Bot]):
         """Send a list of servers and some info about this bot.
 
         Args:
@@ -158,7 +159,7 @@ class Admin(commands.Cog):
     
     @commands.command(aliases=["kill"])
     @commands.is_owner()
-    async def terminate(self, ctx: commands.Context[discord.Message]):
+    async def terminate(self, ctx: commands.Context[Bot]):
         """Terminate or restart the bot.
 
         Args:
@@ -170,7 +171,7 @@ class Admin(commands.Cog):
 
     @commands.command()
     @commands.is_owner()
-    async def toggle(self, ctx: commands.Context[discord.Message], cmd):  # type: ignore
+    async def toggle(self, ctx: commands.Context[Bot], cmd):  # type: ignore
         """Toggles commands on and off.
 
         Args:
@@ -187,5 +188,5 @@ class Admin(commands.Cog):
             await ctx.send(f"I have {status} the `{cmd.qualified_name}` command, in fact!")  # type: ignore
 
 
-async def setup(bot: commands.Bot):
+async def setup(bot: Bot):
     await bot.add_cog(Admin(bot))

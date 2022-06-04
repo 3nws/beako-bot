@@ -1,8 +1,17 @@
+import motor.motor_asyncio
+import traceback
+import sys
+import aiohttp
 import discord
+import os
 
+from discord.app_commands.checks import cooldown as cooldown_decorator
+from discord.app_commands import CommandTree
+from pymongo.errors import ServerSelectionTimeoutError
+from typing import Any, List
+from discord.ext import commands
 from Help_Messages import messages
 from discord.ui import View
-from discord.ext import commands
 
 
 track_cmds = ["add", "remove", "manga", "last"]
@@ -37,16 +46,54 @@ modes = [
     util_cmds,
     warframe_cmds
 ]
-  
+
+
+
+class Bot(commands.Bot):
+    def __init__(self, *args: List[Any], **kwargs: List[Any]):
+        super().__init__(*args, **kwargs)
+        self.client = None
+        self.session = None
+
+
+    async def load_cogs(self):
+        for filename in os.listdir('./cogs'):
+            if filename.endswith('.py'):
+                await self.load_extension(f'cogs.{filename[:-3]}')
+            else:
+                print(f'Unable to load {filename[:-3]}')
+
+
+    async def setup_hook(self) -> None:
+        self.session = aiohttp.ClientSession()
+        try:
+            self.client: Any = motor.motor_asyncio.AsyncIOMotorClient('localhost', 27017, serverSelectionTimeoutMS=5000)  # type: ignore
+            print(await self.client.server_info())
+        except ServerSelectionTimeoutError:  # type: ignore
+            print("Local not available!")
+            self.client = motor.motor_asyncio.AsyncIOMotorClient(os.getenv("DB_URL"))  # type: ignore
+            
+        self.add_view(PersistentViewHelp("0", self))
+        
+        await self.load_cogs()
+        
+    async def close(self):
+        await super().close()
+        await self.session.close()  # type: ignore
+
+
+    def get_client(self) -> Any:
+        return self.client
+
 
 class PersistentViewHelp(View):
-    def __init__(self, mode: str, bot: commands.Bot):
+    def __init__(self, mode: str, bot: Bot):
         super().__init__(timeout=None)
         self.add_item(Dropdown(mode, bot))
 
         
 class Dropdown(discord.ui.Select[PersistentViewHelp]):
-    def __init__(self, mode: str, bot: commands.Bot):
+    def __init__(self, mode: str, bot: Bot):
         cmd_options = [
             discord.SelectOption(value="0", label="Series tracking", emoji="<a:_:459105999618572308>"),
             discord.SelectOption(value="1", label="Admin", emoji="<:_:596577110982918146>"),
@@ -59,7 +106,7 @@ class Dropdown(discord.ui.Select[PersistentViewHelp]):
             discord.SelectOption(value="8", label="Warframe", emoji="<:_:979258513429782588>"),
         ]
 
-        self.bot: commands.Bot = bot
+        self.bot: Bot = bot
         self.mode: str = mode
         
         super().__init__(placeholder="Select a category.", custom_id="persistent_view:help", options=cmd_options)
@@ -79,8 +126,9 @@ class Dropdown(discord.ui.Select[PersistentViewHelp]):
         new_embed.set_thumbnail(url=self.bot.user.avatar.url)  # type: ignore
         await interaction.response.edit_message(embed=new_embed)
 
+
 class Help:
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: Bot):
         self.bot = bot
 
     async def get_help(self, i: discord.Interaction) -> None:
@@ -103,3 +151,29 @@ class Help:
         except Exception as e:
             print(e)
             await i.followup.send("Something went wrong, in fact!")
+
+
+class MyTree(CommandTree[discord.Client]):
+
+    def __init__(self, client: discord.Client):
+        super().__init__(client)
+        self._cooldown_predicate: Any = cooldown_decorator(
+            1, 5)(lambda: None).__discord_app_commands_checks__[0]  # type: ignore
+        
+
+    async def on_error(self, interaction: discord.Interaction, error: discord.app_commands.AppCommandError):
+        if isinstance(error, discord.app_commands.CommandOnCooldown):
+            await interaction.response.send_message(f"{interaction.user.mention}, slow down, I suppose!\nYou can try again in {round(error.retry_after, 2)} seconds, in fact!")  # type: ignore
+            await asyncio.sleep(float(error.retry_after))  # type: ignore
+            await interaction.delete_original_message()
+        elif isinstance(error, discord.app_commands.MissingPermissions):
+            await interaction.response.send_message("You don't have permission to do that, I suppose!")
+        else:
+            await interaction.response.send_message("What is that, I suppose?!\nTry `/beakohelp`, in fact!")
+            traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
+
+
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        if interaction.type == discord.InteractionType.autocomplete or interaction.user.id == 442715989310832650:  # type: ignore
+            return True
+        return await self._cooldown_predicate(interaction)

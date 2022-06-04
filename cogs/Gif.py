@@ -8,12 +8,14 @@ from discord.ext import commands
 from discord import app_commands
 from aiohttp import ClientSession
 from typing import Optional
+from Bot import Bot
+
 
 load_dotenv()
 
 
 class Gif(commands.Cog):
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: Bot):
         self.bot = bot
         self.tenor_api_key = os.getenv('TENOR_API_KEY')
 
@@ -146,5 +148,5 @@ class Gif(commands.Cog):
         await i.response.send_message(embed=embed)
 
 
-async def setup(bot: commands.Bot):
+async def setup(bot: Bot):
     await bot.add_cog(Gif(bot))

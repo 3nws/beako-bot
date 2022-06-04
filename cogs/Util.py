@@ -11,14 +11,15 @@ from pysaucenao import SauceNao, PixivSource, TwitterSource  # type: ignore
 from pysaucenao.containers import SauceNaoResults
 from typing import Callable, Optional, Dict, List
 from typing_extensions import Self
-from .classes.FilterView import FilterView 
+from .classes.FilterView import FilterView
+from Bot import Bot
 
 
 load_dotenv()
 
 
 class Util(commands.Cog):
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: Bot):
         self.bot = bot
         self.saucenao_api_key = os.getenv('SAUCENAO_API_KEY')
         self.TOKEN = os.getenv('TOKEN')
@@ -314,5 +315,5 @@ class Util(commands.Cog):
             await i.channel.send(embed=results)  # type: ignore
 
 
-async def setup(bot: commands.Bot):
+async def setup(bot: Bot):
     await bot.add_cog(Util(bot))

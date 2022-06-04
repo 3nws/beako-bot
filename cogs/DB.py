@@ -18,7 +18,7 @@ from .classes.Pagination import MangaReader, Source
 from .classes.Pick import PickView
 from aiohttp import ClientSession
 from pymongo.collection import Collection
-from discord.ext.commands import Bot
+from Bot import Bot
 
 
 class DB(commands.Cog):

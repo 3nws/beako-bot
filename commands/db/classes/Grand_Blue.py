@@ -3,7 +3,8 @@ import html5lib  # type: ignore
 from bs4 import BeautifulSoup
 from typing import Tuple, Union, Any, Optional
 from aiohttp import ClientSession
-from discord.ext.commands import Bot
+
+from Bot import Bot
 from commands.db.classes.Scrape_Series import Scrape_Series
 
 
