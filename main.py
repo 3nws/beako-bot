@@ -2,12 +2,11 @@ import discord
 import os
 import asyncio
 import logging
-import typing
 
 from discord.app_commands.models import AppCommand
 from dotenv import load_dotenv  # type: ignore
 from discord.ext import commands
-from typing import List
+from typing import List, Literal, Optional
 
 
 from Bot import MyTree, Bot, Help
@@ -74,7 +73,7 @@ async def on_guild_remove(guild: discord.Guild):
 
 @bot.command()
 @commands.is_owner()
-async def sync(ctx: commands.Context[Bot], guilds: commands.Greedy[discord.Object], spec: typing.Optional[typing.Literal["~"]] = None) -> None:
+async def sync(ctx: commands.Context[Bot], guilds: commands.Greedy[discord.Object], spec: Optional[Literal["~"]]) -> None:
     if not guilds:
         if spec == "~":
             fmt: List[AppCommand] = await ctx.bot.tree.sync(guild=ctx.guild)  # type: ignore

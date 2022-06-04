@@ -54,7 +54,7 @@ class Timer(commands.Cog):
     @app_commands.describe(time="After how long should I ping you, in fact?!",
                            unit="Seconds? Hours? Cows? Give me a unit, in fact! You can concatenate this with the previous argument, I suppose!",
                            reminder="What is this timer about, in fact?!")
-    async def remind(self, i: discord.Interaction, time: str, unit: Optional[Literal["s", "m", "h", "d"]], *, reminder: str=""):
+    async def remind(self, i: discord.Interaction, time: str, unit: Optional[Literal["s", "m", "h", "d"]], *, reminder: Optional[str]):
         """Set up a timer to remind you of something with a ping.
 
         Args:
@@ -97,12 +97,12 @@ class Timer(commands.Cog):
             embed.add_field(
                 name='Warning', value="We might not survive long enough to do this, in fact! Well, not you, I suppose!")
         else:
-            if reminder == '':
+            if not reminder:
                 await i.response.send_message(f"I'll ping you in {counter}, I suppose!")
             else:
                 await i.response.send_message(f"I'll ping you in {counter} about '{reminder}', I suppose!")
             await asyncio.sleep(seconds)
-            if reminder == '':
+            if not reminder:
                 await i.channel.send(f"Hey {i.user.mention}, what up, in fact!")  # type: ignore
             else:
                 await i.channel.send(f"Hey {i.user.mention}, what up, in fact! You asked me to remind you about '{reminder}' {counter} ago, I suppose!")  # type: ignore
@@ -113,7 +113,7 @@ class Timer(commands.Cog):
     @app_commands.command(name="alarm")
     @app_commands.describe(time="The time you want betty to ping you, in fact! You can use either '.' or ':' to seperate hours and minutes, I suppose!",
                            reminder="What is this alarm about, in fact?!")
-    async def alarm(self, i: discord.Interaction, time: str, *, reminder: str=""):
+    async def alarm(self, i: discord.Interaction, time: str, *, reminder: Optional[str]):
         """Set up an alarm at given time.
 
         Args:
@@ -142,12 +142,12 @@ class Timer(commands.Cog):
                 embed.add_field(
                     name='Warning', value="We might not survive long enough to do this, in fact! Well, not you, I suppose!")
             else:
-                if reminder == '':
+                if not reminder:
                     await i.response.send_message(f"Your Betty alarm is set for {time}, I suppose!")
                 else:
                     await i.response.send_message(f"Your Betty alarm is set for {time} about '{reminder}', I suppose!")
                 await asyncio.sleep(time_left)
-                if reminder == '':
+                if not reminder:
                     await i.channel.send(f"Hey {i.user.mention}, what up, in fact!")  # type: ignore
                 else:
                     await i.channel.send(f"Hey {i.user.mention}, what up, in fact! This is your Betty alarm for '{reminder}', I suppose!")  # type: ignore

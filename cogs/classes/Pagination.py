@@ -16,11 +16,11 @@ class MangaReader(ui.View, menus.MenuPages):
         super().__init__(timeout=60)
         self._source: Source = source
         self.current_page: int = 0
-        self.i: Optional[discord.Interaction] = None
-        self.msg: Optional[discord.Message] = None
-        self.embed: Optional[discord.Embed] = None
-        self.text: Optional[str] = None
-        self.group: Optional[str] = None
+        self.i: Optional[discord.Interaction]
+        self.msg: Optional[discord.Message]
+        self.embed: Optional[discord.Embed]
+        self.text: Optional[str]
+        self.group: Optional[str]
 
     async def start(self, *, interaction: Optional[discord.Interaction], channel: Channel,  # type: ignore
                     text: str, embed: discord.Embed, group: str):

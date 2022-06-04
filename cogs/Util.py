@@ -185,14 +185,14 @@ class Util(commands.Cog):
                     pixiv_result = result  # type: ignore
                 elif isinstance(result, TwitterSource):  # type: ignore
                     twitter_result = result  # type: ignore
-            if pixiv_result != "" and twitter_result != "":
+            if pixiv_result and twitter_result:
                 sauce_frame.add_field(name=f"{pixiv_result.title} by {pixiv_result.author_name} with {str(pixiv_result.similarity)} similarity",  # type: ignore
                                       value=f"on [Pixiv]({pixiv_result.source_url}),\non [Twitter]({twitter_result.source_url})")  # type: ignore
                 sauce_frame.set_thumbnail(url=pixiv_result.thumbnail)  # type: ignore
-            elif pixiv_result == "" and twitter_result == "":
+            elif not pixiv_result and not twitter_result:
                 sauce_frame = discord.Embed(
                     title="No results!", description=f"I couldn't find that on pixiv or twitter, I suppose!")
-            elif twitter_result == "":
+            elif not twitter_result:
                 sauce_frame.add_field(name=f"{pixiv_result.title} by {pixiv_result.author_name} with {str(pixiv_result.similarity)} similarity",  # type: ignore
                                       value=f"on [Pixiv]({pixiv_result.source_url})")  # type: ignore
                 sauce_frame.set_thumbnail(url=pixiv_result.thumbnail)  # type: ignore

@@ -367,7 +367,7 @@ class DB(commands.Cog):
     @app_commands.command(name="last")
     @app_commands.autocomplete(series=manga_autocomplete)
     @app_commands.describe(series="The series you want to get the latest chapter of, in fact!")
-    async def commands_latest_chapter(self, i: discord.Interaction, series: str=""):
+    async def commands_latest_chapter(self, i: discord.Interaction, series: Optional[str]):
         """Get the latest chapter of a series.
 
         Args:
@@ -377,7 +377,7 @@ class DB(commands.Cog):
         Returns:
             None: None
         """
-        if series == "":
+        if not series:
             message = "What series do you want to know about, in fact!"
         else:
             return await self.last_chapter(series, i)
@@ -486,7 +486,7 @@ class DB(commands.Cog):
     @app_commands.guild_only
     @app_commands.describe(series="The series you want to stop tracking in this channel, I suppose!")
     @app_commands.checks.has_permissions(manage_channels=True)
-    async def commands_remove_channel(self, i: discord.Interaction, series: str=""):
+    async def commands_remove_channel(self, i: discord.Interaction, series: Optional[str]):
         """Remove a series this channel is tracking.
 
         Args:

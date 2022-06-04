@@ -15,20 +15,20 @@ class Fun(commands.Cog):
 
     @app_commands.command(name="say")
     @app_commands.describe(msg="The thing you want me to repeat, in fact!")
-    async def say(self, i: discord.Interaction, *, msg: str=""):
+    async def say(self, i: discord.Interaction, *, msg: Optional[str]):
         """Make me repeat what you say.
 
         Args:
             i (discord.Interaction): the interaction that invokes this coroutine
             msg (str, optional): the phrase to repeat. Defaults to "".
         """
-        if (msg == ""):
+        if not msg:
             await i.response.send_message("What do you want me to say, in fact?!")
             return
         if random.randint(1, 100) % 2 == 0:
-            await i.channel.send(msg + ", in fact!")  # type: ignore
+            await i.response.send_message(msg + ", in fact!")  # type: ignore
         else:
-            await i.channel.send(msg + ", I suppose!")  # type: ignore
+            await i.response.send_message(msg + ", I suppose!")  # type: ignore
 
     
     @app_commands.command(name="roll")
