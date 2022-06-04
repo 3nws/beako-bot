@@ -13,7 +13,7 @@ from commands.db.classes.Grand_Blue import Grand_Blue
 from commands.db.classes.MangaDex import MangaDex
 from discord import app_commands
 from discord.ext import commands, tasks  # type: ignore
-from typing import List, Any, Dict, Union, Optional, Tuple
+from typing import List, Any, Dict, Union, Optional, Tuple, Mapping
 from .classes.Pagination import MangaReader, Source
 from .classes.Pick import PickView
 from aiohttp import ClientSession
@@ -31,10 +31,10 @@ class DB(commands.Cog):
         # chapter db
         db_chapter = self.client.chapter  # type: ignore
         # chapters data
-        self.data_rz: Collection[Any] = db_chapter.data  # type: ignore
-        self.data_kaguya: Collection[Any] = db_chapter.data_kaguya  # type: ignore
-        self.data_onk: Collection[Any] = db_chapter.data_onk  # type: ignore
-        self.data_gb: Collection[Any] = db_chapter.data_gb  # type: ignore
+        self.data_rz: Collection[Mapping[str, Any]] = db_chapter.data  # type: ignore
+        self.data_kaguya: Collection[Mapping[str, Any]] = db_chapter.data_kaguya  # type: ignore
+        self.data_onk: Collection[Mapping[str, Any]] = db_chapter.data_onk  # type: ignore
+        self.data_gb: Collection[Mapping[str, Any]] = db_chapter.data_gb  # type: ignore
         
         # flip image urls db
         db_flips = self.client.flips  # type: ignore
@@ -47,11 +47,11 @@ class DB(commands.Cog):
         self.avatars = os.path.join(os.getcwd(), "avatars")
         
         # channels data
-        self.channels_md: Collection[Any] = db_chapter.data_mangadex  # type: ignore
-        self.channels_rz: Collection[Any] = self.db_channels.data  # type: ignore
-        self.channels_kaguya: Collection[Any] = self.db_channels.data_kaguya  # type: ignore
-        self.channels_onk: Collection[Any] = self.db_channels.data_onk  # type: ignore
-        self.channels_gb: Collection[Any] = self.db_channels.data_gb  # type: ignore
+        self.channels_md: Collection[Mapping[str, Any]] = db_chapter.data_mangadex  # type: ignore
+        self.channels_rz: Collection[Mapping[str, Any]] = self.db_channels.data  # type: ignore
+        self.channels_kaguya: Collection[Mapping[str, Any]] = self.db_channels.data_kaguya  # type: ignore
+        self.channels_onk: Collection[Mapping[str, Any]] = self.db_channels.data_onk  # type: ignore
+        self.channels_gb: Collection[Mapping[str, Any]] = self.db_channels.data_gb  # type: ignore
 
         self.collection_aliases: Dict[str, str] = {
             "data": "Re:Zero",
@@ -112,7 +112,7 @@ class DB(commands.Cog):
         await i.response.send_message(flip_url)
     
     
-    async def send_messages(self, channels: Collection[Any], title: str, data: Collection[Any], db_rec: Dict[str, str], anchor: str):
+    async def send_messages(self, channels: Collection[Mapping[str, Any]], title: str, data: Collection[Mapping[str, Any]], db_rec: Dict[str, str], anchor: str):
         """Sends the notification messages to all the relevant guild channels.
 
         Args:
@@ -213,7 +213,7 @@ class DB(commands.Cog):
 
             # for mangadex
             md = MangaDex(self.bot)
-            records_exist: Any = await self.channels_md.find().to_list(None)  # type: ignore
+            records_exist: List[Mapping[str, Any]] = await self.channels_md.find().to_list(None)  # type: ignore
             if records_exist:
                 for record in records_exist:
                     mangas_on_channel = (record)['mangas']
@@ -619,7 +619,7 @@ class DB(commands.Cog):
         """
         async for channel in self.channels_rz.find():  # type: ignore
             if self.bot.get_guild(channel['guild_id']) is None or self.bot.get_guild(channel['guild_id']).get_channel((channel["id"])) is None:  # type: ignore
-                channel_entry: Dict[str, Any] = {
+                channel_entry: Mapping[str, Any] = {
                     "id": channel["id"],
                 }
                 await self.channels_rz.find_one_and_delete(channel_entry)  # type: ignore

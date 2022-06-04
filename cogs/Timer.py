@@ -6,7 +6,7 @@ from datetime import datetime
 from datetime import timedelta
 from discord import app_commands
 from discord.ext import commands
-from typing import List, Literal, Any, Optional
+from typing import List, Literal, Optional
 from aiohttp import ClientSession
 
 
@@ -35,7 +35,7 @@ class Timer(commands.Cog):
                     
     @commands.command()
     @commands.is_owner()
-    async def sync_cities(self, ctx: commands.Context[Any]):
+    async def sync_cities(self, ctx: commands.Context[discord.Message]):
         """Manual command to sync cities/timezones.
 
         Args:

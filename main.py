@@ -41,7 +41,7 @@ intents.messages = True
 intents.message_content = True
 
 
-class MyTree(CommandTree[Any]):
+class MyTree(CommandTree[discord.Client]):
 
     def __init__(self, client: discord.Client):
         super().__init__(client)
@@ -117,7 +117,7 @@ async def help(interaction: discord.Interaction):
 
 
 @bot.event
-async def on_command_error(ctx: commands.Context[Any], error: commands.CommandError):
+async def on_command_error(ctx: commands.Context[discord.Message], error: commands.CommandError):
     if isinstance(error, commands.CommandNotFound):
         await ctx.send("What is that, I suppose?!\nTry `/beakohelp`, in fact!")
     else:
@@ -142,7 +142,7 @@ async def on_guild_remove(guild: discord.Guild):
 
 @bot.command()
 @commands.is_owner()
-async def sync(ctx: commands.Context[Any], guilds: commands.Greedy[discord.Object], spec: typing.Optional[typing.Literal["~"]] = None) -> None:
+async def sync(ctx: commands.Context[discord.Message], guilds: commands.Greedy[discord.Object], spec: typing.Optional[typing.Literal["~"]] = None) -> None:
     if not guilds:
         if spec == "~":
             fmt: List[AppCommand] = await ctx.bot.tree.sync(guild=ctx.guild)  # type: ignore

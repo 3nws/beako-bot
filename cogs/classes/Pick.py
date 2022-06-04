@@ -1,18 +1,17 @@
 import discord
-from discord.ui.item import Item
 
 from pymongo.collection import Collection
 from ast import literal_eval
 from discord import ui
 from commands.db.classes.MangaDex import MangaDex
 from discord.ext.commands import Bot
-from typing import Tuple, Dict, Any, List, Optional
+from typing import Tuple, Dict, Any, List, Optional, Mapping
 from commands.db.classes.MangaDex import Chapter
 from typing_extensions import Self
 
 class PickView(ui.View):
     
-    def __init__(self, i: discord.Interaction, channels: Collection[Any], info: Tuple[List[str], List[str]], bot: Bot, embed: discord.Embed):
+    def __init__(self, i: discord.Interaction, channels: Collection[Mapping[str, Any]], info: Tuple[List[str], List[str]], bot: Bot, embed: discord.Embed):
         super().__init__(timeout=60)
         self.i = i
         self.channels = channels

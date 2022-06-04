@@ -9,7 +9,7 @@ from aiohttp import ClientSession
 from dotenv import load_dotenv  # type: ignore
 from pysaucenao import SauceNao, PixivSource, TwitterSource  # type: ignore
 from pysaucenao.containers import SauceNaoResults
-from typing import Optional, Any, Dict, List
+from typing import Callable, Optional, Dict, List
 from typing_extensions import Self
 from .classes.FilterView import FilterView 
 
@@ -75,14 +75,14 @@ class Util(commands.Cog):
             avatar_frame.set_image(url=f'{i.user.avatar.url}')  # type: ignore
 
 
-        if i.user.avatar.is_animated():
+        if i.user.avatar.is_animated():  # type: ignore
             return await i.response.send_message(embed=avatar_frame)
         await i.response.send_message(embed=avatar_frame, view=FilterView(i, avatar_frame, self.bot))
         
 
     @app_commands.command(name="savatar")
     @app_commands.describe(member="The member you want to ~~steal~~borrow their server specific avatar from, in fact!")
-    async def server_avatar(self, i: discord.Interaction, member: Optional[discord.Member]) -> Any:
+    async def server_avatar(self, i: discord.Interaction, member: Optional[discord.Member]) -> Optional[Callable[[discord.Interaction, Optional[discord.Member]], None]]:
         """Get the member's server specific avatar.
 
         Args:
@@ -300,7 +300,7 @@ class Util(commands.Cog):
 
             message_1: discord.Message = await i.channel.fetch_message(msg.id)  # type: ignore
 
-            reactions: Dict[Any, Any] = {react.emoji: react.count for react in message_1.reactions}  # type: ignore
+            reactions: Dict[Union[discord.PartialEmoji, discord.Emoji, str], int] = {react.emoji: react.count for react in message_1.reactions}  # type: ignore
 
             results = discord.Embed(
                 title="Results",

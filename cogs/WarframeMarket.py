@@ -29,7 +29,7 @@ class WarframeMarket(commands.Cog):
 
     @commands.command()
     @commands.is_owner()
-    async def sync_items(self, ctx: commands.Context[Any]):
+    async def sync_items(self, ctx: commands.Context[discord.Message]):
         """Manual command to sync items.
 
         Args:

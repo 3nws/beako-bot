@@ -2,7 +2,7 @@ import discord
 
 from discord.ext import commands
 from discord import app_commands
-from typing import List, Optional, Any
+from typing import List, Optional
 
 
 class Admin(commands.Cog):
@@ -141,7 +141,7 @@ class Admin(commands.Cog):
 
     @commands.command()
     @commands.is_owner()
-    async def servers(self, ctx: commands.Context[Any]):
+    async def servers(self, ctx: commands.Context[discord.Message]):
         """Send a list of servers and some info about this bot.
 
         Args:
@@ -158,7 +158,7 @@ class Admin(commands.Cog):
     
     @commands.command(aliases=["kill"])
     @commands.is_owner()
-    async def terminate(self, ctx: commands.Context[Any]):
+    async def terminate(self, ctx: commands.Context[discord.Message]):
         """Terminate or restart the bot.
 
         Args:
@@ -170,7 +170,7 @@ class Admin(commands.Cog):
 
     @commands.command()
     @commands.is_owner()
-    async def toggle(self, ctx: commands.Context[Any], cmd):  # type: ignore
+    async def toggle(self, ctx: commands.Context[discord.Message], cmd):  # type: ignore
         """Toggles commands on and off.
 
         Args:

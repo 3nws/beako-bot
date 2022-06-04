@@ -2,7 +2,7 @@ import discord
 
 from discord.ext import commands
 from discord import app_commands
-from typing import List, Optional, Any, Dict
+from typing import List, Optional, Any, Dict, Mapping
 from aiohttp import ClientSession
 from pymongo.collection import Collection
 from io import BytesIO
@@ -12,7 +12,7 @@ class Tag(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.client: ClientSession = self.bot.get_client()  # type: ignore
-        db_tags: Collection[Any] = self.client.tags  # type: ignore
+        db_tags: Collection[Mapping[str, Any]] = self.client.tags  # type: ignore
         self.tags_coll = db_tags.data
         self.tags_list: Dict[str, Any] = {}
         

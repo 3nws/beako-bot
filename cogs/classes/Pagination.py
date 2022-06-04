@@ -5,6 +5,8 @@ from discord.ext import menus
 from typing import Union, Any, Optional, List
 from typing_extensions import Self
 
+Channel = Union[discord.abc.GuildChannel, discord.Thread, discord.abc.PrivateChannel, discord.PartialMessageable, None]
+
 class Source(menus.ListPageSource):
     async def format_page(self, menu, entries):  # type: ignore
         return f"This is number {entries}."
@@ -20,7 +22,7 @@ class MangaReader(ui.View, menus.MenuPages):
         self.text: Optional[str] = None
         self.group: Optional[str] = None
 
-    async def start(self, *, interaction: Optional[discord.Interaction], channel: Any,  # type: ignore
+    async def start(self, *, interaction: Optional[discord.Interaction], channel: Channel,  # type: ignore
                     text: str, embed: discord.Embed, group: str):
         await self._source._prepare_once()  # type: ignore
         page = await self._source.get_page(0)  # type: ignore
