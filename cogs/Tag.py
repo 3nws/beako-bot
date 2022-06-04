@@ -12,8 +12,8 @@ from Bot import Bot
 class Tag(commands.Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
-        self.client: ClientSession = self.bot.get_client()  # type: ignore
-        db_tags: Collection[Mapping[str, Any]] = self.client.tags  # type: ignore
+        self.client: ClientSession = self.bot.get_client()  
+        db_tags: Collection[Mapping[str, Any]] = self.client.tags  
         self.tags_coll = db_tags.data
         self.tags_list: Dict[str, Any] = {}
         
@@ -24,10 +24,10 @@ class Tag(commands.Cog):
         Args:
             guild_id (int): the id of the guild to sync
         """
-        self.tags_list = await self.tags_coll.find_one({  # type: ignore
+        self.tags_list = await self.tags_coll.find_one({  
             "guild_id": guild_id, 
         })
-        self.tags_list = self.tags_list['tags'] if self.tags_list is not None and 'tags' in self.tags_list.keys() else {}  # type: ignore
+        self.tags_list = self.tags_list['tags'] if self.tags_list is not None and 'tags' in self.tags_list.keys() else {}  
          
     
     group = app_commands.Group(name="tag", description="Tag command group...", guild_only=True)
@@ -46,7 +46,7 @@ class Tag(commands.Cog):
         Returns:
             List[app_commands.Choice[str]]: The list of choices matching the input
         """
-        await self.sync_tags(interaction.guild.id)  # type: ignore
+        await self.sync_tags(interaction.guild.id)  
         return [
             app_commands.Choice(name=tag, value=tag)
             for tag in self.tags_list if current.lower() in tag or (isinstance(self.tags_list[tag], str) and current.lower() in self.tags_list[tag])
@@ -102,26 +102,26 @@ class Tag(commands.Cog):
             try:
                 tag_content = data.decode('ascii')
             except UnicodeDecodeError:
-                tag_content = data  # type: ignore
+                tag_content = data  
         if tag_content is None:
             return await i.response.send_message("What should this tag return, in fact!")
-        await self.sync_tags(i.guild.id)  # type: ignore
+        await self.sync_tags(i.guild.id)  
         new = False
         if self.tags_list != {}:
             self.tags_list[tag_name] = tag_content
         if self.tags_list == {}:
             self.tags_list = {
-                "guild_id": i.guild.id,  # type: ignore
+                "guild_id": i.guild.id,  
                 "tags": {
                     tag_name: tag_content,
                 }
             }
-            await self.tags_coll.insert_one(self.tags_list)  # type: ignore
+            await self.tags_coll.insert_one(self.tags_list)  
             new = True
         if not new:
-            await self.tags_coll.find_one_and_update(  # type: ignore
+            await self.tags_coll.find_one_and_update(  
                                     {
-                                        'guild_id': i.guild.id,  # type: ignore
+                                        'guild_id': i.guild.id,  
                                         },
                                     {
                                         '$set': {
@@ -143,11 +143,11 @@ class Tag(commands.Cog):
             i (discord.Interaction): the interaction that invokes this coroutine
             tag_name (str): the name of the tag to delete 
         """
-        await self.sync_tags(i.guild.id)  # type: ignore
+        await self.sync_tags(i.guild.id)  
         self.tags_list.pop(tag_name)
-        await self.tags_coll.find_one_and_update(  # type: ignore
+        await self.tags_coll.find_one_and_update(  
                                 {
-                                    'guild_id': i.guild.id,  # type: ignore
+                                    'guild_id': i.guild.id,  
                                     },
                                 {
                                     '$set': {

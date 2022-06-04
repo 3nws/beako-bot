@@ -53,7 +53,7 @@ class Osu(commands.Cog):
                             custom_id="persistent_view:osu")
 
             async def select_callback(interaction: discord.Interaction):
-                mode: str = (interaction.data['values'])[0]  # type: ignore
+                mode: str = (interaction.data['values'])[0]  
                 player: Optional[Dict[str, str]] = await self.osu.get_user(player_name, mode)
                 if player is not None:
                     game_mode = self.osu.game_modes[mode]
@@ -136,7 +136,7 @@ class Osu(commands.Cog):
                             custom_id="persistent_view:recent")
 
             async def select_callback(interaction: discord.Interaction):
-                mode: str = (interaction.data['values'])[0]  # type: ignore
+                mode: str = (interaction.data['values'])[0]  
                 scores = await self.osu.get_user_recent(player_name, mode, "5")
                 player = await self.osu.get_user(player_name, mode)
                 game_mode = self.osu.game_modes[mode]
@@ -247,7 +247,7 @@ class Osu(commands.Cog):
                             custom_id="persistent_view:best")
 
             async def select_callback(interaction: discord.Interaction):
-                mode: str = (interaction.data['values'])[0]  # type: ignore
+                mode: str = (interaction.data['values'])[0]  
                 player = await self.osu.get_user(player_name, mode)
                 best_scores = await self.osu.get_best(player_name, mode, "5")
                 game_mode = self.osu.game_modes[mode]

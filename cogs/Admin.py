@@ -33,7 +33,7 @@ class Admin(commands.Cog):
         Returns:
             _type_: _description_
         """
-        if member.top_role > i.member.top_role:  # type: ignore
+        if member.top_role > i.member.top_role:  
             return await i.response.send_message(f"You can't kick this person, I suppose!")
         await member.kick(reason=reason)
         return await i.response.send_message(f"{member} has been yeeted, I suppose!")
@@ -53,7 +53,7 @@ class Admin(commands.Cog):
         Returns:
             _type_: _description_
         """
-        if member.top_role > i.member.top_role:  # type: ignore
+        if member.top_role > i.member.top_role:  
             return await i.response.send_message(f"You can't ban this person, I suppose!")
         await member.ban(reason=reason)
         await i.response.send_message(f"{member} has been yeeted forever, I suppose!")
@@ -69,7 +69,7 @@ class Admin(commands.Cog):
             i (discord.Interaction): the interaction that invokes this coroutine
             user (discord.User): the user to unban
         """
-        await i.guild.unban(user)  # type: ignore
+        await i.guild.unban(user)  
         await i.response.send_message(f"{user} has been unbanned, I suppose!")
 
 
@@ -107,16 +107,16 @@ class Admin(commands.Cog):
         await i.response.defer()
         original = await i.original_message()
         if (msg_id):
-            msg: discord.Message = await i.channel.fetch_message(int(msg_id))  # type: ignore
+            msg: discord.Message = await i.channel.fetch_message(int(msg_id))  
             if direction == "after":
-                await i.channel.purge(limit=limit+1, bulk=True, after=msg, oldest_first=True, check=lambda m: m.id != original.id)  # type: ignore
+                await i.channel.purge(limit=limit+1, bulk=True, after=msg, oldest_first=True, check=lambda m: m.id != original.id)  
             elif direction == "before":
-                await i.channel.purge(limit=limit+1, bulk=True, before=msg, oldest_first=False, check=lambda m: m.id != original.id)  # type: ignore
+                await i.channel.purge(limit=limit+1, bulk=True, before=msg, oldest_first=False, check=lambda m: m.id != original.id)  
         elif (direction == "after"):
             return await i.response.send_message("I can't delete future messages, in fact! Tell me which message you want me to start deleting from, I suppose!")
         else:
-            await i.channel.purge(limit=limit+1, bulk=True, check=lambda m: m.id != original.id)  # type: ignore
-        await i.followup.send(content='Cleared by {}, I suppose!'.format(i.user.mention))  # type: ignore
+            await i.channel.purge(limit=limit+1, bulk=True, check=lambda m: m.id != original.id)  
+        await i.followup.send(content='Cleared by {}, I suppose!'.format(i.user.mention))
 
 
     @app_commands.command(name="purge")
@@ -132,9 +132,9 @@ class Admin(commands.Cog):
         if member == self.bot.user:
             await i.response.send_message("Nope, in fact!")
         elif member:
-            async for message in i.channel.history(oldest_first=False):  # type: ignore
-                if message.author == member:  # type: ignore
-                    await message.delete()  # type: ignore
+            async for message in i.channel.history(oldest_first=False):  
+                if message.author == member:  
+                    await message.delete()  
             await i.response.send_message(f'I have cleansed this channel of {member.mention}\'s messages, in fact!')
         else:
             await i.response.send_message("Which degenerate's messages do you want to yeet, I suppose?!")
@@ -148,13 +148,13 @@ class Admin(commands.Cog):
         Args:
             ctx (commands.Bot.Context): the context for this command
         """
-        msg = f'Logged in as: {self.bot.user.name}\n'  # type: ignore
+        msg = f'Logged in as: {self.bot.user.name}\n'  
         msg += f'Server List ({len(self.bot.guilds)})\n'
         server_counter = 1
         for guild in set(self.bot.guilds):
-            msg += f"{server_counter}. {guild.name}, owned by {guild.owner} with {guild.member_count} members\n"  # type: ignore
+            msg += f"{server_counter}. {guild.name}, owned by {guild.owner} with {guild.member_count} members\n"  
             server_counter += 1
-        await ctx.send(msg)  # type: ignore
+        await ctx.send(msg)  
 
     
     @commands.command(aliases=["kill"])
@@ -171,21 +171,21 @@ class Admin(commands.Cog):
 
     @commands.command()
     @commands.is_owner()
-    async def toggle(self, ctx: commands.Context[Bot], cmd):  # type: ignore
+    async def toggle(self, ctx: commands.Context[Bot], cmd):  
         """Toggles commands on and off.
 
         Args:
             ctx (commands.Bot.Context): the context for this command
             cmd (str): the command to toggle
         """
-        cmd = self.bot.get_command(cmd)  # type: ignore
+        cmd = self.bot.get_command(cmd)  
 
-        if ctx.command == cmd:  # type: ignore
+        if ctx.command == cmd:  
             await ctx.reply("Wait, that's illegal, I suppose!")
         else:
-            cmd.enabled = not cmd.enabled  # type: ignore
-            status = "enabled" if cmd.enabled else "disabled"  # type: ignore
-            await ctx.send(f"I have {status} the `{cmd.qualified_name}` command, in fact!")  # type: ignore
+            cmd.enabled = not cmd.enabled  
+            status = "enabled" if cmd.enabled else "disabled"  
+            await ctx.send(f"I have {status} the `{cmd.qualified_name}` command, in fact!")  
 
 
 async def setup(bot: Bot):

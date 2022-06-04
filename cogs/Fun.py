@@ -26,7 +26,7 @@ class Fun(commands.Cog):
             query (str): the phrase to look for. Defaults to "".
         """
         await i.response.defer()
-        session: ClientSession = self.bot.session  # type: ignore
+        session: ClientSession = self.bot.session  
         async with session.get(self.normal_API+query) as r:
             if r.status == 200:
                 response = await r.read()
@@ -51,9 +51,9 @@ class Fun(commands.Cog):
             await i.response.send_message("What do you want me to say, in fact?!")
             return
         if random.randint(1, 100) % 2 == 0:
-            await i.response.send_message(msg + ", in fact!")  # type: ignore
+            await i.response.send_message(msg + ", in fact!")  
         else:
-            await i.response.send_message(msg + ", I suppose!")  # type: ignore
+            await i.response.send_message(msg + ", I suppose!")  
 
     
     @app_commands.command(name="roll")
@@ -69,7 +69,7 @@ class Fun(commands.Cog):
             number = random.randint(1, num)
         else:
             number = random.randint(1, 100)
-        await i.response.send_message(f"{i.user.name} Just rolled **{number}**, I suppose!")  # type: ignore
+        await i.response.send_message(f"{i.user.name} Just rolled **{number}**, I suppose!")  
 
 
     async def rps_autocomplete(self,
@@ -131,28 +131,28 @@ class Fun(commands.Cog):
         """
         if heads is not None and tails is None:
             embed = discord.Embed(
-                title="Error", description=f"{i.user.mention} tried to flip a coin but didn't specify what for is tails, I suppose!")  # type: ignore
+                title="Error", description=f"{i.user.mention} tried to flip a coin but didn't specify what for is tails, I suppose!")  
             await i.response.send_message(embed=embed)
 
         elif heads is None or tails is None:
             if random.choice(self.determine_flip) == 1:
                 embed = discord.Embed(
-                    title="Coinflip", description=f"{i.user.mention} flipped a coin, and got **Heads**, I suppose!")  # type: ignore
+                    title="Coinflip", description=f"{i.user.mention} flipped a coin, and got **Heads**, I suppose!")  
                 await i.response.send_message(embed=embed)
 
             else:
                 embed = discord.Embed(
-                    title="Coinflip", description=f"{i.user.mention} flipped a coin, and got **Tails**, I suppose!")  # type: ignore
+                    title="Coinflip", description=f"{i.user.mention} flipped a coin, and got **Tails**, I suppose!")  
                 await i.response.send_message(embed=embed)
         else:
             if random.choice(self.determine_flip) == 1:
                 embed = discord.Embed(
-                    title="Coinflip", description=f"{i.user.mention} flipped a coin, and got **Heads** for **{heads}**, I suppose!")  # type: ignore
+                    title="Coinflip", description=f"{i.user.mention} flipped a coin, and got **Heads** for **{heads}**, I suppose!")  
                 await i.response.send_message(embed=embed)
 
             else:
                 embed = discord.Embed(
-                    title="Coinflip", description=f"{i.user.mention} flipped a coin, and got **Tails** for **{tails}**, I suppose!")  # type: ignore
+                    title="Coinflip", description=f"{i.user.mention} flipped a coin, and got **Tails** for **{tails}**, I suppose!")  
                 await i.response.send_message(embed=embed)
 
 

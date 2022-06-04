@@ -22,8 +22,8 @@ class FilterView(ui.View):
         
         
     def disabled(self):
-        for btn in self.children:  # type: ignore
-            btn.disabled = True  # type: ignore
+        for btn in self.children:  
+            btn.disabled = True  
         return self
     
     
@@ -34,51 +34,51 @@ class FilterView(ui.View):
             if self.add_once:
                 await self.i.edit_original_message(embed=self.embed, view=self.disabled())
             else:
-                await self.i.edit_original_message(embed=self.new_embed, view=self.disabled())  # type: ignore
-            await msg.reply("This view just timed out, I suppose! You need to interact with it to keep it up, in fact!")  # type: ignore
+                await self.i.edit_original_message(embed=self.new_embed, view=self.disabled())  
+            await msg.reply("This view just timed out, I suppose! You need to interact with it to keep it up, in fact!")  
         
         
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        return interaction.user == self.i.user  # type: ignore
+        return interaction.user == self.i.user  
     
     
     async def apply_filter(self, choice: int):
-        with Image(filename="original_user_avatar.png") as img:  # type: ignore
+        with Image(filename="original_user_avatar.png") as img:  
             if choice == 0:
-                img.blur(radius=0, sigma=3)  # type: ignore
+                img.blur(radius=0, sigma=3)  
             elif choice == 1:
-                img.shade(gray=True,  # type: ignore
+                img.shade(gray=True,  
                           azimuth=286.0,
                           elevation=45.0
                             )
             elif choice == 2:
-                img.sharpen(radius=8, sigma=4)  # type: ignore
+                img.sharpen(radius=8, sigma=4)  
             elif choice == 3:
-                img.spread(radius=8.0)  # type: ignore
+                img.spread(radius=8.0)  
             elif choice == 4:
-                img.transform_colorspace('gray')  # type: ignore
-                img.edge(radius=1)  # type: ignore
+                img.transform_colorspace('gray')  
+                img.edge(radius=1)  
             elif choice == 5:
-                img.transform_colorspace('gray')  # type: ignore
-                img.emboss(radius=3.0, sigma=1.75)  # type: ignore
+                img.transform_colorspace('gray')  
+                img.emboss(radius=3.0, sigma=1.75)  
             elif choice == 6:
-                img.charcoal(radius=1.5, sigma=0.5)  # type: ignore
+                img.charcoal(radius=1.5, sigma=0.5)  
             elif choice == 7:
-                img.wave(amplitude=img.height / 32,  # type: ignore
-                        wave_length=img.width / 4)  # type: ignore
+                img.wave(amplitude=img.height / 32,  
+                        wave_length=img.width / 4)  
             elif choice == 8:
-                img.colorize(color="yellow", alpha="rgb(10%, 0%, 20%)")  # type: ignore
+                img.colorize(color="yellow", alpha="rgb(10%, 0%, 20%)")  
             elif choice == 9:
-                img.sepia_tone(threshold=0.8)  # type: ignore
+                img.sepia_tone(threshold=0.8)  
             elif choice == 10:
-                img.transform_colorspace("gray")  # type: ignore
-                img.sketch(0.5, 0.0, 98.0)  # type: ignore
+                img.transform_colorspace("gray")  
+                img.sketch(0.5, 0.0, 98.0)  
             elif choice == 11:
-                img.solarize(threshold=0.5 * img.quantum_range)  # type: ignore
+                img.solarize(threshold=0.5 * img.quantum_range)  
             elif choice == 12:
-                img.swirl(degree=-90)  # type: ignore
+                img.swirl(degree=-90)  
             elif choice == 13:
-                img.tint(color="yellow", alpha="rgb(40%, 60%, 80%)")  # type: ignore
+                img.tint(color="yellow", alpha="rgb(40%, 60%, 80%)")  
             else:
                 f = discord.File("./original_user_avatar.png", filename="original_user_avatar.png")
         
@@ -89,7 +89,7 @@ class FilterView(ui.View):
                 
                 await self.i.edit_original_message(attachments=[f], embed=self.new_embed)
             
-            img.save(filename="user_avatar.png")  # type: ignore
+            img.save(filename="user_avatar.png")  
         
         f = discord.File("./user_avatar.png", filename="user_avatar.png")
         
@@ -102,8 +102,8 @@ class FilterView(ui.View):
 
     
     async def update(self, choice: int):
-        session: ClientSession = self.bot.session  # type: ignore
-        url: str = self.image  # type: ignore
+        session: ClientSession = self.bot.session  
+        url: str = self.image  
         async with session.get(url) as resp:
             if resp.status == 200:
                 async with aiofiles.open('./original_user_avatar.png', mode='wb') as f:

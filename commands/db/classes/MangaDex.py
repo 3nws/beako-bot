@@ -42,7 +42,7 @@ class MangaDex:
         url = self.base_manga_url + \
             f'?limit={limit}&title={query}&availableTranslatedLanguage%5B%5D=en&order%5Btitle%5D=asc'
 
-        session: ClientSession = self.bot.session  # type: ignore
+        session: ClientSession = self.bot.session  
         async with session.get(url) as res:
             if res.status == 200:
                 resp = await res.read()
@@ -77,7 +77,7 @@ class MangaDex:
 
     async def get_manga_title(self, id: str) -> Optional[str]:
         url: str = self.base_manga_url + id
-        session: ClientSession = self.bot.session  # type: ignore
+        session: ClientSession = self.bot.session  
         async with session.get(url) as res:
             if res.status == 200:
                 resp = await res.read()
@@ -90,7 +90,7 @@ class MangaDex:
     
     async def get_scanlation_group(self, id: str) -> Optional[Dict[str, str]]:
         url: str = self.scanlation_base_url+id
-        session: ClientSession = self.bot.session  # type: ignore
+        session: ClientSession = self.bot.session  
         async with session.get(url) as res:
                 if res.status == 200:
                     resp = await res.read()
@@ -103,7 +103,7 @@ class MangaDex:
     async def get_latest(self, id: str) -> Optional[Chapter]:
         url: str = self.base_chapter_url + '?limit=5&manga=' + id + \
             '&translatedLanguage%5B%5D=en&order%5Bvolume%5D=desc&order%5Bchapter%5D=desc&excludedGroups%5B%5D=4f1de6a2-f0c5-4ac5-bce5-02c7dbb67deb'
-        session: ClientSession = self.bot.session  # type: ignore
+        session: ClientSession = self.bot.session  
         async with session.get(url) as res:
                 if res.status == 200:
                     resp = await res.read()
@@ -115,7 +115,7 @@ class MangaDex:
         if len(data)==0:
             url = self.base_chapter_url + '?limit=5&manga=' + id + \
             '&translatedLanguage%5B%5D=en&order%5Bvolume%5D=desc&order%5Bchapter%5D=desc'
-            session = self.bot.session  # type: ignore
+            session = self.bot.session  
             async with session.get(url) as res:
                     if res.status == 200:
                         resp = await res.read()
@@ -135,7 +135,7 @@ class MangaDex:
         
         url = f"https://api.mangadex.org/at-home/server/{chapter_id}"
         image_urls: List[str] = []
-        session: ClientSession = self.bot.session  # type: ignore
+        session: ClientSession = self.bot.session  
         async with session.get(url) as res:
                 if res.status == 200:
                     resp = await res.read()
@@ -156,7 +156,7 @@ class MangaDex:
         if query:
             url = self.base_manga_url + \
                 f'?limit=1&title={query}&availableTranslatedLanguage%5B%5D=en'
-            session: ClientSession = self.bot.session  # type: ignore
+            session: ClientSession = self.bot.session  
             async with session.get(url) as res:
                 if res.status == 200:
                         resp = await res.read()
@@ -169,7 +169,7 @@ class MangaDex:
             manga_id = rs['id']
             manga_info_url = self.base_manga_url + manga_id +\
                 "?includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist"
-            session = self.bot.session  # type: ignore
+            session = self.bot.session  
             async with session.get(manga_info_url) as res:
                 if res.status == 200:
                         resp = await res.read()

@@ -67,11 +67,11 @@ class Bot(commands.Bot):
     async def setup_hook(self) -> None:
         self.session = aiohttp.ClientSession()
         try:
-            self.client: Any = motor.motor_asyncio.AsyncIOMotorClient('localhost', 27017, serverSelectionTimeoutMS=5000)  # type: ignore
+            self.client: Any = motor.motor_asyncio.AsyncIOMotorClient('localhost', 27017, serverSelectionTimeoutMS=5000)  
             print(await self.client.server_info())
-        except ServerSelectionTimeoutError:  # type: ignore
+        except ServerSelectionTimeoutError:  
             print("Local not available!")
-            self.client = motor.motor_asyncio.AsyncIOMotorClient(os.getenv("DB_URL"))  # type: ignore
+            self.client = motor.motor_asyncio.AsyncIOMotorClient(os.getenv("DB_URL"))  
             
         self.add_view(PersistentViewHelp("0", self))
         
@@ -79,7 +79,7 @@ class Bot(commands.Bot):
         
     async def close(self):
         await super().close()
-        await self.session.close()  # type: ignore
+        await self.session.close()  
 
 
     def get_client(self) -> Any:
@@ -123,7 +123,7 @@ class Dropdown(discord.ui.Select[PersistentViewHelp]):
             title=f"{mode_titles[int(self.mode)]}",
             description=new_desc,
         )
-        new_embed.set_thumbnail(url=self.bot.user.avatar.url)  # type: ignore
+        new_embed.set_thumbnail(url=self.bot.user.avatar.url)  
         await interaction.response.edit_message(embed=new_embed)
 
 
@@ -144,7 +144,7 @@ class Help:
                 title=f"{mode_titles[int(mode)]}",
                 description=desc,
             )
-            embed.set_thumbnail(url=self.bot.user.avatar.url)  # type: ignore
+            embed.set_thumbnail(url=self.bot.user.avatar.url)  
 
             selectView = PersistentViewHelp(mode, self.bot)
             await i.followup.send(content='', embed=embed, view=selectView)
@@ -158,13 +158,13 @@ class MyTree(CommandTree[discord.Client]):
     def __init__(self, client: discord.Client):
         super().__init__(client)
         self._cooldown_predicate: Any = cooldown_decorator(
-            1, 5)(lambda: None).__discord_app_commands_checks__[0]  # type: ignore
+            1, 5)(lambda: None).__discord_app_commands_checks__[0]  
         
 
     async def on_error(self, interaction: discord.Interaction, error: discord.app_commands.AppCommandError):
         if isinstance(error, discord.app_commands.CommandOnCooldown):
-            await interaction.response.send_message(f"{interaction.user.mention}, slow down, I suppose!\nYou can try again in {round(error.retry_after, 2)} seconds, in fact!")  # type: ignore
-            await asyncio.sleep(float(error.retry_after))  # type: ignore
+            await interaction.response.send_message(f"{interaction.user.mention}, slow down, I suppose!\nYou can try again in {round(error.retry_after, 2)} seconds, in fact!")  
+            await asyncio.sleep(float(error.retry_after))  
             await interaction.delete_original_message()
         elif isinstance(error, discord.app_commands.MissingPermissions):
             await interaction.response.send_message("You don't have permission to do that, I suppose!")
@@ -174,6 +174,6 @@ class MyTree(CommandTree[discord.Client]):
 
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        if interaction.type == discord.InteractionType.autocomplete or interaction.user.id == 442715989310832650:  # type: ignore
+        if interaction.type == discord.InteractionType.autocomplete or interaction.user.id == 442715989310832650:  
             return True
         return await self._cooldown_predicate(interaction)

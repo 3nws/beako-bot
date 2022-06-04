@@ -27,36 +27,36 @@ class PickView(ui.View):
                 self.remove_item(self.children[j])
         
     def disabled(self):
-        for btn in self.children:  # type: ignore
-            btn.disabled = True  # type: ignore
+        for btn in self.children:  
+            btn.disabled = True  
         return self
         
     async def on_timeout(self):
         self.stop()
-        await self.i.edit_original_message(embed=self.embed, view=self.disabled())  # type: ignore
+        await self.i.edit_original_message(embed=self.embed, view=self.disabled())  
         msg = await self.i.original_message()
-        await msg.reply("This view just timed out, I suppose! You need to interact with it to keep it up, in fact!")  # type: ignore
+        await msg.reply("This view just timed out, I suppose! You need to interact with it to keep it up, in fact!")  
         
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        return interaction.user == self.i.user  # type: ignore
+        return interaction.user == self.i.user  
     
     async def find_one(self):
-        channel_exist: Dict[str, str] = await self.channels.find_one(  # type: ignore
+        channel_exist: Dict[str, str] = await self.channels.find_one(  
                         {
-                        "channel_id": self.i.channel_id,  # type: ignore
-                        "guild_id": self.i.guild.id,  # type: ignore
+                        "channel_id": self.i.channel_id,  
+                        "guild_id": self.i.guild.id,  
                         }
                     )
         if not channel_exist:
-            channel_exist: Dict[str, str] = await self.channels.insert_one({  # type: ignore
-                'channel_id': self.i.channel_id,  # type: ignore
-                "guild_id": self.i.guild.id,  # type: ignore
+            channel_exist: Dict[str, str] = await self.channels.insert_one({  
+                'channel_id': self.i.channel_id,  
+                "guild_id": self.i.guild.id,  
                 'mangas': '{}',
             })
-            channel_exist: Dict[str, str] = await self.channels.find_one(  # type: ignore
+            channel_exist: Dict[str, str] = await self.channels.find_one(  
                         {
-                        "channel_id": self.i.channel_id,  # type: ignore
-                        "guild_id": self.i.guild.id,  # type: ignore
+                        "channel_id": self.i.channel_id,  
+                        "guild_id": self.i.guild.id,  
                         }
                     )
         return literal_eval(channel_exist['mangas'])
@@ -65,16 +65,16 @@ class PickView(ui.View):
         res = await self.find_one()
         titles = self.info[0]
         manga_ids = self.info[1]
-        if self.i.command.name == "add":  # type: ignore
+        if self.i.command.name == "add":  
             if manga_ids[choice] not in res:
                 chapter_response: Optional[Chapter] = await self.md.get_latest(manga_ids[choice])
-                title_response = chapter_response.get_title()  # type: ignore
+                title_response = chapter_response.get_title()  
                 latest = title_response[0]
                 res.update({f"{manga_ids[choice]}": str(latest)})
-                await self.channels.find_one_and_update(  # type: ignore
+                await self.channels.find_one_and_update(  
                     {
-                        'channel_id': self.i.channel_id,  # type: ignore
-                        "guild_id": self.i.guild.id,  # type: ignore
+                        'channel_id': self.i.channel_id,  
+                        "guild_id": self.i.guild.id,  
                         },
                     {
                         '$set': {
@@ -82,14 +82,14 @@ class PickView(ui.View):
                         }
                     }
                 )
-                await self.i.channel.send(f"This channel will receive notifications on new chapters of {titles[choice]}, I suppose!")  # type: ignore
+                await self.i.channel.send(f"This channel will receive notifications on new chapters of {titles[choice]}, I suppose!")  
         else:
             if manga_ids[choice] in res:
                 res.pop(manga_ids[choice])
-                await self.channels.find_one_and_update(  # type: ignore
+                await self.channels.find_one_and_update(  
                     {
-                        'channel_id': self.i.channel_id,  # type: ignore
-                        "guild_id": self.i.guild.id,  # type: ignore
+                        'channel_id': self.i.channel_id,  
+                        "guild_id": self.i.guild.id,  
                         },
                     {
                         '$set': {
@@ -98,7 +98,7 @@ class PickView(ui.View):
                     }
                 )
                 title = titles[choice]
-                await self.i.channel.send(f"This channel will no longer receive notifications on new chapters of {title}, I suppose!")  # type: ignore
+                await self.i.channel.send(f"This channel will no longer receive notifications on new chapters of {title}, I suppose!")  
             
         
     @ui.button(emoji='1️⃣', style=discord.ButtonStyle.blurple)

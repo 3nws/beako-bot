@@ -2,7 +2,7 @@ import discord
 import os
 import json
 
-from dotenv import load_dotenv  # type: ignore
+from dotenv import load_dotenv  
 from typing import List, Dict, Optional
 from aiohttp import ClientSession
 from Bot import Bot
@@ -41,7 +41,7 @@ class OsuAPI:
 
     async def get_user(self, username: str, mode: str) -> Optional[Dict[str, str]]:
         url = f"{self.base_url}get_user{self.key_query}&u={username}&m={mode}"
-        session: ClientSession = self.bot.session  # type: ignore
+        session: ClientSession = self.bot.session  
         async with session.get(url) as r:
             if r.status == 200:
                 response = await r.read()
@@ -66,7 +66,7 @@ class OsuAPI:
 
     async def _get_beatmap(self, id: str):
         url = f"{self.base_url}get_beatmaps{self.key_query}&b={id}"
-        session: ClientSession = self.bot.session  # type: ignore
+        session: ClientSession = self.bot.session  
         async with session.get(url) as r:
             if r.status == 200:
                 response = await r.read()
@@ -78,7 +78,7 @@ class OsuAPI:
 
     async def get_user_recent(self, username: str, mode: str, limit: str):
         url = f"{self.base_url}get_user_recent{self.key_query}&u={username}&m={mode}&limit={limit}"
-        session: ClientSession = self.bot.session  # type: ignore
+        session: ClientSession = self.bot.session  
         async with session.get(url) as r:
             if r.status == 200:
                 response = await r.read()
@@ -93,7 +93,7 @@ class OsuAPI:
 
     async def get_best(self, username: str, mode: str, limit: str):
         url = f"{self.base_url}get_user_best{self.key_query}&u={username}&m={mode}&limit={limit}"
-        session: ClientSession = self.bot.session  # type: ignore
+        session: ClientSession = self.bot.session  
         async with session.get(url) as r:
             if r.status == 200:
                 response = await r.read()

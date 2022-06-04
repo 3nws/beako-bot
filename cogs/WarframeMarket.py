@@ -19,7 +19,7 @@ class WarframeMarket(commands.Cog):
     async def sync(self):
         """Syncs the items information from WarframeMarket.
         """
-        session: ClientSession = self.bot.session  # type: ignore
+        session: ClientSession = self.bot.session  
         async with session.get(self.base_url+"/items") as r:
             if r.status == 200:
                 response = await r.read()
@@ -88,7 +88,7 @@ class WarframeMarket(commands.Cog):
             choices (app_commands.Choice[str]): buying or selling?
             item_name (str): item name to search for
         """
-        order_type: str = choices.value  # type: ignore
+        order_type: str = choices.value  
         if not self.is_synced:
             await self.sync()
         item_info = None
@@ -97,7 +97,7 @@ class WarframeMarket(commands.Cog):
                 item_info = item
         if item_info is not None:
             url_name = item_info['url_name']
-            session: ClientSession = self.bot.session  # type: ignore
+            session: ClientSession = self.bot.session  
             item_detail: Dict[str, Any] = {}
             async with session.get(self.base_url+"/items/"+url_name) as r:
                 if r.status == 200:
@@ -117,7 +117,7 @@ class WarframeMarket(commands.Cog):
             desc += f"Drops from " if len(drop_list)>0 else ""
             for i in range(len(drop_list)):
                 desc += drop_list[i]['name']+', ' if i < len(drop_list)-1 else drop_list[i]['name']
-            session = self.bot.session  # type: ignore
+            session = self.bot.session  
             orders_sorted: List[Dict[Union[Dict[str, Any], str], Any]] = []
             async with session.get(self.base_url+"/items/"+url_name+"/orders") as r:
                 if r.status == 200:
