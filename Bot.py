@@ -1,15 +1,17 @@
+import asyncio
+import os
 import motor.motor_asyncio
 import traceback
 import sys
 import aiohttp
 import discord
-import os
 
 from discord.app_commands.checks import cooldown as cooldown_decorator
 from discord.app_commands import CommandTree
 from pymongo.errors import ServerSelectionTimeoutError
 from typing import Any, List
 from discord.ext import commands
+from aiohttp import ClientSession
 from Help_Messages import messages
 from discord.ui import View
 
@@ -53,7 +55,7 @@ class Bot(commands.Bot):
     def __init__(self, *args: List[Any], **kwargs: List[Any]):
         super().__init__(*args, **kwargs)
         self.client = None
-        self.session = None
+        self.session: ClientSession
 
 
     async def load_cogs(self):
@@ -67,11 +69,11 @@ class Bot(commands.Bot):
     async def setup_hook(self) -> None:
         self.session = aiohttp.ClientSession()
         try:
-            self.client: Any = motor.motor_asyncio.AsyncIOMotorClient('localhost', 27017, serverSelectionTimeoutMS=5000)  
+            self.client: Any = motor.motor_asyncio.AsyncIOMotorClient('localhost', 27017, serverSelectionTimeoutMS=5000)      # type: ignore
             print(await self.client.server_info())
         except ServerSelectionTimeoutError:  
             print("Local not available!")
-            self.client = motor.motor_asyncio.AsyncIOMotorClient(os.getenv("DB_URL"))  
+            self.client = motor.motor_asyncio.AsyncIOMotorClient(os.getenv("DB_URL"))      # type: ignore
             
         self.add_view(PersistentViewHelp("0", self))
         
@@ -123,7 +125,7 @@ class Dropdown(discord.ui.Select[PersistentViewHelp]):
             title=f"{mode_titles[int(self.mode)]}",
             description=new_desc,
         )
-        new_embed.set_thumbnail(url=self.bot.user.avatar.url)  
+        new_embed.set_thumbnail(url=self.bot.user.avatar.url)
         await interaction.response.edit_message(embed=new_embed)
 
 
@@ -158,7 +160,7 @@ class MyTree(CommandTree[discord.Client]):
     def __init__(self, client: discord.Client):
         super().__init__(client)
         self._cooldown_predicate: Any = cooldown_decorator(
-            1, 5)(lambda: None).__discord_app_commands_checks__[0]  
+            1, 5)(lambda: None).__discord_app_commands_checks__[0]      # type: ignore
         
 
     async def on_error(self, interaction: discord.Interaction, error: discord.app_commands.AppCommandError):

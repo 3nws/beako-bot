@@ -6,11 +6,10 @@ import json
 from discord.ext import commands
 from discord import app_commands
 from aiohttp import ClientSession
-from dotenv import load_dotenv  
-from pysaucenao import SauceNao, PixivSource, TwitterSource  
+from dotenv import load_dotenv    # type: ignore
+from pysaucenao import SauceNao, PixivSource, TwitterSource    # type: ignore
 from pysaucenao.containers import SauceNaoResults
-from typing import Callable, Optional, Dict, List
-from typing_extensions import Self
+from typing import Callable, Optional, Dict, List, Union, cast
 from .classes.FilterView import FilterView
 from Bot import Bot
 
@@ -56,7 +55,7 @@ class Util(commands.Cog):
 
     @app_commands.command(name="avatar")
     @app_commands.describe(member="The member you want to ~~steal~~borrow their avatar from, in fact!")
-    async def avatar(self, i: discord.Interaction, member: Optional[discord.Member]):
+    async def avatar(self, i: discord.Interaction, member: Optional[discord.Member]) -> None:
         """Get a member's avatar.
 
         Args:
@@ -98,13 +97,13 @@ class Util(commands.Cog):
         )
         if member:
             if member.display_avatar is None:
-                return await self.avatar(i, member)  
+                return await self.avatar(i, member)      # type: ignore
             avatar_frame.add_field(name=str(
                 i.user) + " requested", value=member.mention + "'s server avatar, I suppose!")  
             avatar_frame.set_image(url=f'{member.display_avatar.url}')
         else:
             if i.user.display_avatar is None:  
-                return await self.avatar(i, member)  
+                return await self.avatar(i, member)      # type: ignore
             avatar_frame.add_field(
                 name=str(i.user) + " requested", value=" their own server avatar, I suppose!")  
             avatar_frame.set_image(url=f'{i.user.display_avatar.url}')  
@@ -114,7 +113,7 @@ class Util(commands.Cog):
 
     @app_commands.command(name="banner")
     @app_commands.describe(member="The member you want to ~~steal~~borrow their banner from, in fact!")
-    async def banner(self, i: discord.Interaction, member: Optional[discord.Member]):
+    async def banner(self, i: discord.Interaction, member: Optional[discord.Member]) -> None:
         """Get the member's banner.
 
         Args:
@@ -125,7 +124,8 @@ class Util(commands.Cog):
             color=discord.Colour.random()
         )
         image_size = '?size=1024'
-        member = i.user if not member else member  
+        if member is None:
+            member = cast(discord.Member, i.user)
         base_url = 'https://discord.com/api'
         users_endpoint = f'/users/{member.id}'  
         headers = {'Authorization': f'Bot {self.TOKEN}'}
@@ -177,29 +177,29 @@ class Util(commands.Cog):
             sauce_frame = discord.Embed(
                 color=discord.Colour.random()
             )
-            results: SauceNaoResults = await self.saucenao.from_url(url)  
+            results: SauceNaoResults = await self.saucenao.from_url(url)      # type: ignore
             pixiv_result = ""
             twitter_result = ""
-            for result in results:  
+            for result in results:      # type: ignore
                 if isinstance(result, PixivSource):
-                    pixiv_result = result  
+                    pixiv_result = result      # type: ignore
                 elif isinstance(result, TwitterSource):  
-                    twitter_result = result  
+                    twitter_result = result      # type: ignore
             if pixiv_result and twitter_result:
-                sauce_frame.add_field(name=f"{pixiv_result.title} by {pixiv_result.author_name} with {str(pixiv_result.similarity)} similarity",  
-                                      value=f"on [Pixiv]({pixiv_result.source_url}),\non [Twitter]({twitter_result.source_url})")  
-                sauce_frame.set_thumbnail(url=pixiv_result.thumbnail)  
+                sauce_frame.add_field(name=f"{pixiv_result.title} by {pixiv_result.author_name} with {str(pixiv_result.similarity)} similarity",      # type: ignore
+                                      value=f"on [Pixiv]({pixiv_result.source_url}),\non [Twitter]({twitter_result.source_url})")      # type: ignore
+                sauce_frame.set_thumbnail(url=pixiv_result.thumbnail)      # type: ignore
             elif not pixiv_result and not twitter_result:
                 sauce_frame = discord.Embed(
                     title="No results!", description=f"I couldn't find that on pixiv or twitter, I suppose!")
             elif not twitter_result:
-                sauce_frame.add_field(name=f"{pixiv_result.title} by {pixiv_result.author_name} with {str(pixiv_result.similarity)} similarity",  
-                                      value=f"on [Pixiv]({pixiv_result.source_url})")  
-                sauce_frame.set_thumbnail(url=pixiv_result.thumbnail)  
+                sauce_frame.add_field(name=f"{pixiv_result.title} by {pixiv_result.author_name} with {str(pixiv_result.similarity)} similarity",      # type: ignore
+                                      value=f"on [Pixiv]({pixiv_result.source_url})")      # type: ignore
+                sauce_frame.set_thumbnail(url=pixiv_result.thumbnail)      # type: ignore
             else:
-                sauce_frame.add_field(name=f"Image posted by {twitter_result.author_name} with {str(twitter_result.similarity)} similarity",  
-                                      value=f"on [Twitter]({twitter_result.source_url})")  
-                sauce_frame.set_thumbnail(url=twitter_result.thumbnail)  
+                sauce_frame.add_field(name=f"Image posted by {twitter_result.author_name} with {str(twitter_result.similarity)} similarity",      # type: ignore
+                                      value=f"on [Twitter]({twitter_result.source_url})")      # type: ignore
+                sauce_frame.set_thumbnail(url=twitter_result.thumbnail)      # type: ignore
 
             sauce_frame.set_footer(
                 text=f"on {str(i.user)}'s request, I suppose!", icon_url=i.user.avatar.url)  
@@ -251,15 +251,15 @@ class Util(commands.Cog):
                 color=discord.Colour.random(),
             )
         embed.set_footer(
-                text=f"Poll created by {i.user.nick}", icon_url=i.user.avatar.url)  
+                text=f"Poll created by {i.user.nick}", icon_url=i.user.avatar.url)      # type: ignore
         members_first_choice: List[int] = []
         members_second_choice: List[int] = []
         if anonymous:
-            button_one: discord.ui.Button[Self] = discord.ui.Button(emoji="1️⃣", style=discord.ButtonStyle.blurple, custom_id="one")
-            button_two: discord.ui.Button[Self] = discord.ui.Button(emoji="2️⃣", style=discord.ButtonStyle.blurple, custom_id="two")
+            button_one: discord.ui.Button[discord.ui.View] = discord.ui.Button(emoji="1️⃣", style=discord.ButtonStyle.blurple, custom_id="one")
+            button_two: discord.ui.Button[discord.ui.View] = discord.ui.Button(emoji="2️⃣", style=discord.ButtonStyle.blurple, custom_id="two")
             
             async def callback(interaction: discord.Interaction):
-                choice: str = interaction.data['custom_id']  
+                choice: str = interaction.data['custom_id']    # type: ignore
                 user_id: int = interaction.user.id  
                 if choice == "one" and user_id not in members_first_choice + members_second_choice:
                     members_first_choice.append(user_id)
@@ -278,9 +278,9 @@ class Util(commands.Cog):
                 results.set_footer(
                     text=f"For the poll '{question}'", icon_url=i.user.avatar.url)  
                 for item in view.children:
-                    item.disabled = True  
+                    item.disabled = True      # type: ignore
                 await i.edit_original_message(embed=embed, view=view)
-                await i.channel.send(embed=results)  
+                await i.channel.send(embed=results)      # type: ignore
                 
             button_one.callback = callback
             button_two.callback = callback
@@ -289,7 +289,7 @@ class Util(commands.Cog):
             view.on_timeout = on_timeout
             await i.response.send_message("I'll be back with the results in three minutes, I suppose!", embed=embed, view=view)  
         else:
-            msg: discord.Message = await i.channel.send(embed=embed)  
+            msg: discord.Message = await i.channel.send(embed=embed)      # type: ignore
             emojis = ['1️⃣', '2️⃣']
 
             for emoji in emojis:
@@ -299,7 +299,7 @@ class Util(commands.Cog):
             
             await asyncio.sleep(180)
 
-            message_1: discord.Message = await i.channel.fetch_message(msg.id)  
+            message_1: discord.Message = await i.channel.fetch_message(msg.id)      # type: ignore
 
             reactions: Dict[Union[discord.PartialEmoji, discord.Emoji, str], int] = {react.emoji: react.count for react in message_1.reactions}  
 
@@ -312,7 +312,7 @@ class Util(commands.Cog):
             results.set_footer(
                 text=f"For the poll '{question}'", icon_url=i.user.avatar.url)  
 
-            await i.channel.send(embed=results)  
+            await i.channel.send(embed=results)      # type: ignore
 
 
 async def setup(bot: Bot):

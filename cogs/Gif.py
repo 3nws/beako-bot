@@ -3,11 +3,11 @@ import random
 import os
 import json
 
-from dotenv import load_dotenv  
+from dotenv import load_dotenv      # type: ignore
 from discord.ext import commands
 from discord import app_commands
 from aiohttp import ClientSession
-from typing import Optional
+from typing import Optional, Union
 from Bot import Bot
 
 
@@ -49,7 +49,7 @@ class Gif(commands.Cog):
 
     @app_commands.command(name="hug")
     @app_commands.describe(member="The member you want to hug, I suppose!")
-    async def hug(self, i: discord.Interaction, member: Optional[discord.Member]):
+    async def hug(self, i: discord.Interaction, member: Optional[Union[discord.Member, discord.User]]):
         """Hug someone.
 
         Args:
@@ -113,7 +113,7 @@ class Gif(commands.Cog):
 
     @app_commands.command(name="pat")
     @app_commands.describe(member="The member you want to pat, I suppose!")
-    async def pat(self, i: discord.Interaction, member: Optional[discord.Member]):
+    async def pat(self, i: discord.Interaction, member: Optional[Union[discord.Member, discord.User]]):
         """Pat someone that deserves it.
 
         Args:

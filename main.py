@@ -4,7 +4,7 @@ import asyncio
 import logging
 
 from discord.app_commands.models import AppCommand
-from dotenv import load_dotenv  
+from dotenv import load_dotenv      # type: ignore
 from discord.ext import commands
 from typing import List, Literal, Optional
 
@@ -36,9 +36,9 @@ intents.message_content = True
 
 client = discord.Client(intents=intents)
 tree = MyTree(client)
-bot = Bot(command_prefix="r.", intents=intents, tree_cls=MyTree, help_command=None,    
+bot = Bot(command_prefix="r.", intents=intents, tree_cls=MyTree, help_command=None,      # type: ignore
           activity=discord.Activity(
-              type=discord.ActivityType.listening, name="/beakohelp and Songstress Liliana!" 
+              type=discord.ActivityType.listening, name="/beakohelp and Songstress Liliana!"      # type: ignore
           ))  
 
 
@@ -85,16 +85,16 @@ async def sync(ctx: commands.Context[Bot], guilds: commands.Greedy[discord.Objec
         )
         return
 
-    fmt: int = 0
+    fmt_i: int = 0
     for guild in guilds:
         try:
             await ctx.bot.tree.sync(guild=guild)  
         except discord.HTTPException:
             pass
         else:
-            fmt += 1
+            fmt_i += 1
 
-    await ctx.send(f"Synced the tree to {fmt}/{len(guilds)} guilds.")
+    await ctx.send(f"Synced the tree to {fmt_i}/{len(guilds)} guilds.")
   
 
 @bot.event

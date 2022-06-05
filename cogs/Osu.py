@@ -6,7 +6,6 @@ from discord import app_commands
 from cogs.classes.OsuAPI import OsuAPI
 from OsuMods import num_to_mod
 from typing import Dict, Optional
-from typing_extensions import Self
 from Bot import Bot
 
 
@@ -48,12 +47,12 @@ class Osu(commands.Cog):
                 )
                 embed.set_thumbnail(url=player['avatar_url'])
                 
-            select: Select[Self] = Select(options=self.osu.game_mode_options,
+            select: Select[View] = Select(options=self.osu.game_mode_options,
                             placeholder="Select a game mode.",
                             custom_id="persistent_view:osu")
 
             async def select_callback(interaction: discord.Interaction):
-                mode: str = (interaction.data['values'])[0]  
+                mode: str = (interaction.data['values'])[0]      # type: ignore
                 player: Optional[Dict[str, str]] = await self.osu.get_user(player_name, mode)
                 if player is not None:
                     game_mode = self.osu.game_modes[mode]
@@ -131,12 +130,12 @@ class Osu(commands.Cog):
                 )
                 embed.set_thumbnail(url=player['avatar_url'])
 
-            select: Select[Self] = Select(options=self.osu.game_mode_options,
+            select: Select[View] = Select(options=self.osu.game_mode_options,
                             placeholder="Select a game mode.",
                             custom_id="persistent_view:recent")
 
             async def select_callback(interaction: discord.Interaction):
-                mode: str = (interaction.data['values'])[0]  
+                mode: str = (interaction.data['values'])[0]      # type: ignore
                 scores = await self.osu.get_user_recent(player_name, mode, "5")
                 player = await self.osu.get_user(player_name, mode)
                 game_mode = self.osu.game_modes[mode]
@@ -242,12 +241,12 @@ class Osu(commands.Cog):
                 )
                 embed.set_thumbnail(url=player['avatar_url'])
 
-            select: Select[Self] = Select(options=self.osu.game_mode_options,
+            select: Select[View] = Select(options=self.osu.game_mode_options,
                             placeholder="Select a game mode.",
                             custom_id="persistent_view:best")
 
             async def select_callback(interaction: discord.Interaction):
-                mode: str = (interaction.data['values'])[0]  
+                mode: str = (interaction.data['values'])[0]      # type: ignore
                 player = await self.osu.get_user(player_name, mode)
                 best_scores = await self.osu.get_best(player_name, mode, "5")
                 game_mode = self.osu.game_modes[mode]

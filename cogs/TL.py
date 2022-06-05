@@ -10,9 +10,9 @@ from Bot import Bot
 class TL(commands.Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
-        self.g = async_google_trans_new.AsyncTranslator()  
+        self.g = async_google_trans_new.AsyncTranslator()      # type: ignore
         self.is_synced = False
-        self.langs: List[str] = list(async_google_trans_new.constant.LANGUAGES.values())  
+        self.langs: List[str] = list(async_google_trans_new.constant.LANGUAGES.values())      # type: ignore
 
     
     async def lang_autocomplete(self,
@@ -46,9 +46,9 @@ class TL(commands.Cog):
             language (str): the languate to translate it to
         """
         await i.response.defer()
-        detected: str = (await self.g.detect(text))[1].capitalize()  
-        lang_code: str = [s for s in async_google_trans_new.constant.LANGUAGES if async_google_trans_new.constant.LANGUAGES[s]==language][0]  
-        res: str = (await self.g.translate(text, lang_code)).strip()  
+        detected: str = (await self.g.detect(text))[1].capitalize()      # type: ignore
+        lang_code: str = [s for s in async_google_trans_new.constant.LANGUAGES if async_google_trans_new.constant.LANGUAGES[s]==language][0]      # type: ignore
+        res: str = (await self.g.translate(text, lang_code)).strip()      # type: ignore
         language = language.capitalize()
         await i.followup.send(f'"{text}" ({detected}) translates to "{res}" in {language}, in fact!')
         

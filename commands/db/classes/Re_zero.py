@@ -1,4 +1,4 @@
-import html5lib  
+import html5lib      # type: ignore
 
 from bs4 import BeautifulSoup
 from typing import Tuple, Union, Any, Optional

@@ -3,7 +3,6 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 from typing import List, Optional, Any, Dict, Mapping
-from aiohttp import ClientSession
 from pymongo.collection import Collection
 from io import BytesIO
 from Bot import Bot
@@ -12,7 +11,7 @@ from Bot import Bot
 class Tag(commands.Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
-        self.client: ClientSession = self.bot.get_client()  
+        self.client = self.bot.get_client()  
         db_tags: Collection[Mapping[str, Any]] = self.client.tags  
         self.tags_coll = db_tags.data
         self.tags_list: Dict[str, Any] = {}
@@ -24,10 +23,10 @@ class Tag(commands.Cog):
         Args:
             guild_id (int): the id of the guild to sync
         """
-        self.tags_list = await self.tags_coll.find_one({  
+        self.tags_list = await self.tags_coll.find_one({      # type: ignore
             "guild_id": guild_id, 
         })
-        self.tags_list = self.tags_list['tags'] if self.tags_list is not None and 'tags' in self.tags_list.keys() else {}  
+        self.tags_list = self.tags_list['tags'] if self.tags_list is not None and 'tags' in self.tags_list.keys() else {}      # type: ignore
          
     
     group = app_commands.Group(name="tag", description="Tag command group...", guild_only=True)
@@ -102,7 +101,7 @@ class Tag(commands.Cog):
             try:
                 tag_content = data.decode('ascii')
             except UnicodeDecodeError:
-                tag_content = data  
+                tag_content = data      # type: ignore
         if tag_content is None:
             return await i.response.send_message("What should this tag return, in fact!")
         await self.sync_tags(i.guild.id)  
@@ -116,10 +115,10 @@ class Tag(commands.Cog):
                     tag_name: tag_content,
                 }
             }
-            await self.tags_coll.insert_one(self.tags_list)  
+            await self.tags_coll.insert_one(self.tags_list)      # type: ignore
             new = True
         if not new:
-            await self.tags_coll.find_one_and_update(  
+            await self.tags_coll.find_one_and_update(      # type: ignore
                                     {
                                         'guild_id': i.guild.id,  
                                         },
@@ -145,7 +144,7 @@ class Tag(commands.Cog):
         """
         await self.sync_tags(i.guild.id)  
         self.tags_list.pop(tag_name)
-        await self.tags_coll.find_one_and_update(  
+        await self.tags_coll.find_one_and_update(      # type: ignore
                                 {
                                     'guild_id': i.guild.id,  
                                     },
