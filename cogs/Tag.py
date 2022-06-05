@@ -81,11 +81,12 @@ class Tag(commands.Cog):
             
         
     @group.command(name="add")
-    @app_commands.describe(tag_name="The soon to be added tag's name, in fact!", tag_content="Contents of this tag, I suppose!",
+    @app_commands.describe(tag_name="The soon to be added or edited tag's name, in fact!", tag_content="Contents of this tag, I suppose!",
                            tag_file="You can also pass a file as the tag's contents, in fact! It will override the previous argument, in fact!")
+    @app_commands.autocomplete(tag_name=tag_autocomplete)
     @app_commands.checks.has_permissions(manage_guild=True)
     async def add_tag(self, i: discord.Interaction, tag_name: str, tag_content: Optional[str], tag_file: Optional[discord.Attachment]):
-        """Add a tag to this guild.
+        """Add or edit a tag on this server.
 
         Args:
             i (discord.Interaction): the interaction that invokes this coroutine
@@ -96,6 +97,7 @@ class Tag(commands.Cog):
         Returns:
             None: None
         """
+        msg: str = "Tag added, in fact!"
         if tag_file is not None:
             data = await tag_file.read()
             try:
@@ -104,7 +106,9 @@ class Tag(commands.Cog):
                 tag_content = data      # type: ignore
         if tag_content is None:
             return await i.response.send_message("What should this tag return, in fact!")
-        await self.sync_tags(i.guild.id)  
+        await self.sync_tags(i.guild.id) 
+        if tag_name in self.tags_list:
+            msg = "Tag edited, in fact!"
         new = False
         if self.tags_list != {}:
             self.tags_list[tag_name] = tag_content
@@ -128,7 +132,7 @@ class Tag(commands.Cog):
                                         }
                                     }
                                 )
-        await i.response.send_message("Tag added, in fact!")
+        await i.response.send_message(msg)
         
         
     @group.command(name="remove")
