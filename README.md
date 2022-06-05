@@ -87,7 +87,7 @@ I use [pysaucenao](https://github.com/FujiMakoto/pysaucenao) for reverse image s
 
 ### TODOS
 
-- Switch to buttons pagination for the reader
+- Use BytesIO for image processing
 - Add more osu! functionality
-- Make the results prettier, they look awful
+- Make the results for osu! prettier, they look awful
 - Add tracking for animes as well
