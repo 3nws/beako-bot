@@ -1,55 +1,31 @@
 import discord      
 import aiofiles
 
-from wand.image import Image
 from discord import ui
 from aiohttp.client import ClientSession
 from Bot import Bot
 from typing import List, Optional
 from typing_extensions import Self
+from typing import Callable, Coroutine, Any, TypeVar
+from wand.image import Image
+from functools import wraps
 
 
-class FilterView(ui.View):
-    def __init__(self, i: discord.Interaction, embed: discord.Embed, bot: Bot):
-        super().__init__(timeout=60)
-        self.i = i
-        self.embed = embed
-        self.image = embed.image.url
-        self.bot = bot
-        self.filters: List[str] = []
-        self.new_embed = discord.Embed(colour=discord.Colour.random())
-        self.add_once: bool = True
-        
-        
-    def disabled(self):
-        for btn in self.children:  
-            btn.disabled = True      # type: ignore
-        return self
-    
-    
-    async def on_timeout(self):
-        self.stop()
-        msg = await self.i.original_message()
-        if msg:
-            if self.add_once:
-                await self.i.edit_original_message(embed=self.embed, view=self.disabled())
-            else:
-                await self.i.edit_original_message(embed=self.new_embed, view=self.disabled())  
-            await msg.reply("This view just timed out, I suppose! You need to interact with it to keep it up, in fact!")  
-        
-        
-    async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        return interaction.user == self.i.user  
-    
-    
-    async def apply_filter(self, choice: int):
+Coro = Callable[['FilterView', int], Coroutine[Any, Any, None]]       # Callable[Ellipis(singleton), Coroutine[YieldType, SendType, ReturnType]]
+F = TypeVar('F', bound='FilterView')
+
+
+def apply_filter(coro: Coro) -> Coro:
+    @wraps(coro)
+    async def inner(self: F, choice: int) -> None:      # type: ignore
+        await coro(self, choice)
         with Image(filename="original_user_avatar.png") as img:      # type: ignore
             if choice == 0:
                 img.blur(radius=0, sigma=3)      # type: ignore
             elif choice == 1:
                 img.shade(gray=True,      # type: ignore
-                          azimuth=286.0,
-                          elevation=45.0
+                        azimuth=286.0,
+                        elevation=45.0
                             )
             elif choice == 2:
                 img.sharpen(radius=8, sigma=4)      # type: ignore
@@ -99,9 +75,44 @@ class FilterView(ui.View):
         self.new_embed.set_image(url="attachment://user_avatar.png")
         
         await self.i.edit_original_message(attachments=[f], embed=self.new_embed)
+    return inner
 
+
+class FilterView(ui.View):
+    def __init__(self, i: discord.Interaction, embed: discord.Embed, bot: Bot):
+        super().__init__(timeout=60)
+        self.i = i
+        self.embed = embed
+        self.image = embed.image.url
+        self.bot = bot
+        self.filters: List[str] = []
+        self.new_embed = discord.Embed(colour=discord.Colour.random())
+        self.add_once: bool = True
+        
+        
+    def disabled(self):
+        for btn in self.children:  
+            btn.disabled = True      # type: ignore
+        return self
     
-    async def update(self, choice: int):
+    
+    async def on_timeout(self):
+        self.stop()
+        msg = await self.i.original_message()
+        if msg:
+            if self.add_once:
+                await self.i.edit_original_message(embed=self.embed, view=self.disabled())
+            else:
+                await self.i.edit_original_message(embed=self.new_embed, view=self.disabled())  
+            await msg.reply("This view just timed out, I suppose! You need to interact with it to keep it up, in fact!")  
+        
+        
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        return interaction.user == self.i.user  
+
+
+    @apply_filter
+    async def update(self, choice: int) -> None:
         session: ClientSession = self.bot.session  
         url: Optional[str] = self.image 
         if url:
@@ -109,10 +120,7 @@ class FilterView(ui.View):
                 if resp.status == 200:
                     async with aiofiles.open('./original_user_avatar.png', mode='wb') as f:
                         await f.write(await resp.read())
-        
-        await self.apply_filter(choice)
-        
-            
+
         
     @ui.button(label='Blur', style=discord.ButtonStyle.blurple)
     async def opt_one(self, interaction: discord.Interaction, button: discord.ui.Button[Self]):
