@@ -26,7 +26,7 @@ from Bot import Bot
 class DB(commands.Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
-        self.client = self.bot.get_client()  
+        self.client = self.bot.client  
         
         # channels db
         self.db_channels: Database[AsyncIOMotorClient] = self.client.channel_id      # type: ignore
@@ -96,6 +96,7 @@ class DB(commands.Cog):
     async def on_ready(self):
         self.tasks_filter_channels.start()  
         self.tasks_check_chapter.start()  
+
 
     async def cog_load(self) -> None:
         await super().cog_load()

@@ -54,7 +54,7 @@ modes = [
 class Bot(commands.Bot):
     def __init__(self, *args: List[Any], **kwargs: List[Any]):
         super().__init__(*args, **kwargs)
-        self.client = None
+        self._client = None
         self.session: ClientSession
 
 
@@ -69,23 +69,24 @@ class Bot(commands.Bot):
     async def setup_hook(self) -> None:
         self.session = aiohttp.ClientSession()
         try:
-            self.client: Any = motor.motor_asyncio.AsyncIOMotorClient('localhost', 27017, serverSelectionTimeoutMS=5000)      # type: ignore
-            print(await self.client.server_info())
+            self._client: Any = motor.motor_asyncio.AsyncIOMotorClient('localhost', 27017, serverSelectionTimeoutMS=5000)      # type: ignore
+            print(await self._client.server_info())
         except ServerSelectionTimeoutError:  
             print("Local not available!")
-            self.client = motor.motor_asyncio.AsyncIOMotorClient(os.getenv("DB_URL"))      # type: ignore
+            self._client = motor.motor_asyncio.AsyncIOMotorClient(os.getenv("DB_URL"))      # type: ignore
             
         self.add_view(PersistentViewHelp("0", self))
         
         await self.load_cogs()
         
     async def close(self):
-        await super().close()
         await self.session.close()  
+        await super().close()
 
 
-    def get_client(self) -> Any:
-        return self.client
+    @property
+    def client(self) -> Any:
+        return self._client
 
 
 class PersistentViewHelp(View):

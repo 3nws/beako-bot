@@ -11,7 +11,7 @@ from Bot import Bot
 class Tag(commands.Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
-        self.client = self.bot.get_client()  
+        self.client = self.bot.client  
         db_tags: Collection[Mapping[str, Any]] = self.client.tags  
         self.tags_coll = db_tags.data
         self.tags_list: Dict[str, Any] = {}
