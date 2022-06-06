@@ -17,10 +17,6 @@ Coro = Callable[['FilterView', int], Coroutine[Any, Any, None]]       # Callable
 F = TypeVar('F', bound='FilterView')
 
 
-
-called = 0
-
-
 def apply_filter(coro: Coro) -> Coro:
     @wraps(coro)
     async def inner(self: F, choice: int) -> None:      # type: ignore
