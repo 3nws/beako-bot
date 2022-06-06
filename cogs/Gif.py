@@ -22,6 +22,7 @@ class Gif(commands.Cog):
 
     _tenor_api_key = os.getenv('TENOR_API_KEY')
 
+
     def __init__(self, bot: Bot):
         self.bot = bot
         

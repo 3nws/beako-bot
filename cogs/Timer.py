@@ -22,6 +22,7 @@ class Timer(commands.Cog):
         "months"
     )
 
+
     def __init__(self, bot: Bot):
         self.bot = bot
         self.cities_list = []
@@ -32,7 +33,7 @@ class Timer(commands.Cog):
         
         
     async def sync(self):
-        """Syncs the cities/timezones information.
+        """Syncs the timezones information.
         """
         session: ClientSession = self.bot.session  
         async with session.get(self.sync_url) as r:
@@ -42,22 +43,13 @@ class Timer(commands.Cog):
                 self.is_synced = True
             else:
                 print("timeapi down!")
-            
-                    
-    @commands.command()
-    @commands.is_owner()
-    async def sync_cities(self, ctx: commands.Context[Bot]):
-        """Manual command to sync cities/timezones.
 
-        Args:
-            ctx (commands.Bot.Context): the context for this command
-        """
+
+    async def cog_load(self) -> None:
         try:
             await self.sync()
-            await ctx.send("Cities synced, I suppose!")
         except Exception as e:
             print(e)
-            await ctx.send("Something went wrong, I suppose!")
 
 
     @app_commands.command(name="remind")
@@ -167,7 +159,7 @@ class Timer(commands.Cog):
             print(e)
             await i.response.send_message("Something went wrong, in fact! Check the time format, I suppose!")
 
-    async def city_autocomplete(self,
+    async def timezone_autocomplete(self,
         interaction: discord.Interaction,
         current: str,
     ) -> List[app_commands.Choice[str]]:
@@ -189,17 +181,17 @@ class Timer(commands.Cog):
 
     
     @app_commands.command(name="time")
-    @app_commands.autocomplete(city=city_autocomplete)
-    @app_commands.describe(city="The timezone/city you want to learn the timezone of, in fact!")
-    async def get_time(self, i: discord.Interaction, city:str):
-        """Get the current time in a city/timezone.
+    @app_commands.autocomplete(timezone=timezone_autocomplete)
+    @app_commands.describe(timezone="The timezone you want to look for, in fact!")
+    async def get_time(self, i: discord.Interaction, timezone:str):
+        """Get the current time in a timezone.
 
         Args:
             i (discord.Interaction): the interaction that invokes this coroutine
-            city (str): city or the timezone to look up
+            timezone (str): timezone to look up
         """
         session: ClientSession = self.bot.session  
-        async with session.get(self.base_url+city) as r:
+        async with session.get(self.base_url+timezone) as r:
             if r.status == 200:
                 response = await r.read()
                 time_json = json.loads(response)
@@ -213,10 +205,10 @@ class Timer(commands.Cog):
         date = "/".join(date)      # type: ignore
         time = time_json['time'] + " - " + date + " - " + time_json['dayOfWeek']      # type: ignore
         time = time_json['dayOfWeek'] + ", " + month + " " + day + ", " + year + " " + time_json['time']      # type: ignore
-        desc = f"It's {time} in {city}, I suppose!"
+        desc = f"It's {time} in {timezone}, I suppose!"
         embed = discord.Embed(
             color=discord.Colour.random(),
-            title=f"{city}",
+            title=f"{timezone}",
             description=f"{desc}",
         )
         await i.response.send_message(embed=embed)

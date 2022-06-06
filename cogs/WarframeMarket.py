@@ -45,22 +45,6 @@ class WarframeMarket(commands.Cog):
             await self.sync()
         except Exception as e:
             print(e)
-
-
-    @commands.command()
-    @commands.is_owner()
-    async def sync_items(self, ctx: commands.Context[Bot]):
-        """Manual command to sync items.
-
-        Args:
-            ctx (commands.Bot.Context): the context for this command
-        """
-        try:
-            await self.sync()
-            await ctx.send("Items synced, I suppose!")
-        except Exception as e:
-            print(e)
-            await ctx.send("Something went wrong, I suppose!")
     
     
     async def item_autocomplete(self,

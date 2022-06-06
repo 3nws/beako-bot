@@ -42,6 +42,17 @@ class Chapter:
 
 class MangaDex:
 
+    __slots__ = (
+        "base_manga_url",
+        "base_chapter_url",
+        "base_read_url",
+        "base_manga_info_url",
+        "cover_url",
+        "emojis",
+        "scanlation_base_url",
+        "bot",
+    )
+
     def __init__(self, bot: Bot):
         self.base_manga_url = 'https://api.mangadex.org/manga/'
         self.base_chapter_url = 'https://api.mangadex.org/chapter'
@@ -51,7 +62,8 @@ class MangaDex:
         self.emojis = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣']       
         self.scanlation_base_url = 'https://api.mangadex.org/group/'
         self.bot = bot
-                         
+
+
     async def search(self, query: str, limit: str) -> Optional[List[Any]]:
         url = self.base_manga_url + \
             f'?limit={limit}&title={query}&availableTranslatedLanguage%5B%5D=en&order%5Btitle%5D=asc'
@@ -86,8 +98,10 @@ class MangaDex:
 
         return [self.emojis, embed, titles, manga_ids]
 
+
     def get_following(self, channel_id: str):
         pass
+
 
     async def get_manga_title(self, id: str) -> Optional[str]:
         url: str = self.base_manga_url + id
@@ -102,6 +116,7 @@ class MangaDex:
         r = r['data']
         return r['attributes']['title']['en']
     
+
     async def get_scanlation_group(self, id: str) -> Optional[Dict[str, str]]:
         url: str = self.scanlation_base_url+id
         session: ClientSession = self.bot.session  
@@ -113,6 +128,7 @@ class MangaDex:
                 else:
                     print("Something went wrong with the MangaDex request!")
                     return
+
 
     async def get_latest(self, id: str) -> Optional[Chapter]:
         url: str = self.base_chapter_url + '?limit=5&manga=' + id + \
@@ -165,6 +181,7 @@ class MangaDex:
                           chapter_num, translated_lang, num_of_pages, chapter_link, image_urls, scanlation_id)
         
         return chapter
+
 
     async def get_info(self, query: str) -> Optional[discord.Embed]:
         if query:
