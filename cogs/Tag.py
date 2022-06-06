@@ -1,4 +1,5 @@
 import discord
+import sys
 
 from discord.ext import commands
 from discord import app_commands
@@ -97,15 +98,18 @@ class Tag(commands.Cog):
         Returns:
             None: None
         """
+        await i.response.defer()
         msg: str = "Tag added, in fact!"
         if tag_file is not None:
             data = await tag_file.read()
+            if sys.getsizeof(data)//(1024*1024) > 4:
+                return await i.followup.send("Wow! That's too large, I suppose! Keep it below 4MB, in fact!")
             try:
                 tag_content = data.decode('ascii')
             except UnicodeDecodeError:
                 tag_content = data      # type: ignore
         if tag_content is None:
-            return await i.response.send_message("What should this tag return, in fact!")
+            return await i.followup.send("What should this tag return, in fact!")
         await self.sync_tags(i.guild.id) 
         if tag_name in self.tags_list:
             msg = "Tag edited, in fact!"
@@ -132,7 +136,7 @@ class Tag(commands.Cog):
                                         }
                                     }
                                 )
-        await i.response.send_message(msg)
+        await i.followup.send(msg)
         
         
     @group.command(name="remove")
