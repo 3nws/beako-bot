@@ -89,13 +89,13 @@ class DB(commands.Cog):
         self.avatar_urls: List[str] = []
         self.mangas_list = {}
         
-        self.tasks_change_avatar.start()
+    #     self.tasks_change_avatar.start()
         
         
-    @commands.Cog.listener()
-    async def on_ready(self):
-        self.tasks_filter_channels.start()
-        self.tasks_check_chapter.start()
+    # @commands.Cog.listener()
+    # async def on_ready(self):
+    #     self.tasks_filter_channels.start()
+    #     self.tasks_check_chapter.start()
 
 
     async def cog_load(self) -> None:
