@@ -52,6 +52,12 @@ modes = [
 
 
 class Bot(commands.Bot):
+
+    __slots__ = (
+        "_client",
+        "session",
+    )
+
     def __init__(self, *args: List[Any], **kwargs: List[Any]):
         super().__init__(*args, **kwargs)
         self._client = None
@@ -59,6 +65,7 @@ class Bot(commands.Bot):
 
 
     async def load_cogs(self):
+        await self.load_extension('jishaku')
         for filename in os.listdir('./cogs'):
             if filename.endswith('.py'):
                 await self.load_extension(f'cogs.{filename[:-3]}')
@@ -96,6 +103,13 @@ class PersistentViewHelp(View):
 
         
 class Dropdown(discord.ui.Select[PersistentViewHelp]):
+
+    __slots__ = (
+        "bot",
+        "mode"
+    )
+
+
     def __init__(self, mode: str, bot: Bot):
         cmd_options = [
             discord.SelectOption(value="0", label="Series tracking", emoji="<a:_:459105999618572308>"),
@@ -131,8 +145,15 @@ class Dropdown(discord.ui.Select[PersistentViewHelp]):
 
 
 class Help:
+
+    __slots__ = (
+        "bot",
+    )
+
+
     def __init__(self, bot: Bot):
         self.bot = bot
+
 
     async def get_help(self, i: discord.Interaction) -> None:
         mode = "0"
@@ -157,7 +178,6 @@ class Help:
 
 
 class MyTree(CommandTree[discord.Client]):
-
     def __init__(self, client: discord.Client):
         super().__init__(client)
         self._cooldown_predicate: Any = cooldown_decorator(

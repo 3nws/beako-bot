@@ -15,10 +15,16 @@ load_dotenv()
 
 
 class Gif(commands.Cog):
+
+    __slots__ = (
+        "bot",
+    )
+
+    _tenor_api_key = os.getenv('TENOR_API_KEY')
+
     def __init__(self, bot: Bot):
         self.bot = bot
-        self.tenor_api_key = os.getenv('TENOR_API_KEY')
-
+        
 
     @app_commands.command(name="pout")
     async def pout(self, i: discord.Interaction):
@@ -29,7 +35,7 @@ class Gif(commands.Cog):
         """
         session: ClientSession = self.bot.session  
         async with session.get("https://g.tenor.com/v1/search?q=%s&key=%s" %
-                               ("anime pout", self.tenor_api_key)) as r:
+                               ("anime pout", self.__class__._tenor_api_key)) as r:
             if r.status == 200:
                 response = await r.read()
                 pouts = json.loads(response)
@@ -58,7 +64,7 @@ class Gif(commands.Cog):
         """
         session: ClientSession = self.bot.session  
         async with session.get("https://g.tenor.com/v1/search?q=%s&key=%s" %
-                                ("anime hug", self.tenor_api_key)) as r:
+                                ("anime hug", self.__class__._tenor_api_key)) as r:
             if r.status == 200:
                 response = await r.read()
                 hugs = json.loads(response)
@@ -93,7 +99,7 @@ class Gif(commands.Cog):
         """
         session: ClientSession = self.bot.session  
         async with session.get("https://g.tenor.com/v1/search?q=%s&key=%s" %
-                                ("anime smug", self.tenor_api_key)) as r:
+                                ("anime smug", self.__class__._tenor_api_key)) as r:
             if r.status == 200:
                 response = await r.read()
                 smugs = json.loads(response)
@@ -122,7 +128,7 @@ class Gif(commands.Cog):
         """
         session: ClientSession = self.bot.session  
         async with session.get("https://g.tenor.com/v1/search?q=%s&key=%s" %
-                                ("anime pat", self.tenor_api_key)) as r:
+                                ("anime pat", self.__class__._tenor_api_key)) as r:
             if r.status == 200:
                 response = await r.read()
                 pats = json.loads(response)

@@ -18,13 +18,21 @@ load_dotenv()
 
 
 class Util(commands.Cog):
+
+    __slots__ = (
+        "bot",
+        "saucenao",
+    )
+
+    _saucenao_api_key = os.getenv('SAUCENAO_API_KEY')
+    _token = os.getenv('TOKEN')
+
+
     def __init__(self, bot: Bot):
         self.bot = bot
-        self.saucenao_api_key = os.getenv('SAUCENAO_API_KEY')
-        self.TOKEN = os.getenv('TOKEN')
 
         # add 'db' parameter for specific databases
-        self.saucenao: SauceNao = SauceNao(api_key=self.saucenao_api_key)
+        self.saucenao: SauceNao = SauceNao(api_key=self.__class__._saucenao_api_key)
 
 
     @app_commands.command(name="series")
@@ -129,7 +137,7 @@ class Util(commands.Cog):
             member = cast(discord.Member, i.user)
         base_url = 'https://discord.com/api'
         users_endpoint = f'/users/{member.id}'  
-        headers = {'Authorization': f'Bot {self.TOKEN}'}
+        headers = {'Authorization': f'Bot {self.__class__._token}'}
         session: ClientSession = self.bot.session  
         async with session.get(f'{base_url}{users_endpoint}', headers=headers) as r:
             if r.status == 200:

@@ -91,13 +91,23 @@ def apply_filter(coro: Coro) -> Coro:
 
 
 class FilterView(ui.View):
+
+    __slots__ = (
+        "i",
+        "embed",
+        "bot",
+        "new_embed",
+        "add_once",
+        "bytes_image",
+        "original",
+    )
+
     def __init__(self, i: discord.Interaction, embed: discord.Embed, bot: Bot):
         super().__init__(timeout=60)
         self.i = i
         self.embed = embed
         self.image = embed.image.url
         self.bot = bot
-        self.filters: List[str] = []
         self.new_embed = discord.Embed(colour=discord.Colour.random())
         self.add_once: bool = True
         self.bytes_image: bytes

@@ -11,6 +11,18 @@ from commands.db.classes.MangaDex import Chapter
 from typing_extensions import Self
 
 class PickView(ui.View):
+
+    __slots__ = (
+        "i",
+        "channels",
+        "mangas",
+        "bot",
+        "md",
+        "info",
+        "num_of_results",
+        "embed",
+    )
+    
     
     def __init__(self, i: discord.Interaction, channels: Collection[Mapping[str, Any]], info: Tuple[List[str], List[str]], bot: Bot, embed: discord.Embed):
         super().__init__(timeout=60)
@@ -26,20 +38,24 @@ class PickView(ui.View):
             for j in range(len(self.children)-1, self.num_of_results-1, -1):
                 self.remove_item(self.children[j])
         
+
     def disabled(self):
         for btn in self.children:  
             btn.disabled = True      # type: ignore
         return self
         
+
     async def on_timeout(self):
         self.stop()
         await self.i.edit_original_message(embed=self.embed, view=self.disabled())  
         msg = await self.i.original_message()
         await msg.reply("This view just timed out, I suppose! You need to interact with it to keep it up, in fact!")  
         
+
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         return interaction.user == self.i.user  
     
+
     async def find_one(self):
         channel_exist: Dict[str, str] = await self.channels.find_one(      # type: ignore
                         {
@@ -61,6 +77,7 @@ class PickView(ui.View):
                     )
         return literal_eval(channel_exist['mangas'])
     
+
     async def update(self, choice: int):
         res = await self.find_one()
         titles = self.info[0]
@@ -106,24 +123,26 @@ class PickView(ui.View):
         await interaction.response.defer()
         await self.update(0)
         
+
     @ui.button(emoji='2️⃣', style=discord.ButtonStyle.blurple)
     async def opt_two(self, interaction: discord.Interaction, button: discord.ui.Button[Self]):
         await interaction.response.defer()
         await self.update(1)
         
+
     @ui.button(emoji='3️⃣', style=discord.ButtonStyle.blurple)
     async def opt_three(self, interaction: discord.Interaction, button: discord.ui.Button[Self]):
         await interaction.response.defer()
         await self.update(2)
         
+
     @ui.button(emoji='4️⃣', style=discord.ButtonStyle.blurple)
     async def opt_four(self, interaction: discord.Interaction, button: discord.ui.Button[Self]):
         await interaction.response.defer()
         await self.update(3)
         
+
     @ui.button(emoji='5️⃣', style=discord.ButtonStyle.blurple)
     async def opt_five(self, interaction: discord.Interaction, button: discord.ui.Button[Self]):
         await interaction.response.defer()
         await self.update(4)
-        
-        

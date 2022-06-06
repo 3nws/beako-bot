@@ -7,6 +7,18 @@ from aiohttp import ClientSession
 from Bot import Bot
 class Chapter:
 
+    __slots__ = (
+        "id",
+        "title",
+        "num",
+        "lang",
+        "pages",
+        "link",
+        "images",
+        "scanlation",
+    )
+    
+
     def __init__(self, id: str, title: str, num: str, lang: str, pages: str, link: str, images: List[str], scanlation: str):
         self.id = id
         self.title = title
@@ -17,10 +29,12 @@ class Chapter:
         self.images = images
         self.scanlation = scanlation
 
+
     def get_title(self):
         title = self.title if self.title is not None else self.id
         is_title = title != self.id
         return [title, is_title]
+
 
     def get_link(self):
         return self.link

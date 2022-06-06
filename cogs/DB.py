@@ -24,6 +24,35 @@ from Bot import Bot
 
 
 class DB(commands.Cog):
+
+    __slots__ = (
+        "bot",
+        "client",
+        "db_channels",
+        "data_rz",
+        "data_kaguya",
+        "data_onk",
+        "data_gb",
+        "flips_col",
+        "db_avatars",
+        "avatars",
+        "channels_md",
+        "channels_rz",
+        "channels_kaguya",
+        "channels_onk",
+        "channels_gb",
+        "collection_aliases",
+        "rz_url",
+        "kaguya_url",
+        "onk_url",
+        "gb_url",
+        "aliases",
+        "flips",
+        "avatar_urls",
+        "mangas_list",
+    )
+
+
     def __init__(self, bot: Bot):
         self.bot = bot
         self.client = self.bot.client  

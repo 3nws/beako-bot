@@ -9,6 +9,13 @@ from commands.db.classes.Scrape_Series import Scrape_Series
 
 
 class Guya_moe(Scrape_Series):
+
+    __slots__ = (
+        "url",
+        "bot"
+    )
+    
+
     def __init__(self, url: str, bot: Bot):
         self.url = url
         self.bot = bot

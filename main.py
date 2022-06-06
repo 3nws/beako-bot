@@ -41,7 +41,6 @@ bot = Bot(command_prefix="r.", intents=intents, tree_cls=MyTree, help_command=No
               type=discord.ActivityType.listening, name="/beakohelp and Songstress Liliana!"      # type: ignore
           ))  
 
-
 @bot.tree.command(name='beakohelp', guild=None)
 async def help(interaction: discord.Interaction):
     await commands_help(interaction, Help(bot))

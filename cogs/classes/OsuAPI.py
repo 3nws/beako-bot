@@ -12,12 +12,25 @@ load_dotenv()
 
 
 class OsuAPI:
+
+    __slots__ = (
+        "bot",
+        "base_url",
+        "base_image_url",
+        "key_query",
+        "base_profile_url",
+        "base_beatmap_set_url",
+        "game_mode_options",
+        "game_modes",
+        "stripped_game_modes",
+    )
+
     def __init__(self, bot: Bot):
-        self.API_KEY: Optional[str] = os.getenv("OSU_API_KEY")
+        _API_KEY: Optional[str] = os.getenv("OSU_API_KEY")
         self.bot: Bot = bot
         self.base_url: str = "https://osu.ppy.sh/api/"
         self.base_image_url: str = "http://s.ppy.sh/a/"
-        self.key_query: str = f"?k={self.API_KEY}"
+        self.key_query: str = f"?k={_API_KEY}"
         self.base_profile_url: str = "https://osu.ppy.sh/users/"
         self.base_beatmap_set_url: str = "https://osu.ppy.sh/beatmapsets/"
         self.game_mode_options: List[discord.SelectOption] = [
