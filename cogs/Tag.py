@@ -55,7 +55,7 @@ class Tag(commands.Cog):
     @group.command(name="show")
     @app_commands.autocomplete(tag_name=tag_autocomplete)
     @app_commands.describe(tag_name="The name for this tag, I suppose! So you can find its contents later, in fact!")
-    async def get_tag(self, i: discord.Interaction, *, tag_name:str):
+    async def get_tag(self, i: discord.Interaction, tag_name: str):
         """Get the given tag's content.
 
         Args:

@@ -1,6 +1,7 @@
-import discord      
-import aiofiles
+import discord
 
+
+from io import BytesIO
 from discord import ui
 from aiohttp.client import ClientSession
 from Bot import Bot
@@ -8,6 +9,7 @@ from typing import List, Optional
 from typing_extensions import Self
 from typing import Callable, Coroutine, Any, TypeVar
 from wand.image import Image
+from wand.compat import to_bytes        # type: ignore
 from functools import wraps
 
 
@@ -15,11 +17,16 @@ Coro = Callable[['FilterView', int], Coroutine[Any, Any, None]]       # Callable
 F = TypeVar('F', bound='FilterView')
 
 
+
+called = 0
+
+
 def apply_filter(coro: Coro) -> Coro:
     @wraps(coro)
     async def inner(self: F, choice: int) -> None:      # type: ignore
+        msg: discord.Message = await self.i.channel.send("Loading, I suppose!..")     # type: ignore
         await coro(self, choice)
-        with Image(filename="original_user_avatar.png") as img:      # type: ignore
+        with Image(blob=self.bytes_image) as img:      # type: ignore
             if choice == 0:
                 img.blur(radius=0, sigma=3)      # type: ignore
             elif choice == 1:
@@ -56,7 +63,10 @@ def apply_filter(coro: Coro) -> Coro:
             elif choice == 13:
                 img.tint(color="yellow", alpha="rgb(40%, 60%, 80%)")      # type: ignore
             else:
-                f = discord.File("./original_user_avatar.png", filename="original_user_avatar.png")
+                buffer = BytesIO(self.original)     # type: ignore
+                img.save(buffer)        # type: ignore
+                buffer.seek(0)
+                f = discord.File(buffer, filename="original_user_avatar.png")
         
                 if self.add_once:
                     self.new_embed.add_field(name=self.embed.fields[0].name, value=self.embed.fields[0].value)
@@ -64,10 +74,14 @@ def apply_filter(coro: Coro) -> Coro:
                 self.new_embed.set_image(url="attachment://original_user_avatar.png")
                 
                 await self.i.edit_original_message(attachments=[f], embed=self.new_embed)
+                return None
             
-            img.save(filename="user_avatar.png")      # type: ignore
-        
-        f = discord.File("./user_avatar.png", filename="user_avatar.png")
+            image_bytes: bytes = to_bytes(img.make_blob())      # type: ignore
+            buffer = BytesIO(image_bytes)     # type: ignore
+            img.save(buffer)        # type: ignore
+
+        buffer.seek(0)
+        f = discord.File(buffer, filename='user_avatar.png')
         
         if self.add_once:
             self.new_embed.add_field(name=self.embed.fields[0].name, value=self.embed.fields[0].value)
@@ -75,6 +89,8 @@ def apply_filter(coro: Coro) -> Coro:
         self.new_embed.set_image(url="attachment://user_avatar.png")
         
         await self.i.edit_original_message(attachments=[f], embed=self.new_embed)
+        await msg.delete()
+        
     return inner
 
 
@@ -88,6 +104,8 @@ class FilterView(ui.View):
         self.filters: List[str] = []
         self.new_embed = discord.Embed(colour=discord.Colour.random())
         self.add_once: bool = True
+        self.bytes_image: bytes
+        self.original: bytes
         
         
     def disabled(self):
@@ -108,7 +126,7 @@ class FilterView(ui.View):
         
         
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        return interaction.user == self.i.user  
+        return interaction.user == self.i.user
 
 
     @apply_filter
@@ -118,8 +136,8 @@ class FilterView(ui.View):
         if url:
             async with session.get(url) as resp:
                 if resp.status == 200:
-                    async with aiofiles.open('./original_user_avatar.png', mode='wb') as f:
-                        await f.write(await resp.read())
+                    self.bytes_image = await resp.read()
+                    self.original = self.bytes_image
 
         
     @ui.button(label='Blur', style=discord.ButtonStyle.blurple)

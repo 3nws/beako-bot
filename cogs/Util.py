@@ -81,6 +81,7 @@ class Util(commands.Cog):
         
 
     @app_commands.command(name="savatar")
+    @app_commands.guild_only
     @app_commands.describe(member="The member you want to ~~steal~~borrow their server specific avatar from, in fact!")
     async def server_avatar(self, i: discord.Interaction, member: Optional[discord.Member]) -> Optional[Callable[[discord.Interaction, Optional[discord.Member]], None]]:
         """Get the member's server specific avatar.
