@@ -5,7 +5,7 @@ from io import BytesIO
 from discord import ui
 from aiohttp.client import ClientSession
 from Bot import Bot
-from typing import List, Optional
+from typing import Optional
 from typing_extensions import Self
 from typing import Callable, Coroutine, Any, TypeVar
 from wand.image import Image
