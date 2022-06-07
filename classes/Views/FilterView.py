@@ -4,13 +4,14 @@ import discord
 from io import BytesIO
 from discord import ui
 from aiohttp.client import ClientSession
-from Bot import Bot
 from typing import Optional
 from typing_extensions import Self
 from typing import Callable, Coroutine, Any, TypeVar
 from wand.image import Image
 from wand.compat import to_bytes        # type: ignore
 from functools import wraps
+
+from Bot import Bot
 
 
 Coro = Callable[['FilterView', int], Coroutine[Any, Any, None]]       # Callable[Ellipis(singleton), Coroutine[YieldType, SendType, ReturnType]]
@@ -102,6 +103,7 @@ class FilterView(ui.View):
         "original",
     )
 
+
     def __init__(self, i: discord.Interaction, embed: discord.Embed, bot: Bot):
         super().__init__(timeout=60)
         self.i = i
@@ -151,69 +153,84 @@ class FilterView(ui.View):
         await interaction.response.defer()
         await self.update(0)
         
+
     @ui.button(label='Shade', style=discord.ButtonStyle.blurple)
     async def opt_two(self, interaction: discord.Interaction, button: discord.ui.Button[Self]):
         await interaction.response.defer()
         await self.update(1)
         
+
     @ui.button(label='Sharpen', style=discord.ButtonStyle.blurple)
     async def opt_three(self, interaction: discord.Interaction, button: discord.ui.Button[Self]):
         await interaction.response.defer()
         await self.update(2)
         
+
     @ui.button(label='Spread', style=discord.ButtonStyle.blurple)
     async def opt_four(self, interaction: discord.Interaction, button: discord.ui.Button[Self]):
         await interaction.response.defer()
         await self.update(3)
         
+
     @ui.button(label='Edge', style=discord.ButtonStyle.blurple)
     async def opt_five(self, interaction: discord.Interaction, button: discord.ui.Button[Self]):
         await interaction.response.defer()
         await self.update(4)
                 
+
     @ui.button(label='Emboss', style=discord.ButtonStyle.blurple)
     async def opt_six(self, interaction: discord.Interaction, button: discord.ui.Button[Self]):
         await interaction.response.defer()
         await self.update(5)
         
+
     @ui.button(label='Charcoal', style=discord.ButtonStyle.blurple)
     async def opt_seven(self, interaction: discord.Interaction, button: discord.ui.Button[Self]):
         await interaction.response.defer()
         await self.update(6)
         
+
     @ui.button(label='Wave', style=discord.ButtonStyle.blurple)
     async def opt_eight(self, interaction: discord.Interaction, button: discord.ui.Button[Self]):
         await interaction.response.defer()
         await self.update(7)
         
+
     @ui.button(label='Colorize', style=discord.ButtonStyle.blurple)
     async def opt_nine(self, interaction: discord.Interaction, button: discord.ui.Button[Self]):
         await interaction.response.defer()
         await self.update(8)
         
+
     @ui.button(label='Sepia', style=discord.ButtonStyle.blurple)
     async def opt_ten(self, interaction: discord.Interaction, button: discord.ui.Button[Self]):
         await interaction.response.defer()
-        await self.update(9)        
+        await self.update(9)    
+
+
     @ui.button(label='Sketch', style=discord.ButtonStyle.blurple)
     async def opt_eleven(self, interaction: discord.Interaction, button: discord.ui.Button[Self]):
         await interaction.response.defer()
         await self.update(10)
         
+
     @ui.button(label='Solarize', style=discord.ButtonStyle.blurple)
     async def opt_twelve(self, interaction: discord.Interaction, button: discord.ui.Button[Self]):
         await interaction.response.defer()
         await self.update(11)
         
+
     @ui.button(label='Swirl', style=discord.ButtonStyle.blurple)
     async def opt_thirteen(self, interaction: discord.Interaction, button: discord.ui.Button[Self]):
         await interaction.response.defer()
         await self.update(12)
         
+
     @ui.button(label='Tint', style=discord.ButtonStyle.blurple)
     async def opt_fourteen(self, interaction: discord.Interaction, button: discord.ui.Button[Self]):
         await interaction.response.defer()
         await self.update(13)
+        
         
     @ui.button(label='Reset', style=discord.ButtonStyle.red)
     async def opt_reset(self, interaction: discord.Interaction, button: discord.ui.Button[Self]):

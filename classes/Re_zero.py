@@ -5,10 +5,10 @@ from typing import Tuple, Union, Any, Optional
 from aiohttp import ClientSession
 
 from Bot import Bot
-from commands.db.classes.Scrape_Series import Scrape_Series
+from .Scrape_Series import Scrape_Series
 
 
-class Grand_Blue(Scrape_Series):
+class Re_zero(Scrape_Series):
 
     __slots__ = (
         "url",
@@ -20,34 +20,41 @@ class Grand_Blue(Scrape_Series):
         self.url = url
         self.bot = bot
 
+
     async def scrape(self) -> Union[Tuple[str, str], Any]:
         try:
-            # web scraping for grand-blue mangareader
+            # web scraping for re zero
             session: ClientSession = self.bot.session  
             async with session.get(self.url) as r:
                 if r.status == 200:
                     page = await r.read()
                 else:
-                    print("MangaReader down!")
+                    print("WitchCultTranslation down!")
                     return
 
             soup = BeautifulSoup(page.decode('utf-8'), "html5lib")
 
-            most_recent_chapter = soup.find_all(
-                "li", "item reading-item chapter-item")[0]
+            most_recent_post = soup.find_all('h3', 'rpwe-title')[0]
 
-            chapter_link = most_recent_chapter.find("a")
-            chapter_anchor = ""
-            if "href" in chapter_link.attrs:
-                chapter_anchor = "https://mangareader.to"
-                chapter_anchor += chapter_link.get("href")
+            post_link = most_recent_post.find('a')
 
-            most_recent_chapter_title = chapter_link.get('title')
+            most_recent_post = most_recent_post.text
+            most_recent_post_array = most_recent_post.split()
 
-            return [most_recent_chapter_title, chapter_anchor]
+            most_recent_post_str = ""
 
+            for i in range(0, 4):
+                most_recent_post_str += most_recent_post_array[i] + " "
+
+            most_recent_post_str = most_recent_post_str.strip()
+            chapter_link = ""
+            if 'href' in post_link.attrs:
+                chapter_link = post_link.get('href')
+
+            return [most_recent_post_str, chapter_link]
         except Exception as e:
             print(e)
+            
 
     async def latest_chapter(self) -> Optional[str]:
         try:

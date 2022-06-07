@@ -6,21 +6,23 @@ import os
 import json
 
 from ast import literal_eval
-from commands.db.classes.Re_zero import Re_zero
 from aiohttp import ClientSession
-from commands.db.classes.Guya_moe import Guya_moe
-from commands.db.classes.Grand_Blue import Grand_Blue
-from commands.db.classes.MangaDex import MangaDex
 from discord import app_commands
 from discord.ext import commands, tasks  
 from typing import List, Any, Dict, Union, Optional, Tuple, Mapping, cast
-from .classes.Pagination import MangaReader, Source
-from .classes.Pick import PickView
+from classes.Views.Pagination import MangaReader, Source
 from aiohttp import ClientSession
 from pymongo.collection import Collection
 from pymongo.database import Database
 from motor.motor_asyncio import AsyncIOMotorClient      # type: ignore
 from Bot import Bot
+
+
+from classes.Re_zero import Re_zero
+from classes.Guya_moe import Guya_moe
+from classes.Grand_Blue import Grand_Blue
+from classes.MangaDex import MangaDex
+from classes.Views.Pick import PickView
 
 
 class DB(commands.Cog):

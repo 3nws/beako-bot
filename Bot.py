@@ -12,8 +12,9 @@ from pymongo.errors import ServerSelectionTimeoutError
 from typing import Any, List
 from discord.ext import commands
 from aiohttp import ClientSession
-from Help_Messages import messages
 from discord.ui import View
+
+from Help_Messages import messages
 
 
 track_cmds = ["add", "remove", "manga", "last"]

@@ -5,6 +5,8 @@ from typing import Optional, Any, List, Dict
 from aiohttp import ClientSession
 
 from Bot import Bot
+
+
 class Chapter:
 
     __slots__ = (
@@ -170,12 +172,12 @@ class MangaDex:
                 if res.status == 200:
                     resp = await res.read()
                     image_server_url = json.loads(resp)
-                    self.hash = image_server_url["chapter"]["hash"]
-                    self.data = image_server_url["chapter"]["data"]
+                    chapter_hash = image_server_url["chapter"]["hash"]
+                    chapter_data = image_server_url["chapter"]["data"]
                     image_server_url = image_server_url["baseUrl"].replace("\\", "")
                     image_server_url = f"{image_server_url}/data"
-                    for filename in self.data:
-                        image_urls.append(f"{image_server_url}/{self.hash}/{filename}")
+                    for filename in chapter_data:
+                        image_urls.append(f"{image_server_url}/{chapter_hash}/{filename}")
                             
         chapter = Chapter(chapter_id, chapter_title,
                           chapter_num, translated_lang, num_of_pages, chapter_link, image_urls, scanlation_id)

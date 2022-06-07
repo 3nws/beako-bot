@@ -6,6 +6,7 @@ from discord import app_commands
 from typing import List, Optional, Any, Dict, Mapping
 from pymongo.collection import Collection
 from io import BytesIO
+
 from Bot import Bot
 
 

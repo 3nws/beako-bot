@@ -1,38 +1,4 @@
 messages = {
-    '': "```Use slash('/') commands, in fact!\
-                 \nTo get help and to learn aliases for a specific command use /help <command>, I suppose!\
-                 \nAvailable commands are:\
-                 \n-add\
-                 \n-remove\
-                 \n-manga\
-                 \n-last\
-                 \n-avatar\
-                 \n-savatar\
-                 \n-banner\
-                 \n-following\
-                 \n-say\
-                 \n-clean\
-                 \n-purge\
-                 \n-kick\
-                 \n-ban\
-                 \n-unban\
-                 \n-osu \
-                 \n-best\
-                 \n-recent\
-                 \n-alarm\
-                 \n-remind\
-                 \n-poll\
-                 \n-roll\
-                 \n-flip\
-                 \n-pout\
-                 \n-hug\
-                 \n-pat\
-                 \n-smug\
-                 \n-series\
-                 \n-coin\
-                 \n-sauce\
-                 \n-rps, in fact!```",
-
         'avatar': "```Betty will send a member's(author's if no member is passed) avatar to the text channel, in fact!\
                    \nStatic avatars will include filters, I suppose!```",
 
@@ -129,7 +95,4 @@ messages = {
         'tag remove': "```Betty will give remove the given tag from this server!\
             \nThis needs 'manage_guild' permission and the format for this is 'tag remove tag_name', in fact!```"
 
-}
-
-aliases = {
 }

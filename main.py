@@ -3,17 +3,13 @@ import os
 import asyncio
 import logging
 
-from discord.app_commands.models import AppCommand
+from discord.app_commands import AppCommand
 from dotenv import load_dotenv      # type: ignore
 from discord.ext import commands
 from typing import List, Literal, Optional
 
-
 from Bot import MyTree, Bot, Help
 
-
-# commands import
-from commands.r_help import commands_help
 
 logging.basicConfig(level=logging.INFO)
 
@@ -43,7 +39,7 @@ bot = Bot(command_prefix="r.", intents=intents, tree_cls=MyTree, help_command=No
 
 @bot.tree.command(name='beakohelp', guild=None)
 async def help(interaction: discord.Interaction):
-    await commands_help(interaction, Help(bot))
+    await Help(bot).get_help(interaction)
 
 
 @bot.event

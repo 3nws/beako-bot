@@ -3,10 +3,11 @@ import discord
 from discord.ui import View, Select
 from discord.ext import commands
 from discord import app_commands
-from cogs.classes.OsuAPI import OsuAPI
-from OsuMods import num_to_mod
 from typing import Dict, Optional
+
 from Bot import Bot
+from OsuMods import num_to_mod
+from classes.OsuAPI import OsuAPI
 
 
 class Osu(commands.Cog):

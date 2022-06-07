@@ -7,9 +7,11 @@ from typing_extensions import Self
 
 Channel = Union[discord.abc.GuildChannel, discord.Thread, discord.abc.PrivateChannel, discord.PartialMessageable, None]
 
+
 class Source(menus.ListPageSource):
     async def format_page(self, menu, entries):      # type: ignore
         return f"This is number {entries}."
+
 
 class MangaReader(ui.View, menus.MenuPages):
 
@@ -22,6 +24,7 @@ class MangaReader(ui.View, menus.MenuPages):
         "text",
         "group",
     )
+
 
     def __init__(self, source: Source):
         super().__init__(timeout=60)

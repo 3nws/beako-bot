@@ -3,12 +3,13 @@ import discord
 from pymongo.collection import Collection
 from ast import literal_eval
 from discord import ui
-from commands.db.classes.MangaDex import MangaDex
-
-from Bot import Bot
 from typing import Tuple, Dict, Any, List, Optional, Mapping
-from commands.db.classes.MangaDex import Chapter
 from typing_extensions import Self
+
+from classes.MangaDex import MangaDex, Chapter
+from Bot import Bot
+
+
 
 class PickView(ui.View):
 
