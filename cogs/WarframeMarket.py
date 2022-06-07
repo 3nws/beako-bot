@@ -11,14 +11,6 @@ from Bot import Bot
 
 class WarframeMarket(commands.Cog):
 
-    __slots__ = (
-        "bot",
-        "base_url",
-        "items_list",
-        "is_synced",
-        "image_url"
-    )
-
 
     def __init__(self, bot: Bot):
         self.bot = bot

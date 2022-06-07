@@ -54,11 +54,6 @@ modes = [
 
 class Bot(commands.Bot):
 
-    __slots__ = (
-        "_client",
-        "session",
-    )
-
     def __init__(self, *args: List[Any], **kwargs: List[Any]):
         super().__init__(*args, **kwargs)
         self._client = None
@@ -105,12 +100,6 @@ class PersistentViewHelp(View):
         
 class Dropdown(discord.ui.Select[PersistentViewHelp]):
 
-    __slots__ = (
-        "bot",
-        "mode"
-    )
-
-
     def __init__(self, mode: str, bot: Bot):
         cmd_options = [
             discord.SelectOption(value="0", label="Series tracking", emoji="<a:_:459105999618572308>"),
@@ -146,11 +135,6 @@ class Dropdown(discord.ui.Select[PersistentViewHelp]):
 
 
 class Help:
-
-    __slots__ = (
-        "bot",
-    )
-
 
     def __init__(self, bot: Bot):
         self.bot = bot

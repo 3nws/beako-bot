@@ -12,12 +12,6 @@ from classes.OsuAPI import OsuAPI
 
 class Osu(commands.Cog):
 
-    __slots__ = (
-        "bot",
-        "osu"
-    )
-
-
     def __init__(self, bot: Bot):
         self.bot = bot
         self.osu: OsuAPI = OsuAPI(self.bot)

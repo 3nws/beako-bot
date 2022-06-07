@@ -87,6 +87,7 @@ I use [pysaucenao](https://github.com/FujiMakoto/pysaucenao) for reverse image s
 
 ### TODOS
 
+- Convert api classes instance methods and variables to class methods and variables instead
 - Add more osu! functionality
 - Make the results for osu! prettier, they look awful
 - Add tracking for animes as well

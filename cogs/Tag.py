@@ -11,14 +11,6 @@ from Bot import Bot
 
 
 class Tag(commands.Cog):
-
-    __slots__ = (
-        "bot",
-        "client",
-        "tags_coll",
-        "tags_list",
-    )
-    
     
     def __init__(self, bot: Bot):
         self.bot = bot

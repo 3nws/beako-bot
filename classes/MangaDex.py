@@ -42,18 +42,8 @@ class Chapter:
         return self.link
 
 
+# TODO: convert to class methods and variables instead
 class MangaDex:
-
-    __slots__ = (
-        "base_manga_url",
-        "base_chapter_url",
-        "base_read_url",
-        "base_manga_info_url",
-        "cover_url",
-        "emojis",
-        "scanlation_base_url",
-        "bot",
-    )
 
     def __init__(self, bot: Bot):
         self.base_manga_url = 'https://api.mangadex.org/manga/'

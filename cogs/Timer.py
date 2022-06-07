@@ -14,15 +14,6 @@ from Bot import Bot
 
 class Timer(commands.Cog):
 
-    __slots__ = (
-        "bot",
-        "cities_list",
-        "is_synced",
-        "sync_url",
-        "base_url",
-        "months"
-    )
-
 
     def __init__(self, bot: Bot):
         self.bot = bot

@@ -10,12 +10,6 @@ from Bot import Bot
 
 class TL(commands.Cog):
 
-    __slots__ = (
-        "bot",
-        "g",
-        "is_synced",
-        "langs",
-    )
 
     def __init__(self, bot: Bot):
         self.bot = bot

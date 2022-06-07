@@ -17,10 +17,6 @@ load_dotenv()
 
 class Gif(commands.Cog):
 
-    __slots__ = (
-        "bot",
-    )
-
     _tenor_api_key = os.getenv('TENOR_API_KEY')
 
 

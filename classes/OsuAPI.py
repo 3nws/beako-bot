@@ -11,7 +11,7 @@ from Bot import Bot
 
 load_dotenv()
 
-
+# TODO: convert to class methods and variables instead
 class OsuAPI:
 
     __slots__ = (

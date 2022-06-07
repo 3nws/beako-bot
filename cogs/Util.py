@@ -20,11 +20,6 @@ load_dotenv()
 
 class Util(commands.Cog):
 
-    __slots__ = (
-        "bot",
-        "saucenao",
-    )
-
     _saucenao_api_key = os.getenv('SAUCENAO_API_KEY')
     _token = os.getenv('TOKEN')
 
@@ -64,7 +59,7 @@ class Util(commands.Cog):
 
     @app_commands.command(name="avatar")
     @app_commands.describe(member="The member you want to ~~steal~~borrow their avatar from, in fact!")
-    async def avatar(self, i: discord.Interaction, member: Optional[discord.Member]) -> None:
+    async def avatar(self, i: discord.Interaction, member: Optional[Union[discord.Member, discord.User]]) -> None:
         """Get a member's avatar.
 
         Args:
@@ -84,7 +79,7 @@ class Util(commands.Cog):
             avatar_frame.set_image(url=f'{i.user.avatar.url}')  
 
 
-        if i.user.avatar.is_animated():  
+        if member is not None and member.avatar.is_animated() or member is None and i.user.avatar.is_animated():  
             return await i.response.send_message(embed=avatar_frame)
         await i.response.send_message(embed=avatar_frame, view=FilterView(i, avatar_frame, self.bot))
         
@@ -123,7 +118,7 @@ class Util(commands.Cog):
 
     @app_commands.command(name="banner")
     @app_commands.describe(member="The member you want to ~~steal~~borrow their banner from, in fact!")
-    async def banner(self, i: discord.Interaction, member: Optional[discord.Member]) -> None:
+    async def banner(self, i: discord.Interaction, member: Optional[Union[discord.Member, discord.User]]) -> None:
         """Get the member's banner.
 
         Args:

@@ -3,10 +3,6 @@ from typing import Any
 
 
 class Scrape_Series(ABC):
-
-    __slots__ = (
-        "url",
-    )
     
     @abstractmethod
     def __init__(self, url: str):

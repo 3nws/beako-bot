@@ -12,13 +12,6 @@ from Bot import Bot
 
 class Fun(commands.Cog):
 
-    __slots__ = (
-        "i",
-        "determine_flip",
-        "normal_API",
-    )
-
-
     def __init__(self, bot: Bot):
         self.bot = bot
         self.determine_flip = [1, 0]

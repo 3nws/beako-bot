@@ -9,11 +9,6 @@ from Bot import Bot
 
 class Admin(commands.Cog):
 
-    __slots__ = (
-        "bot",
-        "dir_aliases",
-    )
-
     def __init__(self, bot: Bot):
         self.bot = bot
         self.dir_aliases = {
