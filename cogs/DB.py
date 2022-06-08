@@ -1,6 +1,4 @@
-import requests
 import random
-import shutil
 import discord
 import os
 import json
@@ -11,7 +9,6 @@ from discord import app_commands
 from discord.ext import commands, tasks  
 from typing import List, Any, Dict, Union, Optional, Tuple, Mapping, cast
 from classes.Views.Pagination import MangaReader, Source
-from aiohttp import ClientSession
 from pymongo.collection import Collection
 from pymongo.database import Database
 from motor.motor_asyncio import AsyncIOMotorClient      # type: ignore
