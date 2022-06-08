@@ -1,3 +1,5 @@
+# Beako-bot
+
 Notifies text channels when new chapters of the series they follow are translated on [MangaDex](https://mangadex.org). For Re:Zero web novel, Grand Blue Dreaming manga, Kaguya-sama manga, and Oshi No Ko manga I use beautifulsoup because I like them on specific websites mentioned below.
 
 Checks every 60 seconds.
@@ -36,6 +38,7 @@ I use [pysaucenao](https://github.com/FujiMakoto/pysaucenao) for reverse image s
 - `/tag show tag` (has autocomplete) (shows the contents of the tag, sends a file if the content was added as a file)
 - `/tag add tag_content tag_file` (mutually exclusive arguments, if both is passed `tag_file` will override `tab_content`) (needs `manage_guild` permission)
 - `/tag remove tag` (has autocomplete) (removes the tag) (needs `manage_guild` permission)
+
 ## Util commands
 
 - `/poll choice1 choice2 question` (creates a poll with the choices and the question, polls have a 3 minute timer before they are finished)
@@ -77,17 +80,14 @@ I use [pysaucenao](https://github.com/FujiMakoto/pysaucenao) for reverse image s
 
 - `/item order_type item_name` (has autocomplete + choices) (send info about an item as well as several orders of given type with their /w message templates)
 
-
 ## Tasks
 
 - `change_avatar()` (changes avatar everyday, selecting randomly from db)
 - `check_chapter()` (checks the latest chapters of the followed series every minute and notifies)
 - `filter_channels()` (filters out the channels that no longer exists from the db)
 
-
 ### TODOS
 
-- Convert api classes instance methods and variables to class methods and variables instead
 - Add more osu! functionality
 - Make the results for osu! prettier, they look awful
 - Add tracking for animes as well
