@@ -178,7 +178,10 @@ class MyTree(CommandTree[discord.Client]):
             await interaction.response.send_message("You don't have permission to do that, I suppose!")
         else:
             await interaction.response.send_message("What is that, I suppose?!\nTry `/beakohelp`, in fact!")
-            traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
+            traceback_ = error.__traceback__
+            traceback.print_exception(type(error), error, traceback_, file=sys.stderr)
+            user = interaction.client.get_user(442715989310832650)
+            await user.send(f"```py\n{''.join(traceback.format_exception(None, error, traceback_))}```")
 
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
