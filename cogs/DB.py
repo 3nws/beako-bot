@@ -92,7 +92,7 @@ class DB(commands.Cog):
         self.avatar_urls: List[str] = []
         self.mangas_list = {}
         
-        self.tasks_change_avatar.start()
+        # self.tasks_change_avatar.start()
         
         
     @commands.Cog.listener()
@@ -582,38 +582,38 @@ class DB(commands.Cog):
             await i.response.send_message(msg)
         
     
-    @tasks.loop(hours=12)  
-    async def tasks_change_avatar(self):
-        """Task that changes the bot's avatar once a day.
-        """
-        try:
-            async for image_record in self.db_avatars.find():      # type: ignore
-                url: str = image_record["url"]
-                if url not in self.avatar_urls:
-                    self.avatar_urls.append(url)
-                    file_name = os.path.join(
-                        os.path.join(os.getcwd(), "avatars"), url.split("/")[-1]  
-                    )
-                    res = requests.get(url, stream=True)
+    # @tasks.loop(hours=12)  
+    # async def tasks_change_avatar(self):
+    #     """Task that changes the bot's avatar once a day.
+    #     """
+    #     try:
+    #         async for image_record in self.db_avatars.find():      # type: ignore
+    #             url: str = image_record["url"]
+    #             if url not in self.avatar_urls:
+    #                 self.avatar_urls.append(url)
+    #                 file_name = os.path.join(
+    #                     os.path.join(os.getcwd(), "avatars"), url.split("/")[-1]  
+    #                 )
+    #                 res = requests.get(url, stream=True)
 
-                    if res.status_code == 200:
-                        file_exists = os.path.exists(file_name)
-                        if not file_exists:
-                            with open(file_name, "wb") as f:
-                                shutil.copyfileobj(res.raw, f)
-                            print("Image successfully downloaded: ", file_name)
-                        else:
-                            print("This image already exists!")
-                    else:
-                        print("Image Couldn't be retrieved")
-            with open(self.select_random_image_path(), "rb") as file:
-                print(file)
-                new_avatar = file.read()
-                await self.bot.wait_until_ready()
-                await self.bot.user.edit(avatar=new_avatar)  
-                print("Avatar changed successfully!")
-        except Exception as e:
-            print(e)
+    #                 if res.status_code == 200:
+    #                     file_exists = os.path.exists(file_name)
+    #                     if not file_exists:
+    #                         with open(file_name, "wb") as f:
+    #                             shutil.copyfileobj(res.raw, f)
+    #                         print("Image successfully downloaded: ", file_name)
+    #                     else:
+    #                         print("This image already exists!")
+    #                 else:
+    #                     print("Image Couldn't be retrieved")
+    #         with open(self.select_random_image_path(), "rb") as file:
+    #             print(file)
+    #             new_avatar = file.read()
+    #             await self.bot.wait_until_ready()
+    #             await self.bot.user.edit(avatar=new_avatar)  
+    #             print("Avatar changed successfully!")
+    #     except Exception as e:
+    #         print(e)
 
 
     @tasks.loop(seconds=60)  
