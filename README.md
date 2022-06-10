@@ -82,7 +82,7 @@ I use [pysaucenao](https://github.com/FujiMakoto/pysaucenao) for reverse image s
 
 ## Tasks
 
-- `change_avatar()` (changes avatar everyday, selecting randomly from db)
+- `change_avatar()` (changes avatar every 12 hours, selecting randomly from db)
 - `check_chapter()` (checks the latest chapters of the followed series every minute and notifies)
 - `filter_channels()` (filters out the channels that no longer exists from the db)
 
