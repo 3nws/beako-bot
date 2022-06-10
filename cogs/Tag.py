@@ -1,5 +1,5 @@
 import discord
-import sys
+# import sys
 
 from discord.ext import commands
 from discord import app_commands
@@ -85,10 +85,13 @@ class Tag(commands.Cog):
         
     @group.command(name="add")
     @app_commands.describe(tag_name="The soon to be added or edited tag's name, in fact!", tag_content="Contents of this tag, I suppose!",
-                           tag_file="You can also pass a file as the tag's contents, in fact! It will override the previous argument, in fact!")
+                        #    tag_file="You can also pass a file as the tag's contents, in fact! It will override the previous argument, in fact!"
+                           )
     @app_commands.autocomplete(tag_name=tag_autocomplete)
     @app_commands.checks.has_permissions(manage_guild=True)
-    async def add_tag(self, i: discord.Interaction, tag_name: str, tag_content: Optional[str], tag_file: Optional[discord.Attachment]):
+    async def add_tag(self, i: discord.Interaction, tag_name: str, tag_content: Optional[str],
+    #  tag_file: Optional[discord.Attachment]
+     ):
         """Add or edit a tag on this server.
 
         Args:
@@ -102,14 +105,14 @@ class Tag(commands.Cog):
         """
         await i.response.defer()
         msg: str = "Tag added, in fact!"
-        if tag_file is not None:
-            data = await tag_file.read()
-            if sys.getsizeof(data)//(1024*1024) > 4:
-                return await i.followup.send("Wow! That's too large, I suppose! Keep it below 4MB, in fact!")
-            try:
-                tag_content = data.decode('ascii')
-            except UnicodeDecodeError:
-                tag_content = data      # type: ignore
+        # if tag_file is not None:
+        #     data = await tag_file.read()
+        #     if sys.getsizeof(data)//(1024*1024) > 4:
+        #         return await i.followup.send("Wow! That's too large, I suppose! Keep it below 4MB, in fact!")
+        #     try:
+        #         tag_content = data.decode('ascii')
+        #     except UnicodeDecodeError:
+        #         tag_content = data      # type: ignore
         if tag_content is None:
             return await i.followup.send("What should this tag return, in fact!")
         if tag_name in self.tags_list:
