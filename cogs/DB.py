@@ -88,7 +88,7 @@ class DB(commands.Cog):
         self.avatar_urls: List[str] = []
         self.mangas_list = {}
         
-        # self.tasks_change_avatar.start()
+        self.tasks_change_avatar.start()
         
         
     @commands.Cog.listener()
