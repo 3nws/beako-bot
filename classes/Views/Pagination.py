@@ -62,7 +62,10 @@ class MangaReader(ui.View, menus.MenuPages):
         btn_usr: Union[discord.Member, discord.User] = interaction.user
         i_usr: Union[discord.Member, discord.User] = self.i.user
         await interaction.response.defer()
-        return True if self.i is None else btn_usr == i_usr
+        cond: bool = True if self.i is None else btn_usr == i_usr
+        if not cond:
+            await interaction.followup.send("That's not your view, in fact!", ephemeral=True)
+        return cond
 
 
     async def on_timeout(self):

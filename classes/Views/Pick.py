@@ -55,7 +55,10 @@ class PickView(ui.View):
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         await interaction.response.defer()
-        return interaction.user == self.i.user  
+        cond: bool = interaction.user == self.i.user
+        if not cond:
+            await interaction.followup.send("That's not your view, in fact!", ephemeral=True)
+        return cond
     
 
     async def find_one(self):
