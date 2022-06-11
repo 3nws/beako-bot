@@ -19,7 +19,7 @@ from discord.ui import View
 track_cmds = ["add", "remove", "manga", "last"]
 admin_cmds = ["kick", "ban", "unban", "clean", "purge"]
 tag_cmds = ["tag show", "tag add", "tag remove"]
-fun_cmds = ["say", "roll", "rps", "coinflip", "flip", "imagesearch"]
+fun_cmds = ["wordle start", "wordle guess", "say", "roll", "rps", "coinflip", "flip", "imagesearch"]
 gif_cmds = ["hug", "pout", "pat", "smug"]
 osu_cmds = ["osu best", "osu recent", "osu profile"]
 timer_cmds = ["remind", "alarm", "time"]

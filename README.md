@@ -54,6 +54,8 @@ I use [pysaucenao](https://github.com/FujiMakoto/pysaucenao) for reverse image s
 
 ## Fun commands
 
+- `/wordle start` (start a wordle game)
+- `/wordle guess` (guess a word)
 - `/coin h t` (flip a coin h and t are not required)
 - `/rps choice` (has choices) (play rock-paper-scissors with Betty)
 - `/roll x` (rolls a random number between 1 and x(100 if no argument is passed))
@@ -87,6 +89,7 @@ I use [pysaucenao](https://github.com/FujiMakoto/pysaucenao) for reverse image s
 
 ### TODOS
 
+- Keep the current wordle games in cache (it is buggy as it is now)
 - Add more osu! functionality
 - Make the results for osu! prettier, they look awful
 - Add tracking for animes as well
