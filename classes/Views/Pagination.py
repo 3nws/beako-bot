@@ -59,8 +59,9 @@ class MangaReader(ui.View, menus.MenuPages):
 
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        btn_usr: Union[discord.Member, discord.User] = interaction.user  
-        i_usr: Union[discord.Member, discord.User] = self.i.user  
+        btn_usr: Union[discord.Member, discord.User] = interaction.user
+        i_usr: Union[discord.Member, discord.User] = self.i.user
+        await interaction.response.defer()
         return True if self.i is None else btn_usr == i_usr
 
 
@@ -89,31 +90,26 @@ class MangaReader(ui.View, menus.MenuPages):
 
     @ui.button(emoji='<:before_fast_check:754948796139569224>', style=discord.ButtonStyle.blurple)
     async def first_page(self, interaction: discord.Interaction, button: discord.ui.Button[Self]):
-        await interaction.response.defer()
         await self.turn_page(0)
 
 
     @ui.button(emoji='<:before_check:754948796487565332>', style=discord.ButtonStyle.blurple)
     async def before_page(self, interaction: discord.Interaction, button: discord.ui.Button[Self]):
-        await interaction.response.defer()
         await self.turn_page(self.current_page - 1)
 
 
     @ui.button(emoji='<:stop_check:754948796365930517>', style=discord.ButtonStyle.blurple)
     async def stop_page(self, interaction: discord.Interaction, button: discord.ui.Button[Self]):
         self.stop()
-        await interaction.response.defer()
         await self.msg.edit(content=self.text, embed=self.embed, view=self.disabled())  
 
 
     @ui.button(emoji='<:next_check:754948796361736213>', style=discord.ButtonStyle.blurple)
     async def next_page(self, interaction: discord.Interaction, button: discord.ui.Button[Self]):
-        await interaction.response.defer()
         await self.turn_page(self.current_page + 1)
 
 
     @ui.button(emoji='<:next_fast_check:754948796391227442>', style=discord.ButtonStyle.blurple)
     async def last_page(self, interaction: discord.Interaction, button: discord.ui.Button[Self]):
-        await interaction.response.defer()
         await self.turn_page(self._source.get_max_pages() - 1)  
 

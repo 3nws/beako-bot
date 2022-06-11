@@ -54,6 +54,7 @@ class PickView(ui.View):
         
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        await interaction.response.defer()
         return interaction.user == self.i.user  
     
 
@@ -121,29 +122,24 @@ class PickView(ui.View):
         
     @ui.button(emoji='1️⃣', style=discord.ButtonStyle.blurple)
     async def opt_one(self, interaction: discord.Interaction, button: discord.ui.Button[Self]):
-        await interaction.response.defer()
         await self.update(0)
         
 
     @ui.button(emoji='2️⃣', style=discord.ButtonStyle.blurple)
     async def opt_two(self, interaction: discord.Interaction, button: discord.ui.Button[Self]):
-        await interaction.response.defer()
         await self.update(1)
         
 
     @ui.button(emoji='3️⃣', style=discord.ButtonStyle.blurple)
     async def opt_three(self, interaction: discord.Interaction, button: discord.ui.Button[Self]):
-        await interaction.response.defer()
         await self.update(2)
         
 
     @ui.button(emoji='4️⃣', style=discord.ButtonStyle.blurple)
     async def opt_four(self, interaction: discord.Interaction, button: discord.ui.Button[Self]):
-        await interaction.response.defer()
         await self.update(3)
         
 
     @ui.button(emoji='5️⃣', style=discord.ButtonStyle.blurple)
     async def opt_five(self, interaction: discord.Interaction, button: discord.ui.Button[Self]):
-        await interaction.response.defer()
         await self.update(4)
