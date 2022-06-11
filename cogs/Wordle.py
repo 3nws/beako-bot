@@ -101,7 +101,6 @@ class Wordle(commands.Cog):
                 return await i.response.send_message("Not a valid word, I suppose!", ephemeral=True)
         self.games[i.user.id]["num_of_guesses"] += 1
         self.games[i.user.id]["guessed_words"].append(guess)
-        print(self.games)
         temp2: str = ""
         for j, c in enumerate(new_state):
             if self.games[i.user.id]["embed"].title is not None:
