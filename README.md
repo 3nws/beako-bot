@@ -93,3 +93,4 @@ I use [pysaucenao](https://github.com/FujiMakoto/pysaucenao) for reverse image s
 - Add more osu! functionality
 - Make the results for osu! prettier, they look awful
 - Add tracking for animes as well
+- Steam wishlisting? idk
