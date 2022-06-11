@@ -55,7 +55,7 @@ class Wordle(commands.Cog):
             "interaction": i,
             "embed": embed,
             }
-        await i.response.send_message("The game has started, in fact! Start guessing with `/wordle guess`, I suppose!", embed=embed, ephemeral=False)
+        await i.response.send_message("The game has started, in fact! Start guessing with `/wordle guess`, I suppose!", embed=embed, ephemeral=True)
         
 
 
@@ -69,11 +69,11 @@ class Wordle(commands.Cog):
             guess (str): user's guess
         """
         if self.games == {} or i.user.id not in self.games:
-            return await i.response.send_message("You have not started a game yet, in fact! Try `/wordle start` first, I suppose!", ephemeral=False)
+            return await i.response.send_message("You have not started a game yet, in fact! Try `/wordle start` first, I suppose!", ephemeral=True)
         if len(guess) != 5:
-            return await i.response.send_message("That word is not five letters length, in fact!", ephemeral=False)
+            return await i.response.send_message("That word is not five letters length, in fact!", ephemeral=True)
         if guess in self.games[i.user.id]["guessed_words"]:
-            return await i.response.send_message("You have already tried that word, in fact!", ephemeral=False)
+            return await i.response.send_message("You have already tried that word, in fact!", ephemeral=True)
         new_state: str = ""
         guess_result: str = ""
         session: ClientSession = self.bot.session
@@ -98,7 +98,7 @@ class Wordle(commands.Cog):
                     else:
                         new_state += "-"
             else:
-                return await i.response.send_message("Not a valid word, I suppose!", ephemeral=False)
+                return await i.response.send_message("Not a valid word, I suppose!", ephemeral=True)
         self.games[i.user.id]["num_of_guesses"] += 1
         self.games[i.user.id]["guessed_words"].append(guess)
         print(self.games)
@@ -113,7 +113,7 @@ class Wordle(commands.Cog):
         if '-' not in new_state:
             await self.finish(self.games[i.user.id]['interaction'])
         else:
-            await i.response.send_message(guess_result, ephemeral=False)
+            await i.response.send_message(guess_result, ephemeral=True)
             await self.games[i.user.id]['interaction'].edit_original_message(content="The game has started, in fact! Start guessing with `/wordle guess`, I suppose!", embed=self.games[i.user.id]["embed"])
 
         if self.games[i.user.id]["num_of_guesses"] >= 5:
@@ -142,9 +142,9 @@ class Wordle(commands.Cog):
         await i.edit_original_message(content="The game has ended, in fact! Start another one with `/wordle start`, I suppose!", embed=self.games[i.user.id]["embed"])
         self.reset_game(i)
         if win:
-            await i.followup.send("You have finished the wordle successfully, in fact!", ephemeral=False)
+            await i.followup.send("You have finished the wordle successfully, in fact!", ephemeral=True)
         else:
-            await i.followup.send("Better luck next time, I suppose!", ephemeral=False)
+            await i.followup.send("Better luck next time, I suppose!", ephemeral=True)
 
 
 async def setup(bot: Bot):
