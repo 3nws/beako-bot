@@ -69,6 +69,8 @@ class Util(commands.Cog):
         avatar_frame = discord.Embed(
             color=discord.Colour.random()
         )
+        if member.avatar is None:
+            return await i.response.send_message("This person is still using the default avatar, in fact!")
         if member:
             avatar_frame.add_field(name=str(
                 i.user) + " requested", value=member.mention + "'s avatar, I suppose!")  
