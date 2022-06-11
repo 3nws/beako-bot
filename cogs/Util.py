@@ -164,7 +164,9 @@ class Util(commands.Cog):
                 name=str(i.user) + " requested", value=" their own banner, I suppose!")  
             embed.set_image(url=f'{r}')
 
-        await i.response.send_message(embed=embed)
+        if file_extension == 'gif':  
+            return await i.response.send_message(embed=embed)
+        await i.response.send_message(embed=embed, view=FilterView(i, embed, self.bot))
 
 
     sauce_group = app_commands.Group(name="sauce", description="Sauce command group...")
