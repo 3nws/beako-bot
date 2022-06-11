@@ -93,6 +93,10 @@ messages = {
             \nThis needs 'manage_guild' permission and the format for this is 'tag add tag_name tag_content tag_file' (mutally exclusive arguments, the latter will override the former), in fact!```",
                                   
         'tag remove': "```Betty will give remove the given tag from this server!\
-            \nThis needs 'manage_guild' permission and the format for this is 'tag remove tag_name', in fact!```"
+            \nThis needs 'manage_guild' permission and the format for this is 'tag remove tag_name', in fact!```",
+
+        'wordle start': "```Betty will start a wordle game for you, in fact!```",
+
+        'wordle guess': "```Betty will process your guess, in fact!```",
 
 }
