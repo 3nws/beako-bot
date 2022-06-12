@@ -89,10 +89,9 @@ class DB(commands.Cog):
         self.avatar_urls: List[str] = []
         self.mangas_list = {}
 
-        self.tasks_change_avatar.start()
-
     @commands.Cog.listener()
     async def on_ready(self):
+        self.tasks_change_avatar.start()
         self.tasks_filter_channels.start()
         self.tasks_check_chapter.start()
 
@@ -674,6 +673,10 @@ class DB(commands.Cog):
         await self.bot.wait_until_ready()
         await self.bot.user.edit(avatar=bytes_image)
         print("Avatar changed successfully!")
+
+    @tasks_change_avatar.before_loop
+    async def wait_ready(self):
+        await self.bot.wait_until_ready()
 
     @tasks.loop(seconds=60)
     async def tasks_filter_channels(self):
