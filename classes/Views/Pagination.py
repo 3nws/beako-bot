@@ -88,7 +88,7 @@ class MangaReader(ui.View, menus.MenuPages):
     async def turn_page(self, page_num: int):
         page: Union[Any, List[Any]] = await self._source.get_page(page_num)  # type: ignore
         self.current_page = page_num
-        kwargs = await self._get_kwargs_from_page(page)
+        kwargs = await self._get_kwargs_from_page(page)  # type: ignore
         kwargs["content"] = self.text
         self.embed.set_image(url=page)
         self.embed.set_footer(

@@ -189,9 +189,9 @@ class MyTree(CommandTree[discord.Client]):
         super().__init__(client)
         self._cooldown_predicate: Any = cooldown_decorator(1, 5)(
             lambda: None
-        ).__discord_app_commands_checks__[
+        ).__discord_app_commands_checks__[  # type: ignore
             0
-        ]  # type: ignore
+        ]
 
     async def on_error(
         self,

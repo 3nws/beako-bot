@@ -222,9 +222,9 @@ class DB(commands.Cog):
             md = MangaDex(self.bot)
             records_exist: List[
                 Mapping[str, Any]
-            ] = await self.channels_md.find().to_list(
+            ] = await self.channels_md.find().to_list(  # type: ignore
                 None
-            )  # type: ignore
+            )
             if records_exist:
                 for record in records_exist:
                     mangas_on_channel = (record)["mangas"]
