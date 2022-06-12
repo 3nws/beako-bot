@@ -8,7 +8,7 @@ from typing import Optional
 from typing_extensions import Self
 from typing import Callable, Coroutine, Any, TypeVar
 from wand.image import Image
-from wand.compat import to_bytes      # type: ignore
+from wand.compat import to_bytes  # type: ignore
 from functools import wraps
 
 from Bot import Bot
@@ -22,44 +22,44 @@ F = TypeVar("F", bound="FilterView")
 
 def apply_filter(coro: Coro) -> Coro:
     @wraps(coro)
-    async def inner(self: F, choice: int) -> None:      # type: ignore
+    async def inner(self: F, choice: int) -> None:  # type: ignore
         msg: discord.Message = await self.i.channel.send("Loading, I suppose!..")  # type: ignore
         await coro(self, choice)
-        with Image(blob=self.bytes_image) as img:      # type: ignore
+        with Image(blob=self.bytes_image) as img:  # type: ignore
             if choice == 0:
-                img.blur(radius=0, sigma=3)      # type: ignore
+                img.blur(radius=0, sigma=3)  # type: ignore
             elif choice == 1:
-                img.shade(gray=True, azimuth=286.0, elevation=45.0)      # type: ignore
+                img.shade(gray=True, azimuth=286.0, elevation=45.0)  # type: ignore
             elif choice == 2:
-                img.sharpen(radius=8, sigma=4)      # type: ignore
+                img.sharpen(radius=8, sigma=4)  # type: ignore
             elif choice == 3:
-                img.spread(radius=8.0)      # type: ignore
+                img.spread(radius=8.0)  # type: ignore
             elif choice == 4:
-                img.transform_colorspace("gray")      # type: ignore
-                img.edge(radius=1)      # type: ignore
+                img.transform_colorspace("gray")  # type: ignore
+                img.edge(radius=1)  # type: ignore
             elif choice == 5:
-                img.transform_colorspace("gray")      # type: ignore
-                img.emboss(radius=3.0, sigma=1.75)      # type: ignore
+                img.transform_colorspace("gray")  # type: ignore
+                img.emboss(radius=3.0, sigma=1.75)  # type: ignore
             elif choice == 6:
-                img.charcoal(radius=1.5, sigma=0.5)      # type: ignore
+                img.charcoal(radius=1.5, sigma=0.5)  # type: ignore
             elif choice == 7:
-                img.wave(amplitude=img.height / 32, wave_length=img.width / 4)      # type: ignore
+                img.wave(amplitude=img.height / 32, wave_length=img.width / 4)  # type: ignore
             elif choice == 8:
-                img.colorize(color="yellow", alpha="rgb(10%, 0%, 20%)")      # type: ignore
+                img.colorize(color="yellow", alpha="rgb(10%, 0%, 20%)")  # type: ignore
             elif choice == 9:
-                img.sepia_tone(threshold=0.8)      # type: ignore
+                img.sepia_tone(threshold=0.8)  # type: ignore
             elif choice == 10:
-                img.transform_colorspace("gray")      # type: ignore
-                img.sketch(0.5, 0.0, 98.0)      # type: ignore
+                img.transform_colorspace("gray")  # type: ignore
+                img.sketch(0.5, 0.0, 98.0)  # type: ignore
             elif choice == 11:
-                img.solarize(threshold=0.5 * img.quantum_range)      # type: ignore
+                img.solarize(threshold=0.5 * img.quantum_range)  # type: ignore
             elif choice == 12:
-                img.swirl(degree=-90)      # type: ignore
+                img.swirl(degree=-90)  # type: ignore
             elif choice == 13:
-                img.tint(color="yellow", alpha="rgb(40%, 60%, 80%)")      # type: ignore
+                img.tint(color="yellow", alpha="rgb(40%, 60%, 80%)")  # type: ignore
             else:
                 buffer = BytesIO(self.original)  # type: ignore
-                img.save(buffer)      # type: ignore
+                img.save(buffer)  # type: ignore
                 buffer.seek(0)
                 f = discord.File(buffer, filename="original_user_avatar.png")
 
@@ -75,9 +75,9 @@ def apply_filter(coro: Coro) -> Coro:
                 )
                 return None
 
-            image_bytes: bytes = to_bytes(img.make_blob())      # type: ignore
+            image_bytes: bytes = to_bytes(img.make_blob())  # type: ignore
             buffer = BytesIO(image_bytes)  # type: ignore
-            img.save(buffer)      # type: ignore
+            img.save(buffer)  # type: ignore
 
         buffer.seek(0)
         f = discord.File(buffer, filename="user_avatar.png")
@@ -120,7 +120,7 @@ class FilterView(ui.View):
 
     def disabled(self):
         for btn in self.children:
-            btn.disabled = True      # type: ignore
+            btn.disabled = True  # type: ignore
         return self
 
     async def on_timeout(self):

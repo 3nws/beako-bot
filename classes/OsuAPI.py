@@ -2,7 +2,7 @@ import discord
 import os
 import json
 
-from dotenv import load_dotenv      # type: ignore
+from dotenv import load_dotenv  # type: ignore
 from typing import List, Dict, Optional
 from aiohttp import ClientSession
 

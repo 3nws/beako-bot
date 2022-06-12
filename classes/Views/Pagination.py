@@ -15,7 +15,7 @@ Channel = Union[
 
 
 class Source(menus.ListPageSource):
-    async def format_page(self, menu, entries):      # type: ignore
+    async def format_page(self, menu, entries):  # type: ignore
         return f"This is number {entries}."
 
 
@@ -41,7 +41,7 @@ class MangaReader(ui.View, menus.MenuPages):
         self.text: Optional[str]
         self.group: Optional[str]
 
-    async def start(      # type: ignore
+    async def start(  # type: ignore
         self,
         *,
         interaction: Optional[discord.Interaction],
@@ -50,22 +50,22 @@ class MangaReader(ui.View, menus.MenuPages):
         embed: discord.Embed,
         group: str,
     ):
-        await self._source._prepare_once()      # type: ignore
-        page = await self._source.get_page(0)      # type: ignore
-        kwargs = await self._get_kwargs_from_page(page)      # type: ignore
+        await self._source._prepare_once()  # type: ignore
+        page = await self._source.get_page(0)  # type: ignore
+        kwargs = await self._get_kwargs_from_page(page)  # type: ignore
         kwargs["content"] = text
         kwargs["embed"] = embed
-        self.msg = await channel.send(**kwargs)      # type: ignore
+        self.msg = await channel.send(**kwargs)  # type: ignore
         self.embed = embed
         self.text = text
         self.group = group
         self.i = interaction
 
-    async def _get_kwargs_from_page(self, page: str):      # type: ignore
+    async def _get_kwargs_from_page(self, page: str):  # type: ignore
         value = {}
         if "view" not in value:
             value["view"] = self
-        return value      # type: ignore
+        return value  # type: ignore
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         btn_usr: Union[discord.Member, discord.User] = interaction.user
@@ -86,14 +86,14 @@ class MangaReader(ui.View, menus.MenuPages):
         )
 
     async def turn_page(self, page_num: int):
-        page: Union[Any, List[Any]] = await self._source.get_page(page_num)      # type: ignore
+        page: Union[Any, List[Any]] = await self._source.get_page(page_num)  # type: ignore
         self.current_page = page_num
         kwargs = await self._get_kwargs_from_page(page)
         kwargs["content"] = self.text
         self.embed.set_image(url=page)
         self.embed.set_footer(
             text=(
-                f"Page {page_num+1}/{self._source._max_pages}. Translated by "      # type: ignore
+                f"Page {page_num+1}/{self._source._max_pages}. Translated by "  # type: ignore
                 + self.group
             )
         )
@@ -102,7 +102,7 @@ class MangaReader(ui.View, menus.MenuPages):
 
     def disabled(self):
         for btn in self.children:
-            btn.disabled = True      # type: ignore
+            btn.disabled = True  # type: ignore
         return self
 
     @ui.button(

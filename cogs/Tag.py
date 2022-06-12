@@ -21,8 +21,8 @@ class Tag(commands.Cog):
 
     async def sync_tags(self):
         """Sync the tags according to guilds."""
-        async for tag in self.tags_coll.find():      # type: ignore
-            self.tags_list[tag["guild_id"]] = tag["tags"]      # type: ignore
+        async for tag in self.tags_coll.find():  # type: ignore
+            self.tags_list[tag["guild_id"]] = tag["tags"]  # type: ignore
 
     @commands.Cog.listener("on_ready")
     async def on_ready(self) -> None:
@@ -48,11 +48,11 @@ class Tag(commands.Cog):
         """
         return [
             app_commands.Choice(name=tag, value=tag)
-            for tag in self.tags_list[interaction.guild_id]      # type: ignore
+            for tag in self.tags_list[interaction.guild_id]  # type: ignore
             if current.lower() in tag
             or (
-                isinstance(self.tags_list[interaction.guild_id][tag], str)      # type: ignore
-                and current.lower() in self.tags_list[interaction.guild_id][tag]      # type: ignore
+                isinstance(self.tags_list[interaction.guild_id][tag], str)  # type: ignore
+                and current.lower() in self.tags_list[interaction.guild_id][tag]  # type: ignore
             )
         ][:25]
 
@@ -73,10 +73,10 @@ class Tag(commands.Cog):
         """
         await i.response.defer()
         try:
-            await i.followup.send(self.tags_list[i.guild_id][tag_name])      # type: ignore
+            await i.followup.send(self.tags_list[i.guild_id][tag_name])  # type: ignore
         except Exception as e:
             print(e)
-            content = self.tags_list[i.guild_id][tag_name]      # type: ignore
+            content = self.tags_list[i.guild_id][tag_name]  # type: ignore
             if isinstance(content, bytes):
                 buffer = BytesIO(content)
                 file = discord.File(buffer, filename="image.png")
@@ -127,7 +127,7 @@ class Tag(commands.Cog):
             msg = "Tag edited, in fact!"
         new = False
         if self.tags_list != {}:
-            self.tags_list[i.guild_id][tag_name] = tag_content      # type: ignore
+            self.tags_list[i.guild_id][tag_name] = tag_content  # type: ignore
         if self.tags_list == {}:
             to_insert = {
                 "guild_id": i.guild.id,
@@ -135,16 +135,16 @@ class Tag(commands.Cog):
                     tag_name: tag_content,
                 },
             }
-            await self.tags_coll.insert_one(to_insert)      # type: ignore
+            await self.tags_coll.insert_one(to_insert)  # type: ignore
             new = True
         if not new:
-            await self.tags_coll.find_one_and_update(      # type: ignore
+            await self.tags_coll.find_one_and_update(  # type: ignore
                 {
                     "guild_id": i.guild.id,
                 },
                 {
                     "$set": {
-                        "tags": self.tags_list[i.guild_id],      # type: ignore
+                        "tags": self.tags_list[i.guild_id],  # type: ignore
                     }
                 },
             )
@@ -161,14 +161,14 @@ class Tag(commands.Cog):
             i (discord.Interaction): the interaction that invokes this coroutine
             tag_name (str): the name of the tag to delete
         """
-        self.tags_list[i.guild_id].pop(tag_name)      # type: ignore
-        await self.tags_coll.find_one_and_update(      # type: ignore
+        self.tags_list[i.guild_id].pop(tag_name)  # type: ignore
+        await self.tags_coll.find_one_and_update(  # type: ignore
             {
                 "guild_id": i.guild.id,
             },
             {
                 "$set": {
-                    "tags": self.tags_list[i.guild_id],      # type: ignore
+                    "tags": self.tags_list[i.guild_id],  # type: ignore
                 }
             },
         )

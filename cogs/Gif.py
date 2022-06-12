@@ -3,7 +3,7 @@ import random
 import os
 import json
 
-from dotenv import load_dotenv      # type: ignore
+from dotenv import load_dotenv  # type: ignore
 from discord.ext import commands
 from discord import app_commands
 from aiohttp import ClientSession

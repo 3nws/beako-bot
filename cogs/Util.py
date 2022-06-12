@@ -115,7 +115,7 @@ class Util(commands.Cog):
         avatar_frame = discord.Embed(color=discord.Colour.random())
         if member:
             if member.display_avatar is None:
-                return await self.avatar(i, member)      # type: ignore
+                return await self.avatar(i, member)  # type: ignore
             avatar_frame.add_field(
                 name=str(i.user) + " requested",
                 value=member.mention + "'s server avatar, I suppose!",
@@ -123,7 +123,7 @@ class Util(commands.Cog):
             avatar_frame.set_image(url=f"{member.display_avatar.url}")
         else:
             if i.user.display_avatar is None:
-                return await self.avatar(i, member)      # type: ignore
+                return await self.avatar(i, member)  # type: ignore
             avatar_frame.add_field(
                 name=str(i.user) + " requested",
                 value=" their own server avatar, I suppose!",
@@ -207,20 +207,20 @@ class Util(commands.Cog):
         await i.response.defer()
         try:
             sauce_frame = discord.Embed(color=discord.Colour.random())
-            results: SauceNaoResults = await self.saucenao.from_url(url)      # type: ignore
+            results: SauceNaoResults = await self.saucenao.from_url(url)  # type: ignore
             pixiv_result = ""
             twitter_result = ""
-            for result in results:      # type: ignore
+            for result in results:  # type: ignore
                 if isinstance(result, PixivSource):
-                    pixiv_result = result      # type: ignore
+                    pixiv_result = result  # type: ignore
                 elif isinstance(result, TwitterSource):
-                    twitter_result = result      # type: ignore
+                    twitter_result = result  # type: ignore
             if pixiv_result and twitter_result:
                 sauce_frame.add_field(
-                    name=f"{pixiv_result.title} by {pixiv_result.author_name} with {str(pixiv_result.similarity)} similarity",      # type: ignore
-                    value=f"on [Pixiv]({pixiv_result.source_url}),\non [Twitter]({twitter_result.source_url})",      # type: ignore
+                    name=f"{pixiv_result.title} by {pixiv_result.author_name} with {str(pixiv_result.similarity)} similarity",  # type: ignore
+                    value=f"on [Pixiv]({pixiv_result.source_url}),\non [Twitter]({twitter_result.source_url})",  # type: ignore
                 )
-                sauce_frame.set_thumbnail(url=pixiv_result.thumbnail)      # type: ignore
+                sauce_frame.set_thumbnail(url=pixiv_result.thumbnail)  # type: ignore
             elif not pixiv_result and not twitter_result:
                 sauce_frame = discord.Embed(
                     title="No results!",
@@ -228,16 +228,16 @@ class Util(commands.Cog):
                 )
             elif not twitter_result:
                 sauce_frame.add_field(
-                    name=f"{pixiv_result.title} by {pixiv_result.author_name} with {str(pixiv_result.similarity)} similarity",      # type: ignore
-                    value=f"on [Pixiv]({pixiv_result.source_url})",      # type: ignore
+                    name=f"{pixiv_result.title} by {pixiv_result.author_name} with {str(pixiv_result.similarity)} similarity",  # type: ignore
+                    value=f"on [Pixiv]({pixiv_result.source_url})",  # type: ignore
                 )
-                sauce_frame.set_thumbnail(url=pixiv_result.thumbnail)      # type: ignore
+                sauce_frame.set_thumbnail(url=pixiv_result.thumbnail)  # type: ignore
             else:
                 sauce_frame.add_field(
-                    name=f"Image posted by {twitter_result.author_name} with {str(twitter_result.similarity)} similarity",      # type: ignore
-                    value=f"on [Twitter]({twitter_result.source_url})",      # type: ignore
+                    name=f"Image posted by {twitter_result.author_name} with {str(twitter_result.similarity)} similarity",  # type: ignore
+                    value=f"on [Twitter]({twitter_result.source_url})",  # type: ignore
                 )
-                sauce_frame.set_thumbnail(url=twitter_result.thumbnail)      # type: ignore
+                sauce_frame.set_thumbnail(url=twitter_result.thumbnail)  # type: ignore
 
             sauce_frame.set_footer(
                 text=f"on {str(i.user)}'s request, I suppose!",
@@ -308,7 +308,7 @@ class Util(commands.Cog):
             color=discord.Colour.random(),
         )
         embed.set_footer(
-            text=f"Poll created by {i.user.nick}", icon_url=i.user.avatar.url      # type: ignore
+            text=f"Poll created by {i.user.nick}", icon_url=i.user.avatar.url  # type: ignore
         )
         members_first_choice: List[int] = []
         members_second_choice: List[int] = []
@@ -347,9 +347,9 @@ class Util(commands.Cog):
                     text=f"For the poll '{question}'", icon_url=i.user.avatar.url
                 )
                 for item in view.children:
-                    item.disabled = True      # type: ignore
+                    item.disabled = True  # type: ignore
                 await i.edit_original_message(embed=embed, view=view)
-                await i.channel.send(embed=results)      # type: ignore
+                await i.channel.send(embed=results)  # type: ignore
 
             button_one.callback = callback
             button_two.callback = callback
@@ -362,7 +362,7 @@ class Util(commands.Cog):
                 view=view,
             )
         else:
-            msg: discord.Message = await i.channel.send(embed=embed)      # type: ignore
+            msg: discord.Message = await i.channel.send(embed=embed)  # type: ignore
             emojis = ["1️⃣", "2️⃣"]
 
             for emoji in emojis:
@@ -374,7 +374,7 @@ class Util(commands.Cog):
 
             await asyncio.sleep(180)
 
-            message_1: discord.Message = await i.channel.fetch_message(msg.id)      # type: ignore
+            message_1: discord.Message = await i.channel.fetch_message(msg.id)  # type: ignore
 
             reactions: Dict[Union[discord.PartialEmoji, discord.Emoji, str], int] = {
                 react.emoji: react.count for react in message_1.reactions
@@ -390,7 +390,7 @@ class Util(commands.Cog):
                 text=f"For the poll '{question}'", icon_url=i.user.avatar.url
             )
 
-            await i.channel.send(embed=results)      # type: ignore
+            await i.channel.send(embed=results)  # type: ignore
 
 
 async def setup(bot: Bot):

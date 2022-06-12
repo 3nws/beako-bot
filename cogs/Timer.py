@@ -77,12 +77,12 @@ class Timer(commands.Cog):
             color=discord.Colour.random(), timestamp=datetime.utcnow()
         )
         if unit is None:
-            unit = time[-1]      # type: ignore
+            unit = time[-1]  # type: ignore
             time = time[:-1]
         if unit:
             if len(unit) > 1 or time[-1].isalpha() and len(unit) == 1:
                 reminder = unit
-                unit = time[-1]      # type: ignore
+                unit = time[-1]  # type: ignore
                 time = time[:-1]
         seconds = 0
         counter: str = ""
@@ -114,9 +114,9 @@ class Timer(commands.Cog):
                 )
             await asyncio.sleep(seconds)
             if not reminder:
-                await i.channel.send(f"Hey {i.user.mention}, what up, in fact!")      # type: ignore
+                await i.channel.send(f"Hey {i.user.mention}, what up, in fact!")  # type: ignore
             else:
-                await i.channel.send(      # type: ignore
+                await i.channel.send(  # type: ignore
                     f"Hey {i.user.mention}, what up, in fact! You asked me to remind you about '{reminder}' {counter} ago, I suppose!"
                 )
             return
@@ -172,9 +172,9 @@ class Timer(commands.Cog):
                     )
                 await asyncio.sleep(time_left)
                 if not reminder:
-                    await i.channel.send(f"Hey {i.user.mention}, what up, in fact!")      # type: ignore
+                    await i.channel.send(f"Hey {i.user.mention}, what up, in fact!")  # type: ignore
                 else:
-                    await i.channel.send(      # type: ignore
+                    await i.channel.send(  # type: ignore
                         f"Hey {i.user.mention}, what up, in fact! This is your Betty alarm for '{reminder}', I suppose!"
                     )
                 return
@@ -202,9 +202,9 @@ class Timer(commands.Cog):
         if not self.is_synced:
             await self.sync()
         return [
-            app_commands.Choice(name=city, value=city)      # type: ignore
-            for city in self.cities_list      # type: ignore
-            if current.lower() in city.lower()      # type: ignore
+            app_commands.Choice(name=city, value=city)  # type: ignore
+            for city in self.cities_list  # type: ignore
+            if current.lower() in city.lower()  # type: ignore
         ][:25]
 
     @app_commands.command(name="time")
@@ -224,15 +224,15 @@ class Timer(commands.Cog):
                 time_json = json.loads(response)
             else:
                 print("timeapi down!")
-        date = time_json["date"].split("/")      # type: ignore
+        date = time_json["date"].split("/")  # type: ignore
         date[0], date[1] = date[1], date[0]
-        month = self.months[int(date[1]) - 1]      # type: ignore
-        day = date[0]      # type: ignore
-        year = date[2]      # type: ignore
-        date = "/".join(date)      # type: ignore
-        time = time_json["time"] + " - " + date + " - " + time_json["dayOfWeek"]      # type: ignore
-        time = (      # type: ignore
-            time_json["dayOfWeek"]      # type: ignore
+        month = self.months[int(date[1]) - 1]  # type: ignore
+        day = date[0]  # type: ignore
+        year = date[2]  # type: ignore
+        date = "/".join(date)  # type: ignore
+        time = time_json["time"] + " - " + date + " - " + time_json["dayOfWeek"]  # type: ignore
+        time = (  # type: ignore
+            time_json["dayOfWeek"]  # type: ignore
             + ", "
             + month
             + " "
@@ -240,7 +240,7 @@ class Timer(commands.Cog):
             + ", "
             + year
             + " "
-            + time_json["time"]      # type: ignore
+            + time_json["time"]  # type: ignore
         )
         desc = f"It's {time} in {timezone}, I suppose!"
         embed = discord.Embed(

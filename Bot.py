@@ -77,13 +77,13 @@ class Bot(commands.Bot):
     async def setup_hook(self) -> None:
         self.session = aiohttp.ClientSession()
         try:
-            self._client: Any = motor.motor_asyncio.AsyncIOMotorClient(      # type: ignore
+            self._client: Any = motor.motor_asyncio.AsyncIOMotorClient(  # type: ignore
                 "localhost", 27017, serverSelectionTimeoutMS=5000
             )
             print(await self._client.server_info())
         except ServerSelectionTimeoutError:
             print("Local not available!")
-            self._client = motor.motor_asyncio.AsyncIOMotorClient(os.getenv("DB_URL"))      # type: ignore
+            self._client = motor.motor_asyncio.AsyncIOMotorClient(os.getenv("DB_URL"))  # type: ignore
 
         self.add_view(PersistentViewHelp("0", self))
 
@@ -189,7 +189,9 @@ class MyTree(CommandTree[discord.Client]):
         super().__init__(client)
         self._cooldown_predicate: Any = cooldown_decorator(1, 5)(
             lambda: None
-        ).__discord_app_commands_checks__[0]      # type: ignore
+        ).__discord_app_commands_checks__[
+            0
+        ]  # type: ignore
 
     async def on_error(
         self,

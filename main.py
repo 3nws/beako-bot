@@ -4,7 +4,7 @@ import asyncio
 import logging
 
 from discord.app_commands import AppCommand
-from dotenv import load_dotenv      # type: ignore
+from dotenv import load_dotenv  # type: ignore
 from discord.ext import commands
 from typing import List, Literal, Optional
 
@@ -33,11 +33,11 @@ intents.message_content = True
 client = discord.Client(intents=intents)
 tree = MyTree(client)
 bot = Bot(
-    command_prefix="r.",      # type: ignore
-    intents=intents,      # type: ignore
-    tree_cls=MyTree,      # type: ignore
-    help_command=None,      # type: ignore
-    activity=discord.Activity(      # type: ignore
+    command_prefix="r.",  # type: ignore
+    intents=intents,  # type: ignore
+    tree_cls=MyTree,  # type: ignore
+    help_command=None,  # type: ignore
+    activity=discord.Activity(  # type: ignore
         type=discord.ActivityType.listening, name="/beakohelp and Songstress Liliana!"
     ),
 )

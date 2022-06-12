@@ -38,7 +38,7 @@ class Admin(commands.Cog):
         Returns:
             _type_: _description_
         """
-        if member.top_role > i.user.top_role:      # type: ignore
+        if member.top_role > i.user.top_role:  # type: ignore
             return await i.response.send_message(
                 f"You can't kick this person, I suppose!"
             )
@@ -64,7 +64,7 @@ class Admin(commands.Cog):
         Returns:
             _type_: _description_
         """
-        if member.top_role > i.user.top_role:      # type: ignore
+        if member.top_role > i.user.top_role:  # type: ignore
             return await i.response.send_message(
                 f"You can't ban this person, I suppose!"
             )
@@ -132,9 +132,9 @@ class Admin(commands.Cog):
         await i.response.defer()
         original = await i.original_message()
         if msg_id:
-            msg: discord.Message = await i.channel.fetch_message(int(msg_id))      # type: ignore
+            msg: discord.Message = await i.channel.fetch_message(int(msg_id))  # type: ignore
             if direction == "after":
-                await i.channel.purge(      # type: ignore
+                await i.channel.purge(  # type: ignore
                     limit=limit + 1,
                     bulk=True,
                     after=msg,
@@ -142,7 +142,7 @@ class Admin(commands.Cog):
                     check=lambda m: m.id != original.id,
                 )
             elif direction == "before":
-                await i.channel.purge(      # type: ignore
+                await i.channel.purge(  # type: ignore
                     limit=limit + 1,
                     bulk=True,
                     before=msg,
@@ -154,7 +154,7 @@ class Admin(commands.Cog):
                 "I can't delete future messages, in fact! Tell me which message you want me to start deleting from, I suppose!"
             )
         else:
-            await i.channel.purge(      # type: ignore
+            await i.channel.purge(  # type: ignore
                 limit=limit + 1, bulk=True, check=lambda m: m.id != original.id
             )
         await i.followup.send(
@@ -176,9 +176,9 @@ class Admin(commands.Cog):
         if member == self.bot.user:
             await i.response.send_message("Nope, in fact!")
         elif member:
-            async for message in i.channel.history(oldest_first=False):      # type: ignore
-                if message.author == member:      # type: ignore
-                    await message.delete()      # type: ignore
+            async for message in i.channel.history(oldest_first=False):  # type: ignore
+                if message.author == member:  # type: ignore
+                    await message.delete()  # type: ignore
             await i.response.send_message(
                 f"I have cleansed this channel of {member.mention}'s messages, in fact!"
             )
