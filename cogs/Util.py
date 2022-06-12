@@ -131,8 +131,9 @@ class Util(commands.Cog):
             color=discord.Colour.random()
         )
         image_size = '?size=1024'
-        if member is None:
-            member = cast(discord.Member, i.user)
+        member = member or i.user
+        # if member is None:
+        #     member = cast(discord.Member, i.user)
         base_url = 'https://discord.com/api'
         users_endpoint = f'/users/{member.id}'  
         headers = {'Authorization': f'Bot {self.__class__._token}'}
@@ -166,7 +167,7 @@ class Util(commands.Cog):
                 name=str(i.user) + " requested", value=" their own banner, I suppose!")  
             embed.set_image(url=f'{r}')
 
-        if file_extension == 'gif':  
+        if file_extension == 'gif' or f'None.{file_extension}' in r:  
             return await i.response.send_message(embed=embed)
         await i.response.send_message(embed=embed, view=FilterView(i, embed, self.bot))
 

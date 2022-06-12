@@ -90,7 +90,7 @@ async def sync(ctx: commands.Context[Bot], guilds: commands.Greedy[discord.Objec
             fmt_i += 1
 
     await ctx.send(f"Synced the tree to {fmt_i}/{len(guilds)} guilds.")
-  
+
 
 @bot.event
 async def on_ready():
