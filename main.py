@@ -32,12 +32,18 @@ intents.message_content = True
 
 client = discord.Client(intents=intents)
 tree = MyTree(client)
-bot = Bot(command_prefix="r.", intents=intents, tree_cls=MyTree, help_command=None,      # type: ignore
-          activity=discord.Activity(
-              type=discord.ActivityType.listening, name="/beakohelp and Songstress Liliana!"      # type: ignore
-          ))  
+bot = Bot(
+    command_prefix="r.",      # type: ignore
+    intents=intents,      # type: ignore
+    tree_cls=MyTree,      # type: ignore
+    help_command=None,      # type: ignore
+    activity=discord.Activity(      # type: ignore
+        type=discord.ActivityType.listening, name="/beakohelp and Songstress Liliana!"
+    ),
+)
 
-@bot.tree.command(name='beakohelp', guild=None)
+
+@bot.tree.command(name="beakohelp", guild=None)
 async def help(interaction: discord.Interaction):
     await Help(bot).get_help(interaction)
 
@@ -52,38 +58,42 @@ async def on_command_error(ctx: commands.Context[Bot], error: commands.CommandEr
 
 @bot.event
 async def on_guild_join(guild: discord.Guild):
-    msg = f"Just joined {guild.name} with {guild.member_count} members, in fact!"  
+    msg = f"Just joined {guild.name} with {guild.member_count} members, in fact!"
     user = bot.get_user(442715989310832650)
-    await user.send(msg)  
+    await user.send(msg)
     print(msg)
 
 
 @bot.event
 async def on_guild_remove(guild: discord.Guild):
-    msg = f"Just left {guild.name}, in fact!\nThey didn't like Betty, I suppose!"  
+    msg = f"Just left {guild.name}, in fact!\nThey didn't like Betty, I suppose!"
     user = bot.get_user(442715989310832650)
-    await user.send(msg)  
+    await user.send(msg)
     print(msg)
 
 
 @bot.command()
 @commands.is_owner()
-async def sync(ctx: commands.Context[Bot], guilds: commands.Greedy[discord.Object], spec: Optional[Literal["~"]]) -> None:
+async def sync(
+    ctx: commands.Context[Bot],
+    guilds: commands.Greedy[discord.Object],
+    spec: Optional[Literal["~"]],
+) -> None:
     if not guilds:
         if spec == "~":
-            fmt: List[AppCommand] = await ctx.bot.tree.sync(guild=ctx.guild)  
+            fmt: List[AppCommand] = await ctx.bot.tree.sync(guild=ctx.guild)
         else:
-            fmt: List[AppCommand] = await ctx.bot.tree.sync()  
+            fmt: List[AppCommand] = await ctx.bot.tree.sync()
 
         await ctx.send(
-            f"Synced {len(fmt)} commands {'globally' if spec is None else 'to the current guild.'}"  
+            f"Synced {len(fmt)} commands {'globally' if spec is None else 'to the current guild.'}"
         )
         return
 
     fmt_i: int = 0
     for guild in guilds:
         try:
-            await ctx.bot.tree.sync(guild=guild)  
+            await ctx.bot.tree.sync(guild=guild)
         except discord.HTTPException:
             pass
         else:
@@ -94,12 +104,13 @@ async def sync(ctx: commands.Context[Bot], guilds: commands.Greedy[discord.Objec
 
 @bot.event
 async def on_ready():
-    print(f'Logged in as: {bot.user.name}\n')  
+    print(f"Logged in as: {bot.user.name}\n")
 
 
 async def main():
     async with bot:
         await bot.start(os.getenv("TOKEN", "no"))
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     asyncio.run(main())

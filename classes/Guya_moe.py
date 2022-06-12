@@ -10,21 +10,16 @@ from .Scrape_Series import Scrape_Series
 
 class Guya_moe(Scrape_Series):
 
-    __slots__ = (
-        "url",
-        "bot"
-    )
-    
+    __slots__ = ("url", "bot")
 
     def __init__(self, url: str, bot: Bot):
         self.url = url
         self.bot = bot
 
-
     async def scrape(self) -> Union[Tuple[str, str], Any]:
         try:
             # web scraping for guya.moe
-            session: ClientSession = self.bot.session  
+            session: ClientSession = self.bot.session
             async with session.get(self.url) as r:
                 if r.status == 200:
                     page = await r.read()
@@ -32,7 +27,7 @@ class Guya_moe(Scrape_Series):
                     print("Guya.moe down!")
                     return
 
-            soup = BeautifulSoup(page.decode('utf-8'), "html5lib")
+            soup = BeautifulSoup(page.decode("utf-8"), "html5lib")
 
             most_recent_chapter = soup.find_all("td", "chapter-title")[0]
 
@@ -57,7 +52,6 @@ class Guya_moe(Scrape_Series):
             return [most_recent_chapter_str, chapter_anchor]
         except Exception as e:
             print(e)
-
 
     async def latest_chapter(self) -> Optional[str]:
         try:

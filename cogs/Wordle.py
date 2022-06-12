@@ -8,12 +8,12 @@ from typing import List, Optional, Dict, Any
 from Bot import Bot
 
 
-class Wordle(commands.Cog):    
+class Wordle(commands.Cog):
     base_url: str = "https://word.digitalnook.net"
     status_colors: Dict[int, str] = {
-        0: '⬛',
-        1: '🟨',
-        2: '🟩',
+        0: "⬛",
+        1: "🟨",
+        2: "🟩",
     }
 
     def __init__(self, bot: Bot):
@@ -34,30 +34,36 @@ class Wordle(commands.Cog):
             word_id (Optional[int]): optional word id
         """
         session: ClientSession = self.bot.session
-        async with session.post(f"{self.__class__.base_url}/api/v1/start_game/", data={"wordID": word_id}) as r:
+        async with session.post(
+            f"{self.__class__.base_url}/api/v1/start_game/", data={"wordID": word_id}
+        ) as r:
             if r.status == 200:
                 response = await r.read()
                 response = json.loads(response)
-                self.id = response['id']
-                self.key = response['key']
-                self.word_id = response['wordID']
+                self.id = response["id"]
+                self.key = response["key"]
+                self.word_id = response["wordID"]
             else:
                 print("digitalnook down!")
                 return
         embed = discord.Embed(
             colour=discord.Colour.random(),
             title=f"-----",
-            )
-        embed.description = f"Word ID is '{self.id}', if you want to start again, in fact!"
+        )
+        embed.description = (
+            f"Word ID is '{self.id}', if you want to start again, in fact!"
+        )
         self.games[i.user.id] = {
             "num_of_guesses": 0,
             "guessed_words": [],
             "interaction": i,
             "embed": embed,
-            }
-        await i.response.send_message("The game has started, in fact! Start guessing with `/wordle guess`, I suppose!", embed=embed, ephemeral=True)
-        
-
+        }
+        await i.response.send_message(
+            "The game has started, in fact! Start guessing with `/wordle guess`, I suppose!",
+            embed=embed,
+            ephemeral=True,
+        )
 
     @group.command(name="guess")
     @app_commands.describe(guess="Your guess for this wordle, I suppose!")
@@ -69,79 +75,100 @@ class Wordle(commands.Cog):
             guess (str): user's guess
         """
         if self.games == {} or i.user.id not in self.games:
-            return await i.response.send_message("You have not started a game yet, in fact! Try `/wordle start` first, I suppose!", ephemeral=True)
+            return await i.response.send_message(
+                "You have not started a game yet, in fact! Try `/wordle start` first, I suppose!",
+                ephemeral=True,
+            )
         if len(guess) != 5:
-            return await i.response.send_message("That word is not five letters length, in fact!", ephemeral=True)
+            return await i.response.send_message(
+                "That word is not five letters length, in fact!", ephemeral=True
+            )
         if guess in self.games[i.user.id]["guessed_words"]:
-            return await i.response.send_message("You have already tried that word, in fact!", ephemeral=True)
+            return await i.response.send_message(
+                "You have already tried that word, in fact!", ephemeral=True
+            )
         new_state: str = ""
         guess_result: str = ""
         session: ClientSession = self.bot.session
-        async with session.post(f"{self.__class__.base_url}/api/v1/guess/", json={
-                                                                                "id": str(self.id),
-                                                                                "key": self.key,
-                                                                                "guess": guess,
-                                                                                }) as r:
+        async with session.post(
+            f"{self.__class__.base_url}/api/v1/guess/",
+            json={
+                "id": str(self.id),
+                "key": self.key,
+                "guess": guess,
+            },
+        ) as r:
             if r.status == 200:
                 response = await r.read()
                 response = json.loads(response)
                 temp: List[str] = []
                 for l in response:
-                    letter: str = l['letter']
-                    status: str = self.__class__.status_colors[l['state']]
+                    letter: str = l["letter"]
+                    status: str = self.__class__.status_colors[l["state"]]
                     temp.append(f"{letter} - {status}")
                 guess_result = " | ".join(temp)
                 for result in temp:
-                    result_list = result.split(' - ')
+                    result_list = result.split(" - ")
                     if result_list[1] == self.__class__.status_colors[2]:
                         new_state += result_list[0]
                     else:
                         new_state += "-"
             else:
-                return await i.response.send_message("Not a valid word, I suppose!", ephemeral=True)
+                return await i.response.send_message(
+                    "Not a valid word, I suppose!", ephemeral=True
+                )
         self.games[i.user.id]["num_of_guesses"] += 1
         self.games[i.user.id]["guessed_words"].append(guess)
         temp2: str = ""
         for j, c in enumerate(new_state):
             if self.games[i.user.id]["embed"].title is not None:
-                if self.games[i.user.id]["embed"].title[j] != '-':
+                if self.games[i.user.id]["embed"].title[j] != "-":
                     temp2 += self.games[i.user.id]["embed"].title[j]
                 else:
                     temp2 += c
         self.games[i.user.id]["embed"].title = temp2
-        if '-' not in new_state:
-            await self.finish(self.games[i.user.id]['interaction'])
+        if "-" not in new_state:
+            await self.finish(self.games[i.user.id]["interaction"])
         else:
             await i.response.send_message(guess_result, ephemeral=True)
-            await self.games[i.user.id]['interaction'].edit_original_message(content="The game has started, in fact! Start guessing with `/wordle guess`, I suppose!", embed=self.games[i.user.id]["embed"])
+            await self.games[i.user.id]["interaction"].edit_original_message(
+                content="The game has started, in fact! Start guessing with `/wordle guess`, I suppose!",
+                embed=self.games[i.user.id]["embed"],
+            )
 
         if self.games[i.user.id]["num_of_guesses"] >= 5:
-            await self.finish(self.games[i.user.id]['interaction'])
-
+            await self.finish(self.games[i.user.id]["interaction"])
 
     def reset_game(self, i: discord.Interaction):
         del self.games[i.user.id]
 
-
     async def finish(self, i: discord.Interaction):
         answer: str = ""
         session: ClientSession = self.bot.session
-        async with session.post(f"{self.__class__.base_url}/api/v1/guess/", data={
-                                                                                "id": self.id,
-                                                                                "key": self.key,
-                                                                                }) as r:
+        async with session.post(
+            f"{self.__class__.base_url}/api/v1/guess/",
+            data={
+                "id": self.id,
+                "key": self.key,
+            },
+        ) as r:
             if r.status == 200:
                 response = await r.read()
                 response = json.loads(response)
-                answer = response['answer']
+                answer = response["answer"]
         win: bool = False
         if self.games[i.user.id]["embed"].title == answer:
             win = True
         self.games[i.user.id]["embed"].title = answer
-        await i.edit_original_message(content="The game has ended, in fact! Start another one with `/wordle start`, I suppose!", embed=self.games[i.user.id]["embed"])
+        await i.edit_original_message(
+            content="The game has ended, in fact! Start another one with `/wordle start`, I suppose!",
+            embed=self.games[i.user.id]["embed"],
+        )
         self.reset_game(i)
         if win:
-            await i.followup.send("You have finished the wordle successfully, in fact!", ephemeral=True)
+            await i.followup.send(
+                "You have finished the wordle successfully, in fact!", ephemeral=True
+            )
         else:
             await i.followup.send("Better luck next time, I suppose!", ephemeral=True)
 

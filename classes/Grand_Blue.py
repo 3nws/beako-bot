@@ -10,11 +10,7 @@ from .Scrape_Series import Scrape_Series
 
 class Grand_Blue(Scrape_Series):
 
-    __slots__ = (
-        "url",
-        "bot"
-    )
-    
+    __slots__ = ("url", "bot")
 
     def __init__(self, url: str, bot: Bot):
         self.url = url
@@ -23,7 +19,7 @@ class Grand_Blue(Scrape_Series):
     async def scrape(self) -> Union[Tuple[str, str], Any]:
         try:
             # web scraping for grand-blue mangareader
-            session: ClientSession = self.bot.session  
+            session: ClientSession = self.bot.session
             async with session.get(self.url) as r:
                 if r.status == 200:
                     page = await r.read()
@@ -31,10 +27,11 @@ class Grand_Blue(Scrape_Series):
                     print("MangaReader down!")
                     return
 
-            soup = BeautifulSoup(page.decode('utf-8'), "html5lib")
+            soup = BeautifulSoup(page.decode("utf-8"), "html5lib")
 
-            most_recent_chapter = soup.find_all(
-                "li", "item reading-item chapter-item")[0]
+            most_recent_chapter = soup.find_all("li", "item reading-item chapter-item")[
+                0
+            ]
 
             chapter_link = most_recent_chapter.find("a")
             chapter_anchor = ""
@@ -42,7 +39,7 @@ class Grand_Blue(Scrape_Series):
                 chapter_anchor = "https://mangareader.to"
                 chapter_anchor += chapter_link.get("href")
 
-            most_recent_chapter_title = chapter_link.get('title')
+            most_recent_chapter_title = chapter_link.get("title")
 
             return [most_recent_chapter_title, chapter_anchor]
 

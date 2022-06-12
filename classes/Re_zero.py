@@ -10,21 +10,16 @@ from .Scrape_Series import Scrape_Series
 
 class Re_zero(Scrape_Series):
 
-    __slots__ = (
-        "url",
-        "bot"
-    )
-    
+    __slots__ = ("url", "bot")
 
     def __init__(self, url: str, bot: Bot):
         self.url = url
         self.bot = bot
 
-
     async def scrape(self) -> Union[Tuple[str, str], Any]:
         try:
             # web scraping for re zero
-            session: ClientSession = self.bot.session  
+            session: ClientSession = self.bot.session
             async with session.get(self.url) as r:
                 if r.status == 200:
                     page = await r.read()
@@ -32,11 +27,11 @@ class Re_zero(Scrape_Series):
                     print("WitchCultTranslation down!")
                     return
 
-            soup = BeautifulSoup(page.decode('utf-8'), "html5lib")
+            soup = BeautifulSoup(page.decode("utf-8"), "html5lib")
 
-            most_recent_post = soup.find_all('h3', 'rpwe-title')[0]
+            most_recent_post = soup.find_all("h3", "rpwe-title")[0]
 
-            post_link = most_recent_post.find('a')
+            post_link = most_recent_post.find("a")
 
             most_recent_post = most_recent_post.text
             most_recent_post_array = most_recent_post.split()
@@ -48,13 +43,12 @@ class Re_zero(Scrape_Series):
 
             most_recent_post_str = most_recent_post_str.strip()
             chapter_link = ""
-            if 'href' in post_link.attrs:
-                chapter_link = post_link.get('href')
+            if "href" in post_link.attrs:
+                chapter_link = post_link.get("href")
 
             return [most_recent_post_str, chapter_link]
         except Exception as e:
             print(e)
-            
 
     async def latest_chapter(self) -> Optional[str]:
         try:
