@@ -9,7 +9,7 @@ from aiohttp import ClientSession
 from dotenv import load_dotenv    # type: ignore
 from pysaucenao import SauceNao, PixivSource, TwitterSource    # type: ignore
 from pysaucenao.containers import SauceNaoResults
-from typing import Callable, Optional, Dict, List, Union, cast
+from typing import Callable, Optional, Dict, List, Union
 
 from classes.Views.FilterView import FilterView
 from Bot import Bot
