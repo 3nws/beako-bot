@@ -1,7 +1,5 @@
 import discord
 import os
-import asyncio
-import logging
 
 from discord.app_commands import AppCommand
 from dotenv import load_dotenv  # type: ignore
@@ -11,7 +9,7 @@ from typing import List, Literal, Optional
 from Bot import MyTree, Bot, Help
 
 
-logging.basicConfig(level=logging.INFO)
+# logging.basicConfig(level=logging.INFO)
 
 # logger = logging.getLogger('discord')
 # logger.setLevel(logging.DEBUG)
@@ -107,10 +105,9 @@ async def on_ready():
     print(f"Logged in as: {bot.user.name}\n")
 
 
-async def main():
-    async with bot:
-        await bot.start(os.getenv("TOKEN", "no"))
+def main():
+    bot.run(os.getenv("TOKEN", "no"))
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()
