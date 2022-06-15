@@ -11,6 +11,7 @@ from typing import List, Any, Dict, Union, Optional, Tuple, Mapping, cast
 from pymongo.collection import Collection
 from pymongo.database import Database
 from motor.motor_asyncio import AsyncIOMotorClient  # type: ignore
+from dotenv import load_dotenv  # type: ignore
 
 from classes.Re_zero import Re_zero
 from classes.Guya_moe import Guya_moe
@@ -20,8 +21,13 @@ from classes.Views.Pick import PickView
 from classes.Views.Pagination import MangaReader, Source
 from Bot import Bot
 
+load_dotenv()
+
 
 class DB(commands.Cog):
+
+    _IMGUR = os.getenv("IMGUR_ID")
+
     def __init__(self, bot: Bot):
         self.bot = bot
         self.client = self.bot.client
@@ -97,6 +103,35 @@ class DB(commands.Cog):
 
     async def cog_load(self) -> None:
         self.flips = [flip async for flip in self.flips_col.find()]  # type: ignore
+
+    @commands.command()
+    @commands.is_owner()
+    async def changepfp(
+        self, ctx: commands.Context[Bot], image: discord.Attachment
+    ):
+        """Change avatar on command
+
+        Args:
+            ctx (commands.Context[Bot]): the context for this command
+            image (discord.Attachment): the image
+        """
+        url: str = "https://api.imgur.com/3/image"
+
+        payload: Dict[str, bytes] = {"image": await image.read()}
+        headers: Dict[str, str] = {"Authorization": f"Client-ID {self._IMGUR}"}
+        session: ClientSession = self.bot.session
+        async with session.post(url, data=payload, headers=headers) as r:
+            r = await r.read()
+            r = json.loads(r)
+            img_url: str = r["data"]["link"]
+            await self.db_avatars.insert_one(  # type: ignore
+                {
+                    "url": img_url,
+                }
+            )
+            self.avatar_urls.append(img_url)
+        await self.bot.user.edit(avatar=await image.read())
+        await ctx.send("Avatar changed, I suppose!")
 
     @app_commands.command(name="flip")
     async def commands_flip(self, i: discord.Interaction):
