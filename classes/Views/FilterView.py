@@ -14,17 +14,16 @@ from functools import wraps
 from Bot import Bot
 
 
-Coro = Callable[
+Callable_ = Callable[
     ["FilterView", int], Coroutine[Any, Any, None]
 ]  # Callable[Ellipis(singleton), Coroutine[YieldType, SendType, ReturnType]]
-F = TypeVar("F", bound="FilterView")
 
 
-def apply_filter(coro: Coro) -> Coro:
-    @wraps(coro)
-    async def inner(self: F, choice: int) -> None:  # type: ignore
+def apply_filter(func: Callable_) -> Callable_:
+    @wraps(func)
+    async def inner(self: "FilterView", choice: int) -> None:
         msg: discord.Message = await self.i.channel.send("Loading, I suppose!..")  # type: ignore
-        await coro(self, choice)
+        await func(self, choice)
         with Image(blob=self.bytes_image) as img:  # type: ignore
             if choice == 0:
                 img.blur(radius=0, sigma=3)  # type: ignore
