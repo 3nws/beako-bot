@@ -106,6 +106,7 @@ class Timer(commands.Cog):
                 value="We might not survive long enough to do this, in fact! Well, not you, I suppose!",
             )
         else:
+            counter = f"<t:{int(datetime.now().timestamp())+seconds}:R>"
             if not reminder:
                 await i.response.send_message(f"I'll ping you in {counter}, I suppose!")
             else:
@@ -119,7 +120,7 @@ class Timer(commands.Cog):
                 await i.channel.send(  # type: ignore
                     f"Hey {i.user.mention}, what up, in fact! You asked me to remind you about '{reminder}' {counter} ago, I suppose!"
                 )
-            return
+            return await i.delete_original_message()
         await i.response.send_message(embed=embed)
 
     @app_commands.command(name="alarm")
