@@ -72,6 +72,7 @@ def apply_filter(func: Callable_) -> Callable_:
                 await self.i.edit_original_message(
                     attachments=[f], embed=self.new_embed
                 )
+                await msg.delete()
                 return None
 
             image_bytes: bytes = to_bytes(img.make_blob())  # type: ignore
