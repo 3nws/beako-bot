@@ -135,9 +135,9 @@ class FilterView(ui.View):
                 await self.i.edit_original_message(
                     embed=self.new_embed, view=self.disabled()
                 )
-            await msg.reply(
-                "This view just timed out, I suppose! You need to interact with it to keep it up, in fact!"
-            )
+            # await msg.reply(
+            #     "This view just timed out, I suppose! You need to interact with it to keep it up, in fact!"
+            # )
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         await interaction.response.defer()
@@ -158,91 +158,129 @@ class FilterView(ui.View):
                     self.bytes_image = await resp.read()
                     self.original = self.bytes_image
 
-    @ui.button(label="Blur", style=discord.ButtonStyle.blurple)
+    @ui.button(
+        label="Blur", style=discord.ButtonStyle.blurple, custom_id="persistent:blur"
+    )
     async def opt_one(
         self, interaction: discord.Interaction, button: discord.ui.Button[Self]
     ):
         await self.update(0)
 
-    @ui.button(label="Shade", style=discord.ButtonStyle.blurple)
+    @ui.button(
+        label="Shade", style=discord.ButtonStyle.blurple, custom_id="persistent:shade"
+    )
     async def opt_two(
         self, interaction: discord.Interaction, button: discord.ui.Button[Self]
     ):
         await self.update(1)
 
-    @ui.button(label="Sharpen", style=discord.ButtonStyle.blurple)
+    @ui.button(
+        label="Sharpen",
+        style=discord.ButtonStyle.blurple,
+        custom_id="persistent:sharpen",
+    )
     async def opt_three(
         self, interaction: discord.Interaction, button: discord.ui.Button[Self]
     ):
         await self.update(2)
 
-    @ui.button(label="Spread", style=discord.ButtonStyle.blurple)
+    @ui.button(
+        label="Spread", style=discord.ButtonStyle.blurple, custom_id="persistent:spread"
+    )
     async def opt_four(
         self, interaction: discord.Interaction, button: discord.ui.Button[Self]
     ):
         await self.update(3)
 
-    @ui.button(label="Edge", style=discord.ButtonStyle.blurple)
+    @ui.button(
+        label="Edge", style=discord.ButtonStyle.blurple, custom_id="persistent:edge"
+    )
     async def opt_five(
         self, interaction: discord.Interaction, button: discord.ui.Button[Self]
     ):
         await self.update(4)
 
-    @ui.button(label="Emboss", style=discord.ButtonStyle.blurple)
+    @ui.button(
+        label="Emboss", style=discord.ButtonStyle.blurple, custom_id="persistent:emboss"
+    )
     async def opt_six(
         self, interaction: discord.Interaction, button: discord.ui.Button[Self]
     ):
         await self.update(5)
 
-    @ui.button(label="Charcoal", style=discord.ButtonStyle.blurple)
+    @ui.button(
+        label="Charcoal",
+        style=discord.ButtonStyle.blurple,
+        custom_id="persistent:charcoal",
+    )
     async def opt_seven(
         self, interaction: discord.Interaction, button: discord.ui.Button[Self]
     ):
         await self.update(6)
 
-    @ui.button(label="Wave", style=discord.ButtonStyle.blurple)
+    @ui.button(
+        label="Wave", style=discord.ButtonStyle.blurple, custom_id="persistent:wave"
+    )
     async def opt_eight(
         self, interaction: discord.Interaction, button: discord.ui.Button[Self]
     ):
         await self.update(7)
 
-    @ui.button(label="Colorize", style=discord.ButtonStyle.blurple)
+    @ui.button(
+        label="Colorize",
+        style=discord.ButtonStyle.blurple,
+        custom_id="persistent:colorize",
+    )
     async def opt_nine(
         self, interaction: discord.Interaction, button: discord.ui.Button[Self]
     ):
         await self.update(8)
 
-    @ui.button(label="Sepia", style=discord.ButtonStyle.blurple)
+    @ui.button(
+        label="Sepia", style=discord.ButtonStyle.blurple, custom_id="persistent:sepia"
+    )
     async def opt_ten(
         self, interaction: discord.Interaction, button: discord.ui.Button[Self]
     ):
         await self.update(9)
 
-    @ui.button(label="Sketch", style=discord.ButtonStyle.blurple)
+    @ui.button(
+        label="Sketch", style=discord.ButtonStyle.blurple, custom_id="persistent:sketch"
+    )
     async def opt_eleven(
         self, interaction: discord.Interaction, button: discord.ui.Button[Self]
     ):
         await self.update(10)
 
-    @ui.button(label="Solarize", style=discord.ButtonStyle.blurple)
+    @ui.button(
+        label="Solarize",
+        style=discord.ButtonStyle.blurple,
+        custom_id="persistent:solarize",
+    )
     async def opt_twelve(
         self, interaction: discord.Interaction, button: discord.ui.Button[Self]
     ):
         await self.update(11)
 
-    @ui.button(label="Swirl", style=discord.ButtonStyle.blurple)
+    @ui.button(
+        label="Swirl", style=discord.ButtonStyle.blurple, custom_id="persistent:swirl"
+    )
     async def opt_thirteen(
         self, interaction: discord.Interaction, button: discord.ui.Button[Self]
     ):
         await self.update(12)
 
-    @ui.button(label="Tint", style=discord.ButtonStyle.blurple)
+    @ui.button(
+        label="Tint", style=discord.ButtonStyle.blurple, custom_id="persistent:tint"
+    )
     async def opt_fourteen(
         self, interaction: discord.Interaction, button: discord.ui.Button[Self]
     ):
         await self.update(13)
 
-    @ui.button(label="Reset", style=discord.ButtonStyle.red)
+    @ui.button(
+        label="Reset", style=discord.ButtonStyle.red, custom_id="persistent:reset"
+    )
     async def opt_reset(
         self, interaction: discord.Interaction, button: discord.ui.Button[Self]
     ):

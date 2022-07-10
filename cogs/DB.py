@@ -106,9 +106,7 @@ class DB(commands.Cog):
 
     @commands.command()
     @commands.is_owner()
-    async def changepfp(
-        self, ctx: commands.Context[Bot], image: discord.Attachment
-    ):
+    async def changepfp(self, ctx: commands.Context[Bot], image: discord.Attachment):
         """Change avatar on command
 
         Args:

@@ -53,9 +53,9 @@ class PickView(ui.View):
         self.stop()
         await self.i.edit_original_message(embed=self.embed, view=self.disabled())
         msg = await self.i.original_message()
-        await msg.reply(
-            "This view just timed out, I suppose! You need to interact with it to keep it up, in fact!"
-        )
+        # await msg.reply(
+        #     "This view just timed out, I suppose! You need to interact with it to keep it up, in fact!"
+        # )
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         await interaction.response.defer()
@@ -126,31 +126,41 @@ class PickView(ui.View):
                     f"This channel will no longer receive notifications on new chapters of {title}, I suppose!"
                 )
 
-    @ui.button(emoji="1️⃣", style=discord.ButtonStyle.blurple)
+    @ui.button(
+        emoji="1️⃣", style=discord.ButtonStyle.blurple, custom_id="persistent:one"
+    )
     async def opt_one(
         self, interaction: discord.Interaction, button: discord.ui.Button[Self]
     ):
         await self.update(0)
 
-    @ui.button(emoji="2️⃣", style=discord.ButtonStyle.blurple)
+    @ui.button(
+        emoji="2️⃣", style=discord.ButtonStyle.blurple, custom_id="persistent:two"
+    )
     async def opt_two(
         self, interaction: discord.Interaction, button: discord.ui.Button[Self]
     ):
         await self.update(1)
 
-    @ui.button(emoji="3️⃣", style=discord.ButtonStyle.blurple)
+    @ui.button(
+        emoji="3️⃣", style=discord.ButtonStyle.blurple, custom_id="persistent:three"
+    )
     async def opt_three(
         self, interaction: discord.Interaction, button: discord.ui.Button[Self]
     ):
         await self.update(2)
 
-    @ui.button(emoji="4️⃣", style=discord.ButtonStyle.blurple)
+    @ui.button(
+        emoji="4️⃣", style=discord.ButtonStyle.blurple, custom_id="persistent:four"
+    )
     async def opt_four(
         self, interaction: discord.Interaction, button: discord.ui.Button[Self]
     ):
         await self.update(3)
 
-    @ui.button(emoji="5️⃣", style=discord.ButtonStyle.blurple)
+    @ui.button(
+        emoji="5️⃣", style=discord.ButtonStyle.blurple, custom_id="persistent:five"
+    )
     async def opt_five(
         self, interaction: discord.Interaction, button: discord.ui.Button[Self]
     ):

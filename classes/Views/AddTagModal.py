@@ -19,6 +19,7 @@ import traceback
 #         print(interaction.data)
 #         # self.name.value = self.cog.tags_list[interaction.guild_id][interaction.data]
 
+
 class AddTagModal(discord.ui.Modal, title="Add a Tag"):
     name = discord.ui.TextInput(
         label="Tag name",
@@ -34,7 +35,7 @@ class AddTagModal(discord.ui.Modal, title="Add a Tag"):
     def __init__(self, cog: commands.Cog, guild_id) -> None:
         super().__init__()
         self.cog = cog
-        tags = [discord.SelectOption(label="Existing tags for this server...", value="None", default=True)]+([discord.SelectOption(label=tag, value=tag) for tag in self.cog.tags_list[guild_id].keys()])  # type: ignore
+        tags = [discord.SelectOption(label="Existing tags for this server...", value="None", default=True)] + ([discord.SelectOption(label=tag, value=tag) for tag in self.cog.tags_list[guild_id].keys()])  # type: ignore
         # tags = TagDropdown(self, self.cog, self.name, self.content, options=tags[:25])
         tags = discord.ui.Select(options=tags[:25])
         self.add_item(tags)

@@ -91,6 +91,8 @@ class Bot(commands.Bot):
 
     async def close(self):
         await self.session.close()
+        for view in self.persistent_views:
+            await view.on_timeout()
         await super().close()
 
     @property
