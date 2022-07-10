@@ -335,7 +335,7 @@ class Util(commands.Cog):
                     members_second_choice.append(user_id)
                 await interaction.response.defer()
 
-            view = discord.ui.View(timeout=180)
+            view = discord.ui.View(timeout=None)
 
             async def on_timeout():
                 results = discord.Embed(

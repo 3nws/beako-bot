@@ -108,7 +108,7 @@ class FilterView(ui.View):
     )
 
     def __init__(self, i: discord.Interaction, embed: discord.Embed, bot: Bot):
-        super().__init__(timeout=60)
+        super().__init__(timeout=None)
         self.i = i
         self.embed = embed
         self.image = embed.image.url

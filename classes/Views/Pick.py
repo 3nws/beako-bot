@@ -31,7 +31,7 @@ class PickView(ui.View):
         bot: Bot,
         embed: discord.Embed,
     ):
-        super().__init__(timeout=60)
+        super().__init__(timeout=None)
         self.i = i
         self.channels = channels
         self.mangas: Dict[str, str] = {}

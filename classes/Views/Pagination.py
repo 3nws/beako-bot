@@ -32,7 +32,7 @@ class MangaReader(ui.View, menus.MenuPages):
     )
 
     def __init__(self, source: Source):
-        super().__init__(timeout=60)
+        super().__init__(timeout=None)
         self._source: Source = source
         self.current_page: int = 0
         self.i: Optional[discord.Interaction]
