@@ -656,7 +656,7 @@ class DB(commands.Cog):
             mangas_dict: Dict[str, str] = literal_eval(mangas_on_channel)
 
             embed = discord.Embed(
-                title=f"Pick one of the series you wish to unfollow, I suppose!"
+                title=f"Pick one of the series you wish to unfollow, I suppose! Only 5 series are shown at a time, in fact!"
                 if len(mangas_dict) > 0
                 else "This channel is not following any series, in fact!\n Use `/add <manga_title>` to pick some series to start, I suppose!",
                 color=discord.Colour.random(),
@@ -666,6 +666,8 @@ class DB(commands.Cog):
             manga_ids: List[str] = []
             emojis = md.emojis
             for j, rs in enumerate(mangas_dict):
+                if j>4:
+                    break
                 manga_ids.append(rs)
                 title = await md.get_manga_title(rs)
                 if title:
