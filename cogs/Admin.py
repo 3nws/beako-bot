@@ -195,12 +195,10 @@ class Admin(commands.Cog):
         Args:
             ctx (commands.Bot.Context): the context for this command
         """
-        msg = f"Logged in as: {self.bot.user.name}\n"
-        msg += f"Server List ({len(self.bot.guilds)})\n"
-        server_counter = 1
+        num_members: int = 0
         for guild in set(self.bot.guilds):
-            msg += f"{server_counter}. {guild.name}, owned by {guild.owner} with {guild.member_count} members\n"
-            server_counter += 1
+            num_members += guild.member_count if guild.member_count is not None else 0
+        msg = f"{len(self.bot.guilds)} servers with {num_members} members."
         await ctx.send(msg)
 
     @commands.command(aliases=["kill"])

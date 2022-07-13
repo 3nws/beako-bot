@@ -220,6 +220,8 @@ class MyTree(CommandTree[discord.Client]):
             await user.send(
                 f"```py\n{''.join(traceback.format_exception(None, error, traceback_))}```"
             )
+            await user.send(f"{interaction.user.name} used {interaction.command.name or 'unknown'} which resulted with the error above!\
+                            \nNamespace: {interaction.namespace}")
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if (
