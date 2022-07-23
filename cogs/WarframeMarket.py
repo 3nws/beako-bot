@@ -82,6 +82,10 @@ class WarframeMarket(commands.Cog):
             item_name (str): item name to search for
         """
         order_type: str = choices.value
+        to_ = {
+            "sell": "I want to buy",
+            "buy": "I want to sell"
+        }
         if not self.is_synced:
             await self.sync()
         item_info = None
@@ -158,7 +162,7 @@ class WarframeMarket(commands.Cog):
                     break
                 desc += f"\n\nPrice: {orders_sorted[i]['platinum']} plat, Quantity: {orders_sorted[i]['quantity']}, Order type: {orders_sorted[i]['order_type']}\n"
                 desc += f"by {orders_sorted[i]['user']['ingame_name']}\n"
-                desc += f"```/w {orders_sorted[i]['user']['ingame_name']} Hi! I want to {orders_sorted[i]['order_type']}: {item_name} for {orders_sorted[i]['platinum']} platinum. (warframe.market)```\n"
+                desc += f"```/w {orders_sorted[i]['user']['ingame_name']} Hi! {to_[order_type]}: {item_name} for {orders_sorted[i]['platinum']} platinum. (warframe.market)```\n"
             embed = discord.Embed(
                 color=discord.Colour.random(),
                 title=item_info["item_name"],
