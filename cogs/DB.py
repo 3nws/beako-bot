@@ -7,7 +7,7 @@ from ast import literal_eval
 from aiohttp import ClientSession
 from discord import app_commands
 from discord.ext import commands, tasks
-from typing import List, Any, Dict, Union, Optional, Tuple, Mapping, cast
+from typing import List, Any, Dict, Union, Optional, Tuple, Mapping, cast, ClassVar
 from pymongo.collection import Collection
 from pymongo.database import Database
 from motor.motor_asyncio import AsyncIOMotorClient  # type: ignore
@@ -26,7 +26,7 @@ load_dotenv()
 
 class DB(commands.Cog):
 
-    _IMGUR = os.getenv("IMGUR_ID")
+    _IMGUR: ClassVar[Optional[str]] = os.getenv("IMGUR_ID", None)
 
     def __init__(self, bot: Bot):
         self.bot = bot

@@ -7,7 +7,7 @@ from dotenv import load_dotenv  # type: ignore
 from discord.ext import commands
 from discord import app_commands
 from aiohttp import ClientSession
-from typing import Optional, Union
+from typing import Optional, Union, ClassVar
 
 from Bot import Bot
 
@@ -17,7 +17,7 @@ load_dotenv()
 
 class Gif(commands.Cog):
 
-    _tenor_api_key = os.getenv("TENOR_API_KEY")
+    _tenor_api_key: ClassVar[Optional[str]] = os.getenv("TENOR_API_KEY", None)
 
     def __init__(self, bot: Bot):
         self.bot = bot

@@ -4,13 +4,13 @@ import json
 from discord.ext import commands
 from discord import app_commands
 from aiohttp import ClientSession
-from typing import List, Optional, Dict, Any
+from typing import List, Optional, Dict, Any, ClassVar
 from Bot import Bot
 
 
 class Wordle(commands.Cog):
-    base_url: str = "https://word.digitalnook.net"
-    status_colors: Dict[int, str] = {
+    base_url: ClassVar[str] = "https://word.digitalnook.net"
+    status_colors: ClassVar[Dict[int, str]] = {
         0: "⬛",
         1: "🟨",
         2: "🟩",
@@ -23,7 +23,7 @@ class Wordle(commands.Cog):
         self.word_id: int
         self.games: Dict[int, Any] = {}
 
-    group = app_commands.Group(name="wordle", description="Wordle command group...")
+    group: ClassVar[app_commands.Group] = app_commands.Group(name="wordle", description="Wordle command group...")
 
     @group.command(name="start")
     async def start(self, i: discord.Interaction, word_id: Optional[int]) -> None:

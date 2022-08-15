@@ -3,7 +3,7 @@ import discord
 from discord.ui import View, Select
 from discord.ext import commands
 from discord import app_commands
-from typing import Dict, Optional
+from typing import ClassVar, Dict, Optional
 
 from Bot import Bot
 from OsuMods import num_to_mod
@@ -15,7 +15,7 @@ class Osu(commands.Cog):
         self.bot = bot
         self.osu: OsuAPI = OsuAPI(self.bot)
 
-    group = app_commands.Group(name="osu", description="osu! command group...")
+    group: ClassVar[app_commands.Group] = app_commands.Group(name="osu", description="osu! command group...")
 
     @group.command(name="profile")
     @app_commands.describe(player_name="The player you want to get info on, in fact!")

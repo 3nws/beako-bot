@@ -9,7 +9,7 @@ from aiohttp import ClientSession
 from dotenv import load_dotenv  # type: ignore
 from pysaucenao import SauceNao, PixivSource, TwitterSource  # type: ignore
 from pysaucenao.containers import SauceNaoResults
-from typing import Callable, Optional, Dict, List, Union
+from typing import Callable, Optional, Dict, List, Union, ClassVar
 
 from classes.Views.FilterView import FilterView
 from Bot import Bot
@@ -20,8 +20,8 @@ load_dotenv()
 
 class Util(commands.Cog):
 
-    _saucenao_api_key = os.getenv("SAUCENAO_API_KEY")
-    _token = os.getenv("TOKEN")
+    _saucenao_api_key: ClassVar[Optional[str]] = os.getenv("SAUCENAO_API_KEY", None)
+    _token: ClassVar[Optional[str]] = os.getenv("TOKEN", None)
 
     def __init__(self, bot: Bot):
         self.bot = bot
