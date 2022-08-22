@@ -120,7 +120,7 @@ class Timer(commands.Cog):
                 await i.channel.send(  # type: ignore
                     f"Hey {i.user.mention}, what up, in fact! You asked me to remind you about '{reminder}' {counter} ago, I suppose!"
                 )
-            return await i.delete_original_message()
+            return await i.delete_original_response()
         await i.response.send_message(embed=embed)
 
     @app_commands.command(name="alarm")

@@ -51,8 +51,8 @@ class PickView(ui.View):
 
     async def on_timeout(self):
         self.stop()
-        await self.i.edit_original_message(embed=self.embed, view=self.disabled())
-        msg = await self.i.original_message()
+        await self.i.edit_original_response(embed=self.embed, view=self.disabled())
+        msg = await self.i.original_response()
         # await msg.reply(
         #     "This view just timed out, I suppose! You need to interact with it to keep it up, in fact!"
         # )

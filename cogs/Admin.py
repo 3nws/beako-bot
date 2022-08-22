@@ -130,7 +130,7 @@ class Admin(commands.Cog):
             )
             direction = direction.lower()
         await i.response.defer()
-        original = await i.original_message()
+        original = await i.original_response()
         if msg_id:
             msg: discord.Message = await i.channel.fetch_message(int(msg_id))  # type: ignore
             if direction == "after":

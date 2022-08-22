@@ -205,7 +205,7 @@ class MyTree(CommandTree[discord.Client]):
                 f"{interaction.user.mention}, slow down, I suppose!\nYou can try again in {round(error.retry_after, 2)} seconds, in fact!"
             )
             await asyncio.sleep(float(error.retry_after))
-            await interaction.delete_original_message()
+            await interaction.delete_original_response()
         elif isinstance(error, discord.app_commands.MissingPermissions):
             await interaction.response.send_message(
                 "You don't have permission to do that, I suppose!"
@@ -220,8 +220,10 @@ class MyTree(CommandTree[discord.Client]):
             await user.send(
                 f"```py\n{''.join(traceback.format_exception(None, error, traceback_))}```"
             )
-            await user.send(f"{interaction.user.name} used {interaction.command.name or 'unknown'} which resulted with the error above!\
-                            \nNamespace: {interaction.namespace}")
+            await user.send(
+                f"{interaction.user.name} used {interaction.command.name or 'unknown'} which resulted with the error above!\
+                            \nNamespace: {interaction.namespace}"
+            )
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if (

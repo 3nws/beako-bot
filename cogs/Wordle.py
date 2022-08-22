@@ -23,7 +23,9 @@ class Wordle(commands.Cog):
         self.word_id: int
         self.games: Dict[int, Any] = {}
 
-    group: ClassVar[app_commands.Group] = app_commands.Group(name="wordle", description="Wordle command group...")
+    group: ClassVar[app_commands.Group] = app_commands.Group(
+        name="wordle", description="Wordle command group..."
+    )
 
     @group.command(name="start")
     async def start(self, i: discord.Interaction, word_id: Optional[int]) -> None:
@@ -131,7 +133,7 @@ class Wordle(commands.Cog):
             await self.finish(self.games[i.user.id]["interaction"])
         else:
             await i.response.send_message(guess_result, ephemeral=True)
-            await self.games[i.user.id]["interaction"].edit_original_message(
+            await self.games[i.user.id]["interaction"].edit_original_response(
                 content="The game has started, in fact! Start guessing with `/wordle guess`, I suppose!",
                 embed=self.games[i.user.id]["embed"],
             )
@@ -160,7 +162,7 @@ class Wordle(commands.Cog):
         if self.games[i.user.id]["embed"].title == answer:
             win = True
         self.games[i.user.id]["embed"].title = answer
-        await i.edit_original_message(
+        await i.edit_original_response(
             content="The game has ended, in fact! Start another one with `/wordle start`, I suppose!",
             embed=self.games[i.user.id]["embed"],
         )

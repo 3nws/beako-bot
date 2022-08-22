@@ -348,7 +348,7 @@ class Util(commands.Cog):
                 )
                 for item in view.children:
                     item.disabled = True  # type: ignore
-                await i.edit_original_message(embed=embed, view=view)
+                await i.edit_original_response(embed=embed, view=view)
                 await i.channel.send(embed=results)  # type: ignore
 
             button_one.callback = callback

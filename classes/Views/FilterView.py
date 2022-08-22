@@ -6,7 +6,7 @@ from discord import ui
 from aiohttp.client import ClientSession
 from typing import Optional
 from typing_extensions import Self
-from typing import Callable, Coroutine, Any, TypeVar
+from typing import Callable, Coroutine, Any
 from wand.image import Image
 from wand.compat import to_bytes  # type: ignore
 from functools import wraps
@@ -69,7 +69,7 @@ def apply_filter(func: Callable_) -> Callable_:
                     self.add_once = False
                 self.new_embed.set_image(url="attachment://original_user_avatar.png")
 
-                await self.i.edit_original_message(
+                await self.i.edit_original_response(
                     attachments=[f], embed=self.new_embed
                 )
                 await msg.delete()
@@ -89,7 +89,7 @@ def apply_filter(func: Callable_) -> Callable_:
             self.add_once = False
         self.new_embed.set_image(url="attachment://user_avatar.png")
 
-        await self.i.edit_original_message(attachments=[f], embed=self.new_embed)
+        await self.i.edit_original_response(attachments=[f], embed=self.new_embed)
         await msg.delete()
 
     return inner
@@ -125,14 +125,14 @@ class FilterView(ui.View):
 
     async def on_timeout(self):
         self.stop()
-        msg = await self.i.original_message()
+        msg = await self.i.original_response()
         if msg:
             if self.add_once:
-                await self.i.edit_original_message(
+                await self.i.edit_original_response(
                     embed=self.embed, view=self.disabled()
                 )
             else:
-                await self.i.edit_original_message(
+                await self.i.edit_original_response(
                     embed=self.new_embed, view=self.disabled()
                 )
             # await msg.reply(

@@ -6,7 +6,7 @@ attrs==21.4.0
 beautifulsoup4==4.9.3
 certifi==2021.10.8
 chardet==3.0.4
-discord.py @ git+https://github.com/Rapptz/discord.py
+discord.py==2.0.0
 discord-ext-menus @ git+https://github.com/Rapptz/discord-ext-menus
 dnspython==2.1.0
 html5lib==1.1.0
