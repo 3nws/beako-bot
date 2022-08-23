@@ -643,7 +643,7 @@ class DB(commands.Cog):
                 else False
             )
             if not channel_exists:
-                msg = "This channel is not on any receiver list, in fact!"
+                return await i.response.send_message("This channel is not on any receiver list, in fact!")
 
             mangas_on_channel: str = (
                 await self.channels_md.find_one(  # type: ignore
