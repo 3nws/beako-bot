@@ -68,7 +68,7 @@ class Bot(commands.Bot):
 
     async def load_cogs(self):
         await self.load_extension("jishaku")
-        for filename in os.listdir("./cogs"):
+        for filename in os.listdir(".app/cogs"):
             if filename.endswith(".py"):
                 await self.load_extension(f"cogs.{filename[:-3]}")
             else:
