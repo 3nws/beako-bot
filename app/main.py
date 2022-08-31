@@ -100,6 +100,12 @@ async def sync(
     await ctx.send(f"Synced the tree to {fmt_i}/{len(guilds)} guilds.")
 
 
+@bot.command()
+@commands.is_owner()
+async def getcount(ctx):
+    await ctx.send(ctx.bot.tree.app_commands_invoked)
+
+
 @bot.event
 async def on_ready():
     print(f"Logged in as: {bot.user.name}\n")

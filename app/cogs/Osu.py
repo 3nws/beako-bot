@@ -15,7 +15,9 @@ class Osu(commands.Cog):
         self.bot = bot
         self.osu: OsuAPI = OsuAPI(self.bot)
 
-    group: ClassVar[app_commands.Group] = app_commands.Group(name="osu", description="osu! command group...")
+    group: ClassVar[app_commands.Group] = app_commands.Group(
+        name="osu", description="osu! command group..."
+    )
 
     @group.command(name="profile")
     @app_commands.describe(player_name="The player you want to get info on, in fact!")

@@ -82,10 +82,7 @@ class WarframeMarket(commands.Cog):
             item_name (str): item name to search for
         """
         order_type: str = choices.value
-        to_ = {
-            "sell": "I want to buy",
-            "buy": "I want to sell"
-        }
+        to_ = {"sell": "I want to buy", "buy": "I want to sell"}
         if not self.is_synced:
             await self.sync()
         item_info = None

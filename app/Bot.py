@@ -9,7 +9,7 @@ import discord
 from discord.app_commands.checks import cooldown as cooldown_decorator
 from discord.app_commands import CommandTree
 from pymongo.errors import ServerSelectionTimeoutError
-from typing import Any, List
+from typing import Any, List, Union
 from discord.ext import commands
 from aiohttp import ClientSession
 from discord.ui import View
@@ -194,6 +194,8 @@ class MyTree(CommandTree[discord.Client]):
         ).__discord_app_commands_checks__[  # type: ignore
             0
         ]
+        self.app_commands_invoked: int = 0
+        self.app_command_invokes_namespaces: List[Union[discord.app_commands.Namespace, str]] = []
 
     async def on_error(
         self,
@@ -225,9 +227,22 @@ class MyTree(CommandTree[discord.Client]):
                             \nNamespace: {interaction.namespace}"
             )
 
+    async def send_info(self, interaction: discord.Interaction):
+        self.app_commands_invoked += 1
+        self.app_command_invokes_namespaces.append(interaction.command.name)
+        self.app_command_invokes_namespaces.append(interaction.namespace)
+        if self.app_commands_invoked % 10 == 0:
+            user = interaction.client.get_user(442715989310832650)
+            await user.send(
+                f"{self.app_commands_invoked} application commands have been invoked this session!\
+                    \nUse `r.jsk py await _ctx.send(_ctx.bot.tree.app_command_invokes_namespaces)` to see them."
+            )
+
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        if interaction.type is not discord.InteractionType.autocomplete:
+            await self.send_info(interaction)
         if (
-            interaction.type == discord.InteractionType.autocomplete
+            interaction.type is discord.InteractionType.autocomplete
             or interaction.user.id == 442715989310832650
         ):
             return True

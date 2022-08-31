@@ -643,7 +643,9 @@ class DB(commands.Cog):
                 else False
             )
             if not channel_exists:
-                return await i.response.send_message("This channel is not on any receiver list, in fact!")
+                return await i.response.send_message(
+                    "This channel is not on any receiver list, in fact!"
+                )
 
             mangas_on_channel: str = (
                 await self.channels_md.find_one(  # type: ignore
@@ -666,7 +668,7 @@ class DB(commands.Cog):
             manga_ids: List[str] = []
             emojis = md.emojis
             for j, rs in enumerate(mangas_dict):
-                if j>4:
+                if j > 4:
                     break
                 manga_ids.append(rs)
                 title = await md.get_manga_title(rs)
