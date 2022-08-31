@@ -9,7 +9,7 @@ import discord
 from discord.app_commands.checks import cooldown as cooldown_decorator
 from discord.app_commands import CommandTree
 from pymongo.errors import ServerSelectionTimeoutError
-from typing import Any, List, Union
+from typing import Any, List, Tuple
 from discord.ext import commands
 from aiohttp import ClientSession
 from discord.ui import View
@@ -195,7 +195,7 @@ class MyTree(CommandTree[discord.Client]):
             0
         ]
         self.app_commands_invoked: int = 0
-        self.app_command_invokes_namespaces: List[Union[discord.app_commands.Namespace, str]] = []
+        self.app_command_invokes_namespaces: List[Tuple[str, discord.app_commands.Namespace]] = []
 
     async def on_error(
         self,
@@ -229,8 +229,7 @@ class MyTree(CommandTree[discord.Client]):
 
     async def send_info(self, interaction: discord.Interaction):
         self.app_commands_invoked += 1
-        self.app_command_invokes_namespaces.append(interaction.command.name)
-        self.app_command_invokes_namespaces.append(interaction.namespace)
+        self.app_command_invokes_namespaces.append((interaction.command.name, interaction.namespace))
         if self.app_commands_invoked % 10 == 0:
             user = interaction.client.get_user(442715989310832650)
             await user.send(
