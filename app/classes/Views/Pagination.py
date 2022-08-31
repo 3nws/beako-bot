@@ -49,6 +49,7 @@ class MangaReader(ui.View, menus.MenuPages):
         text: str,
         embed: discord.Embed,
         group: str,
+        is_task: bool=False,
     ):
         await self._source._prepare_once()  # type: ignore
         page = await self._source.get_page(0)  # type: ignore
@@ -60,6 +61,7 @@ class MangaReader(ui.View, menus.MenuPages):
         self.text = text
         self.group = group
         self.i = interaction
+        self.is_task = is_task
 
     async def _get_kwargs_from_page(self, page: str):  # type: ignore
         value = {}
@@ -68,9 +70,11 @@ class MangaReader(ui.View, menus.MenuPages):
         return value  # type: ignore
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        await interaction.response.defer()
+        if self.is_task:
+            return True
         btn_usr: Union[discord.Member, discord.User] = interaction.user
         i_usr: Union[discord.Member, discord.User] = self.i.user
-        await interaction.response.defer()
         cond: bool = True if self.i is None else btn_usr == i_usr
         if not cond:
             await interaction.followup.send(
@@ -106,7 +110,7 @@ class MangaReader(ui.View, menus.MenuPages):
         return self
 
     @ui.button(
-        emoji="<:before_fast_check:754948796139569224>",
+        emoji="⏮️",
         style=discord.ButtonStyle.blurple,
         custom_id="persistent:first",
     )
@@ -116,7 +120,7 @@ class MangaReader(ui.View, menus.MenuPages):
         await self.turn_page(0)
 
     @ui.button(
-        emoji="<:before_check:754948796487565332>",
+        emoji="⏪",
         style=discord.ButtonStyle.blurple,
         custom_id="persistent:previous",
     )
@@ -126,7 +130,7 @@ class MangaReader(ui.View, menus.MenuPages):
         await self.turn_page(self.current_page - 1)
 
     @ui.button(
-        emoji="<:stop_check:754948796365930517>",
+        emoji="⏹️",
         style=discord.ButtonStyle.blurple,
         custom_id="persistent:stop",
     )
@@ -137,7 +141,7 @@ class MangaReader(ui.View, menus.MenuPages):
         await self.msg.edit(content=self.text, embed=self.embed, view=self.disabled())
 
     @ui.button(
-        emoji="<:next_check:754948796361736213>",
+        emoji="⏩",
         style=discord.ButtonStyle.blurple,
         custom_id="persistent:next",
     )
@@ -147,7 +151,7 @@ class MangaReader(ui.View, menus.MenuPages):
         await self.turn_page(self.current_page + 1)
 
     @ui.button(
-        emoji="<:next_fast_check:754948796391227442>",
+        emoji="⏭️",
         style=discord.ButtonStyle.blurple,
         custom_id="persistent:last",
     )

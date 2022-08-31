@@ -335,6 +335,7 @@ class DB(commands.Cog):
                                 text=text,
                                 embed=embed,
                                 group=group,
+                                is_task=True
                             )
 
         except Exception as e:
@@ -488,7 +489,9 @@ class DB(commands.Cog):
         if embed:
             await i.response.send_message(embed=embed)
         else:
-            await i.response.send_message("Couldn't find that, in fact! Make sure to select from the choices, if there are any matches they will show up there, I suppose!")
+            await i.response.send_message(
+                "Couldn't find that, in fact! Make sure to select from the choices, if there are any matches they will show up there, I suppose!"
+            )
 
     async def sync(self, query: str):
         """The function called everytime the input on mangadex related autocomplete argument changes.
@@ -498,7 +501,7 @@ class DB(commands.Cog):
         """
         session: ClientSession = self.bot.session
         async with session.get(
-            f"https://api.mangadex.org/manga?limit=25&title={query}&availableTranslatedLanguage%5B%5D=en&order%5BlatestUploadedChapter%5D=desc"
+            f"https://api.mangadex.org/manga?limit=25&title={query}&availableTranslatedLanguage%5B%5D=en&order%5BlatestUploadedChapter%5D=desc&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic"
         ) as r:
             if r.status == 200:
                 response = await r.read()

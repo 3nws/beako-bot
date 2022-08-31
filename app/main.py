@@ -104,6 +104,7 @@ async def sync(
 @commands.is_owner()
 async def getcount(ctx):
     await ctx.send(ctx.bot.tree.app_commands_invoked)
+    await ctx.send(ctx.bot.tree.app_command_invokes_namespaces)
 
 
 @bot.event

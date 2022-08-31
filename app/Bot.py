@@ -195,7 +195,9 @@ class MyTree(CommandTree[discord.Client]):
             0
         ]
         self.app_commands_invoked: int = 0
-        self.app_command_invokes_namespaces: List[Tuple[str, discord.app_commands.Namespace]] = []
+        self.app_command_invokes_namespaces: List[
+            Tuple[str, discord.app_commands.Namespace]
+        ] = []
 
     async def on_error(
         self,
@@ -229,12 +231,14 @@ class MyTree(CommandTree[discord.Client]):
 
     async def send_info(self, interaction: discord.Interaction):
         self.app_commands_invoked += 1
-        self.app_command_invokes_namespaces.append((interaction.command.name, interaction.namespace))
+        self.app_command_invokes_namespaces.append(
+            (interaction.command.name, interaction.namespace)
+        )
         if self.app_commands_invoked % 10 == 0:
             user = interaction.client.get_user(442715989310832650)
             await user.send(
                 f"{self.app_commands_invoked} application commands have been invoked this session!\
-                    \nUse `r.jsk py await _ctx.send(_ctx.bot.tree.app_command_invokes_namespaces)` to see them."
+                    \nUse `r.getcount` to see them."
             )
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:

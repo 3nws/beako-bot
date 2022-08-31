@@ -63,7 +63,7 @@ class MangaDex:
     async def search(self, query: str, limit: str) -> Optional[List[Any]]:
         url = (
             self.base_manga_url
-            + f"?limit={limit}&title={query}&availableTranslatedLanguage%5B%5D=en&order%5Btitle%5D=asc"
+            + f"?limit={limit}&title={query}&availableTranslatedLanguage%5B%5D=en&order%5Btitle%5D=asc&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic"
         )
 
         session: ClientSession = self.bot.session
@@ -129,7 +129,7 @@ class MangaDex:
             self.base_chapter_url
             + "?limit=5&manga="
             + id
-            + "&translatedLanguage%5B%5D=en&order%5Bvolume%5D=desc&order%5Bchapter%5D=desc&excludedGroups%5B%5D=4f1de6a2-f0c5-4ac5-bce5-02c7dbb67deb"
+            + "&translatedLanguage%5B%5D=en&order%5Bvolume%5D=desc&order%5Bchapter%5D=desc&excludedGroups%5B%5D=4f1de6a2-f0c5-4ac5-bce5-02c7dbb67deb&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic"
         )
         session: ClientSession = self.bot.session
         async with session.get(url) as res:
@@ -145,7 +145,7 @@ class MangaDex:
                 self.base_chapter_url
                 + "?limit=5&manga="
                 + id
-                + "&translatedLanguage%5B%5D=en&order%5Bvolume%5D=desc&order%5Bchapter%5D=desc"
+                + "&translatedLanguage%5B%5D=en&order%5Bvolume%5D=desc&order%5Bchapter%5D=desc&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic"
             )
             session = self.bot.session
             async with session.get(url) as res:
@@ -196,7 +196,7 @@ class MangaDex:
         if query:
             url = (
                 self.base_manga_url
-                + f"?limit=1&title={query}&availableTranslatedLanguage%5B%5D=en"
+                + f"?limit=1&title={query}&availableTranslatedLanguage%5B%5D=en&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic"
             )
             session: ClientSession = self.bot.session
             async with session.get(url) as res:
@@ -214,7 +214,7 @@ class MangaDex:
             manga_info_url = (
                 self.base_manga_url
                 + manga_id
-                + "?includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist"
+                + "?includes%5B%5D=cover_art&includes%5B%5D=author&includes%5B%5D=artist&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic"
             )
             session = self.bot.session
             async with session.get(manga_info_url) as res:
