@@ -207,6 +207,8 @@ class MangaDex:
                     print("Something went wrong with the MangaDex request!")
                     return None
             r = r["data"]
+            if r == []:
+                return None
             rs = r[0]
             manga_id = rs["id"]
             manga_info_url = (

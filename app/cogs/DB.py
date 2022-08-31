@@ -487,6 +487,8 @@ class DB(commands.Cog):
         embed = await md.get_info(series)
         if embed:
             await i.response.send_message(embed=embed)
+        else:
+            await i.response.send_message("Couldn't find that, in fact! Make sure to select from the choices, if there are any matches they will show up there, I suppose!")
 
     async def sync(self, query: str):
         """The function called everytime the input on mangadex related autocomplete argument changes.
