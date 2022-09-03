@@ -1,3 +1,4 @@
+import asyncio
 import discord
 import os
 
@@ -104,7 +105,18 @@ async def sync(
 @commands.is_owner()
 async def getcount(ctx):
     await ctx.send(ctx.bot.tree.app_commands_invoked)
-    await ctx.send(ctx.bot.tree.app_command_invokes_namespaces)
+    messages: List[str] = []
+    for cmd, user, namespace in ctx.bot.tree.app_command_invokes_namespaces:
+        messages.append(f"{user} used {cmd} with {namespace}.")
+
+    if len(messages) < 10 and len(messages) > 0:
+        return await ctx.send("\n".join(messages))
+    elif len(messages) > 0:
+        for i in range(len(messages) // 10 + 1):
+            if (i+1) * 10 > len(messages):
+                return await ctx.send("\n".join(messages[i*10:len(messages)]))
+            await ctx.send("\n".join(messages[i*10:(i+1)*10]))
+            await asyncio.sleep(1)
 
 
 @bot.event

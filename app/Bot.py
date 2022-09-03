@@ -196,7 +196,7 @@ class MyTree(CommandTree[discord.Client]):
         ]
         self.app_commands_invoked: int = 0
         self.app_command_invokes_namespaces: List[
-            Tuple[str, discord.app_commands.Namespace]
+            Tuple[str, str, discord.app_commands.Namespace]
         ] = []
 
     async def on_error(
@@ -232,7 +232,7 @@ class MyTree(CommandTree[discord.Client]):
     async def send_info(self, interaction: discord.Interaction):
         self.app_commands_invoked += 1
         self.app_command_invokes_namespaces.append(
-            (interaction.command.name, interaction.namespace)
+            (interaction.command.name, interaction.user.name, interaction.namespace)
         )
         if self.app_commands_invoked % 10 == 0:
             user = interaction.client.get_user(442715989310832650)
