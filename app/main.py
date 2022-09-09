@@ -113,9 +113,9 @@ async def getcount(ctx):
         return await ctx.send("\n".join(messages))
     elif len(messages) > 0:
         for i in range(len(messages) // 10 + 1):
-            if (i+1) * 10 > len(messages):
-                return await ctx.send("\n".join(messages[i*10:len(messages)]))
-            await ctx.send("\n".join(messages[i*10:(i+1)*10]))
+            if (i + 1) * 10 > len(messages):
+                return await ctx.send("\n".join(messages[i * 10 : len(messages)]))
+            await ctx.send("\n".join(messages[i * 10 : (i + 1) * 10]))
             await asyncio.sleep(1)
 
 

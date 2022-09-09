@@ -52,6 +52,7 @@ class Chapter:
 class MangaDex:
     def __init__(self, bot: Bot):
         self.base_manga_url = "https://api.mangadex.org/manga/"
+        self.base_manga_url_for_query_par = "https://api.mangadex.org/manga"
         self.base_chapter_url = "https://api.mangadex.org/chapter"
         self.base_read_url = "https://mangadex.org/chapter/"
         self.base_manga_info_url = "https://mangadex.org/manga/"
@@ -62,10 +63,10 @@ class MangaDex:
 
     async def search(self, query: str, limit: str) -> Optional[List[Any]]:
         url = (
-            self.base_manga_url
+            self.base_manga_url_for_query_par
             + f"?limit={limit}&title={query}&availableTranslatedLanguage%5B%5D=en&order%5Btitle%5D=asc&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic"
         )
-
+        print(url)
         session: ClientSession = self.bot.session
         async with session.get(url) as res:
             if res.status == 200:
@@ -195,7 +196,7 @@ class MangaDex:
     async def get_info(self, query: str) -> Optional[discord.Embed]:
         if query:
             url = (
-                self.base_manga_url
+                self.base_manga_url_for_query_par
                 + f"?limit=1&title={query}&availableTranslatedLanguage%5B%5D=en&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic"
             )
             session: ClientSession = self.bot.session

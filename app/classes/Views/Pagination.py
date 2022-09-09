@@ -48,8 +48,8 @@ class MangaReader(ui.View, menus.MenuPages):
         channel: Channel,
         text: str,
         embed: discord.Embed,
-        group: str,
-        is_task: bool=False,
+        group: Optional[str],
+        is_task: bool = False,
     ):
         await self._source._prepare_once()  # type: ignore
         page = await self._source.get_page(0)  # type: ignore
@@ -95,10 +95,11 @@ class MangaReader(ui.View, menus.MenuPages):
         kwargs = await self._get_kwargs_from_page(page)  # type: ignore
         kwargs["content"] = self.text
         self.embed.set_image(url=page)
+        group = self.group or "Unknown"
         self.embed.set_footer(
             text=(
                 f"Page {page_num+1}/{self._source._max_pages}. Translated by "  # type: ignore
-                + self.group
+                + group
             )
         )
         kwargs["embed"] = self.embed

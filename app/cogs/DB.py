@@ -335,7 +335,7 @@ class DB(commands.Cog):
                                 text=text,
                                 embed=embed,
                                 group=group,
-                                is_task=True
+                                is_task=True,
                             )
 
         except Exception as e:
@@ -397,9 +397,14 @@ class DB(commands.Cog):
                     )
                 return
             current_page = 0
-            group: str = scanlation_group["data"]["attributes"]["name"]  # type: ignore
+            group: Optional[str] = None
+            if scanlation_group is not None:
+                group = scanlation_group["data"]["attributes"]["name"]  # type: ignore
             embed.set_footer(
-                text=(f"Page {current_page+1}/{num_of_pages}. Translated by " + group)
+                text=(
+                    f"Page {current_page+1}/{num_of_pages}. Translated by "
+                    + (group or "Unknown")
+                )
             )
             embed.set_image(url=chapter_response.images[current_page])
             await i.response.send_message("Read away, I suppose!")
@@ -486,6 +491,7 @@ class DB(commands.Cog):
         """
         md = MangaDex(self.bot)
         embed = await md.get_info(series)
+        print(embed)
         if embed:
             await i.response.send_message(embed=embed)
         else:
@@ -524,8 +530,8 @@ class DB(commands.Cog):
             series (str): the series to add this channel's tracking list
         """
         md = MangaDex(self.bot)
-        channel_entry: Dict[str, int] = {  # type: ignore
-            "id": i.channel_id,
+        channel_entry: Dict[str, int] = {
+            "id": i.channel_id,  # type: ignore
             "guild_id": i.guild.id,
         }
         series = self.aliases[series] if series in self.aliases else series
@@ -597,8 +603,8 @@ class DB(commands.Cog):
             series (str, optional): the series to remove from this channel's tracking list. Defaults to "".
         """
         md = MangaDex(self.bot)
-        channel_entry: Dict[str, int] = {  # type: ignore
-            "id": i.channel_id,
+        channel_entry: Dict[str, int] = {
+            "id": i.channel_id,  # type: ignore
             "guild_id": i.guild.id,
         }
         series = self.aliases[series] if series in self.aliases else series
