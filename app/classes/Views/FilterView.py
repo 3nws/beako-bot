@@ -88,8 +88,10 @@ def apply_filter(func: Callable_) -> Callable_:
             )
             self.add_once = False
         self.new_embed.set_image(url="attachment://user_avatar.png")
-
-        await self.i.edit_original_response(attachments=[f], embed=self.new_embed)
+        try:
+            await self.i.edit_original_response(attachments=[f], embed=self.new_embed)
+        except discord.HTTPException:
+            await self.i.channel.send("You need to use the `/avatar` command again to use this")  # type: ignore
         await msg.delete()
 
     return inner
@@ -108,7 +110,7 @@ class FilterView(ui.View):
     )
 
     def __init__(self, i: discord.Interaction, embed: discord.Embed, bot: Bot):
-        super().__init__(timeout=None)
+        super().__init__(timeout=15*60)
         self.i = i
         self.embed = embed
         self.image = embed.image.url
