@@ -28,4 +28,12 @@ jobs:
         USERNAME: ${{ secrets.USERNAME }}
         PORT: ${{ secrets.PORT }}
         KEY: ${{ secrets.SSHKEY }}
-        script: docker stop beako-run && docker build -t beako ./bot && docker run -d -it --rm --name beako-run beako
+        envs:
+          TOKEN: ${{ secrets.TOKEN }}
+          DB_URL: ${{ secrets.DB_URL }}
+          TENOR_API_KEY: ${{ secrets.TENOR_API_KEY }}
+          OSU_API_KEY: ${{ secrets.OSU_API_KEY }}
+          SAUCENAO_API_KEY: ${{ secrets.SAUCENAO_API_KEY }}
+          IMGUR_ID: ${{ secrets.IMGUR_ID }}
+          IMGUR_CLIENT: ${{ secrets.IMGUR_CLIENT }}
+        script: docker stop beako-run && docker build -t beako ./bot && docker run -d -it --rm --name beako-run beako && docker system prune -af
