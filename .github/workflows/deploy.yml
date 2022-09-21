@@ -28,4 +28,4 @@ jobs:
         USERNAME: ${{ secrets.USERNAME }}
         PORT: ${{ secrets.PORT }}
         KEY: ${{ secrets.SSHKEY }}
-        script: docker build -t . && docker run -d -it --rm --name beako-run beako
+        script: docker stop beako-run & docker system prune -af && docker build -t . && docker run -d -it --rm --name beako-run beako
