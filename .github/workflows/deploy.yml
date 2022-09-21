@@ -22,7 +22,6 @@ jobs:
         target: "/root/bot"
 
     - name: Executing remote command
-      uses: appleboy/ssh-action@master
       env:
         TOKEN: ${{ secrets.TOKEN }}
         DB_URL: ${{ secrets.DB_URL }}
@@ -31,10 +30,11 @@ jobs:
         SAUCENAO_API_KEY: ${{ secrets.SAUCENAO_API_KEY }}
         IMGUR_ID: ${{ secrets.IMGUR_ID }}
         IMGUR_CLIENT: ${{ secrets.IMGUR_CLIENT }}
+      uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
         USERNAME: ${{ secrets.USERNAME }}
         PORT: ${{ secrets.PORT }}
         KEY: ${{ secrets.SSHKEY }}
         envs: TOKEN,DB_URL,TENOR_API_KEY,OSU_API_KEY,SAUCENAO_API_KEY,IMGUR_ID,IMGUR_CLIENT
-        script: docker stop beako-run && docker build -t beako ./bot && docker run -it --rm --name beako-run beako && docker system prune -af
+        script: docker stop beako-run && docker build -t beako ./bot && docker run -d -it --rm --name beako-run beako && docker system prune -af
