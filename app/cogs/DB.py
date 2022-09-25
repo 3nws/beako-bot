@@ -791,6 +791,7 @@ class DB(commands.Cog):
         Args:
             i (discord.Interaction): the interaction that invokes this coroutine
         """
+        await i.response.defer()
         series: List[str] = []
         all_channels: List[str] = await self.db_channels.list_collection_names()  # type: ignore
         for channels in all_channels:
@@ -805,13 +806,6 @@ class DB(commands.Cog):
                     "guild_id": i.guild.id,
                 }
             )
-            if await self.channels_md.find_one(  # type: ignore
-                {
-                    "channel_id": i.channel_id,
-                    "guild_id": i.guild.id,
-                }
-            )
-            else False
         )
         if channel_exists:
             md = MangaDex(self.bot)
@@ -838,7 +832,7 @@ class DB(commands.Cog):
                 desc += f"**{counter}.** {s}\n"
                 counter += 1
             frame.description = desc
-        await i.response.send_message(embed=frame)
+        await i.followup.send(embed=frame)
 
 
 async def setup(bot: Bot):
