@@ -98,7 +98,7 @@ class DB(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         self.tasks_change_avatar.start()
-        self.tasks_filter_channels.start()
+        # self.tasks_filter_channels.start() NO
         self.tasks_check_chapter.start()
 
     async def cog_load(self) -> None:
@@ -178,7 +178,7 @@ class DB(commands.Cog):
                             e,
                         )
 
-    @tasks.loop(seconds=60)
+    @tasks.loop(seconds=60*10)
     async def tasks_check_chapter(self):
         """Checks for the newest chapters every minute."""
         try:
@@ -491,7 +491,6 @@ class DB(commands.Cog):
         """
         md = MangaDex(self.bot)
         embed = await md.get_info(series)
-        print(embed)
         if embed:
             await i.response.send_message(embed=embed)
         else:

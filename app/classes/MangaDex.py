@@ -66,7 +66,6 @@ class MangaDex:
             self.base_manga_url_for_query_par
             + f"?limit={limit}&title={query}&availableTranslatedLanguage%5B%5D=en&order%5Btitle%5D=asc&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic"
         )
-        print(url)
         session: ClientSession = self.bot.session
         async with session.get(url) as res:
             if res.status == 200:

@@ -215,6 +215,15 @@ class MyTree(CommandTree[discord.Client]):
                 "You don't have permission to do that, I suppose!"
             )
         else:
+            # This next segment is stupid. You have been warned!
+            if " ".join(str(error).split()[-2:]) == "Server disconnected":
+                callback = interaction.command.callback
+                data = interaction.data["options"][0]  # type: ignore
+                args = {data["name"]: data["value"], "repeat": False}  # type: ignore
+                self.session = aiohttp.ClientSession()
+                fake_self = type("self", (object,), {"bot" : self})
+                await callback(fake_self, interaction, **args)  # type: ignore
+                return
             await interaction.response.send_message(
                 "What is that, I suppose?!\nTry `/beakohelp`, in fact!"
             )
