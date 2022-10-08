@@ -109,13 +109,13 @@ async def getcount(ctx):
     for cmd, user, namespace in ctx.bot.tree.app_command_invokes_namespaces:
         messages.append(f"{user} used {cmd} with {namespace}.")
 
-    if len(messages) < 10 and len(messages) > 0:
+    if len(messages) < 5 and len(messages) > 0:
         return await ctx.send("\n".join(messages))
     elif len(messages) > 0:
-        for i in range(len(messages) // 10 + 1):
-            if (i + 1) * 10 > len(messages):
-                return await ctx.send("\n".join(messages[i * 10 : len(messages)]))
-            await ctx.send("\n".join(messages[i * 10 : (i + 1) * 10]))
+        for i in range(len(messages) // 5 + 1):
+            if (i + 1) * 5 > len(messages):
+                return await ctx.send("\n".join(messages[i * 5 : len(messages)]))
+            await ctx.send("\n".join(messages[i * 5 : (i + 1) * 5]))
             await asyncio.sleep(1)
 
 
