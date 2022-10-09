@@ -97,10 +97,30 @@ class DB(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        self.tasks_change_avatar.start()
+        if self.bot.avatar_task_on:
+            self.tasks_change_avatar.start()
+        if self.bot.chapter_task_on:
+            self.tasks_check_chapter.start()
         # self.tasks_filter_channels.start() NO
-        self.tasks_check_chapter.start()
 
+    @commands.command()
+    @commands.is_owner()
+    async def toggle_task(self, ctx: commands.Context[Bot], task: Optional[str]=None):
+        if task == "avatar":
+            if self.bot.avatar_task_on:
+                self.tasks_change_avatar.cancel()
+            else:
+                self.tasks_change_avatar.start()
+            self.bot.avatar_task_on = not self.bot.avatar_task_on
+        if task == "chapter":
+            if self.bot.chapter_task_on:
+                self.tasks_check_chapter.cancel()
+            else:
+                self.tasks_check_chapter.start()
+            self.bot.chapter_task_on = not self.bot.chapter_task_on
+        await ctx.send(f"Avatar task current state: {self.bot.avatar_task_on}\
+                        \nChapter task current state: {self.bot.chapter_task_on}")
+            
     async def cog_load(self) -> None:
         self.flips = [flip async for flip in self.flips_col.find()]  # type: ignore
 

@@ -66,6 +66,9 @@ class Bot(commands.Bot):
         self._client = None
         self.session: ClientSession
 
+        self.avatar_task_on: bool = True
+        self.chapter_task_on: bool = True
+
     async def load_cogs(self):
         await self.load_extension("jishaku")
         for filename in os.listdir("./app/cogs"):
