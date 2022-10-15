@@ -66,7 +66,7 @@ class Bot(commands.Bot):
         self._client = None
         self.session: ClientSession
 
-        self.avatar_task_on: bool = True
+        self.avatar_task_on: bool = not True
         self.chapter_task_on: bool = True
 
     async def load_cogs(self):

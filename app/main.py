@@ -5,7 +5,7 @@ import os
 from discord.app_commands import AppCommand
 from dotenv import load_dotenv  # type: ignore
 from discord.ext import commands
-from typing import List, Literal, Optional
+from typing import List, Literal, Optional, Dict
 
 from Bot import MyTree, Bot, Help
 
@@ -117,6 +117,25 @@ async def getcount(ctx):
                 return await ctx.send("\n".join(messages[i * 5 : len(messages)]))
             await ctx.send("\n".join(messages[i * 5 : (i + 1) * 5]))
             await asyncio.sleep(1)
+
+@bot.command()
+@commands.is_owner()
+async def getstats(ctx):
+    stats: Dict[str, int] = {}
+
+    for tup in ctx.bot.tree.app_command_invokes_namespaces:
+        command_name = tup[0]
+        if stats.get(command_name, None):
+            stats[command_name] += 1
+        else:
+            stats[command_name] = 1
+    stats = dict(sorted(stats.items(), key=lambda item: item[1], reverse=True))
+    embed = discord.Embed(
+        title="Stats",
+        colour=discord.Colour.random(),
+        description="\n".join([f"{k}: {v}" for k,v in stats.items()])
+    )
+    await ctx.send(embed=embed)
 
 
 @bot.event
