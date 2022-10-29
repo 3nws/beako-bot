@@ -306,21 +306,21 @@ class DB(commands.Cog):
                                 color=discord.Colour.random(),
                                 title=str(latest),
                             )
+                            if volume is None:
+                                volume = "-"
                             num_of_pages = len(chapter_response.images)
                             if num_of_pages == 0:
                                 if is_title:
                                     await self.bot.get_channel(channel).send(  # type: ignore
-                                        f"'{chp_title} - {latest}' has been translated, I suppose \n{chapter_link}"
+                                        f"'{chp_title} - {latest}' (Volume {volume}, Chapter {chapter_num}) has been translated, I suppose! \n{chapter_link}"
                                     )
                                 else:
                                     await self.bot.get_channel(channel).send(  # type: ignore
-                                        f"A new chapter of '{chp_title}' has been translated, I suppose \n{chapter_link}"
+                                        f"A new chapter of '{chp_title}' (Volume {volume}, Chapter {chapter_num}) has been translated, I suppose! \n{chapter_link}"
                                     )
                                 continue
                             current_page = 0
                             group: str = scanlation_group["data"]["attributes"]["name"]  # type: ignore
-                            if volume is None:
-                                volume = "-"
                             embed.set_footer(
                                 text=(
                                     f"Volume {volume}, Chapter {chapter_num} - "
@@ -409,24 +409,23 @@ class DB(commands.Cog):
                 color=discord.Colour.random(),
                 title=str(latest),
             )
-
+            if volume is None:
+                volume = "-"
             num_of_pages = len(chapter_response.images)
             if num_of_pages == 0:
                 if is_title:
                     await i.response.send_message(
-                        f"'{chp_title} - {latest}' has been translated, I suppose \n{chapter_link}"
+                        f"'{chp_title} - {latest}' (Volume {volume}, Chapter {chapter_num}) has been translated, I suppose! \n{chapter_link}"
                     )
                 else:
                     await i.response.send_message(
-                        f"A new chapter of '{chp_title}' has been translated, I suppose \n{chapter_link}"
+                        f"A new chapter of '{chp_title}' (Volume {volume}, Chapter {chapter_num}) has been translated, I suppose! \n{chapter_link}"
                     )
                 return
             current_page = 0
             group: Optional[str] = None
             if scanlation_group is not None:
                 group = scanlation_group["data"]["attributes"]["name"]  # type: ignore
-            if volume is None:
-                volume = "-"
             embed.set_footer(
                 text=(
                     f"Volume {volume}, Chapter {chapter_num} - "
@@ -487,7 +486,7 @@ class DB(commands.Cog):
         series="The series you want to get the latest chapter of, in fact!"
     )
     async def commands_latest_chapter(
-        self, i: discord.Interaction, series: Optional[str]
+        self, i: discord.Interaction, series: str
     ):
         """Get the latest chapter of a series.
 
@@ -498,11 +497,7 @@ class DB(commands.Cog):
         Returns:
             None: None
         """
-        if not series:
-            message = "What series do you want to know about, in fact!"
-        else:
-            return await self.last_chapter(series, i)
-        await i.response.send_message(message)
+        await self.last_chapter(series, i)
 
     # send manga info
     @app_commands.command(name="manga")
