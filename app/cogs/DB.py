@@ -282,6 +282,8 @@ class DB(commands.Cog):
                     for manga_id in mangas_dict:
                         chapter = mangas_dict[manga_id]
                         chapter_response = await md.get_latest(manga_id)
+                        volume = chapter_response.volume
+                        chapter_num = chapter_response.num
                         title_response = chapter_response.get_title()
                         latest = title_response[0]
                         is_title = title_response[1]
@@ -317,9 +319,12 @@ class DB(commands.Cog):
                                 continue
                             current_page = 0
                             group: str = scanlation_group["data"]["attributes"]["name"]  # type: ignore
+                            if volume is None:
+                                volume = "-"
                             embed.set_footer(
                                 text=(
-                                    f"Page {current_page+1}/{num_of_pages}. Translated by "
+                                    f"Volume {volume}, Chapter {chapter_num} - "
+                                    + f"Page {current_page+1}/{num_of_pages}. Translated by "
                                     + group
                                 )
                             )
@@ -390,6 +395,8 @@ class DB(commands.Cog):
             if search:
                 search_query = search[-1][0]
             chapter_response = await md.get_latest(search_query)
+            volume = chapter_response.volume
+            chapter_num = chapter_response.num
             chp_title = await md.get_manga_title(search_query)
             scanlation_group = await md.get_scanlation_group(
                 chapter_response.scanlation
@@ -418,8 +425,11 @@ class DB(commands.Cog):
             group: Optional[str] = None
             if scanlation_group is not None:
                 group = scanlation_group["data"]["attributes"]["name"]  # type: ignore
+            if volume is None:
+                volume = "-"
             embed.set_footer(
                 text=(
+                    f"Volume {volume}, Chapter {chapter_num} - "
                     f"Page {current_page+1}/{num_of_pages}. Translated by "
                     + (group or "Unknown")
                 )

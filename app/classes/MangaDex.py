@@ -18,6 +18,7 @@ class Chapter:
         "link",
         "images",
         "scanlation",
+        "volume",
     )
 
     def __init__(
@@ -30,6 +31,7 @@ class Chapter:
         link: str,
         images: List[str],
         scanlation: str,
+        volume: Optional[int]
     ):
         self.id = id
         self.title = title
@@ -39,6 +41,7 @@ class Chapter:
         self.link = link
         self.images = images
         self.scanlation = scanlation
+        self.volume = volume
 
     def get_title(self):
         title = self.title if self.title is not None else self.id
@@ -129,7 +132,7 @@ class MangaDex:
             self.base_chapter_url
             + "?limit=5&manga="
             + id
-            + "&translatedLanguage%5B%5D=en&order%5Bvolume%5D=desc&order%5Bchapter%5D=desc&excludedGroups%5B%5D=4f1de6a2-f0c5-4ac5-bce5-02c7dbb67deb&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic"
+            + "&translatedLanguage%5B%5D=en&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic&excludedGroups%5B%5D=4f1de6a2-f0c5-4ac5-bce5-02c7dbb67deb&includeFutureUpdates=1&order%5BcreatedAt%5D=desc&order%5BupdatedAt%5D=desc&order%5BpublishAt%5D=desc&order%5BreadableAt%5D=desc"
         )
         session: ClientSession = self.bot.session
         async with session.get(url) as res:
@@ -145,7 +148,7 @@ class MangaDex:
                 self.base_chapter_url
                 + "?limit=5&manga="
                 + id
-                + "&translatedLanguage%5B%5D=en&order%5Bvolume%5D=desc&order%5Bchapter%5D=desc&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic"
+                + "&translatedLanguage%5B%5D=en&contentRating%5B%5D=safe&contentRating%5B%5D=suggestive&contentRating%5B%5D=erotica&contentRating%5B%5D=pornographic&includeFutureUpdates=1&order%5BcreatedAt%5D=desc&order%5BupdatedAt%5D=desc&order%5BpublishAt%5D=desc&order%5BreadableAt%5D=desc"
             )
             session = self.bot.session
             async with session.get(url) as res:
@@ -163,6 +166,7 @@ class MangaDex:
         chapter_num = attrs["chapter"]
         translated_lang = attrs["translatedLanguage"]
         num_of_pages = attrs["pages"]
+        volume = attrs["volume"]
         chapter_link = self.base_read_url + data[0]["id"] + "/1"
 
         url = f"https://api.mangadex.org/at-home/server/{chapter_id}"
@@ -188,6 +192,7 @@ class MangaDex:
             chapter_link,
             image_urls,
             scanlation_id,
+            volume
         )
 
         return chapter
