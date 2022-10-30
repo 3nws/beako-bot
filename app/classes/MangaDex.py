@@ -68,7 +68,14 @@ class MangaDex:
         url: str = self.base_manga_url + id
         session: ClientSession = self.bot.session
         async with session.get(url) as res:
-            return res.status == 200
+            if res.status == 200:
+                resp = await res.read()
+                r = json.loads(resp)
+            else:
+                print("Something went wrong with the MangaDex request!")
+                return False
+        r = r["data"]
+        return r["attributes"]["title"].get("en", False)
 
     async def search(self, query: str, limit: str) -> Optional[List[Any]]:
         url = (
