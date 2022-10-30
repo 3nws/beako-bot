@@ -4,7 +4,8 @@ messages = {
     "savatar": "```Betty will send a member's(author's if no member is passed) server avatar to the text channel, in fact!```",
     "banner": "```Betty will send a member's(author's if no member is passed) banner to the text channel, in fact!```",
     "add": "```Betty will add the text channel to the list of channels that will receive notifications of the preferred series, I suppose!\
-                   \nThis needs 'manage_channels' permission, in fact!```",
+                   \nThis needs 'manage_channels' permission, in fact!\
+                   \nYou can either search for it with the 'series' argument or enter the id. You can also ignore individual (No Group) translations (default includes).```",
     "remove": "```Betty will remove the text channel from the list of channels that will receive notifications of the preferred series, I suppose! No need to name any series if its on MangaDex, in fact!\
                    \nThis needs 'manage_channels' permission, in fact!```",
     "manga": "```Betty will give information about the manga you want, in fact!```",

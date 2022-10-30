@@ -224,7 +224,7 @@ class MyTree(CommandTree[discord.Client]):
                 data = interaction.data["options"][0]  # type: ignore
                 args = {data["name"]: data["value"], "repeat": False}  # type: ignore
                 self.session = aiohttp.ClientSession()
-                fake_self = type("self", (object,), {"bot" : self})
+                fake_self = type("self", (object,), {"bot": self})
                 await callback(fake_self, interaction, **args)  # type: ignore
                 return
             await interaction.response.send_message(

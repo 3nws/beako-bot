@@ -21,7 +21,7 @@ class PickView(ui.View):
         "info",
         "num_of_results",
         "embed",
-        "ignore_individual"
+        "ignore_individual",
     )
 
     def __init__(
@@ -32,7 +32,7 @@ class PickView(ui.View):
         bot: Bot,
         embed: discord.Embed,
         *,
-        ignore_individual: Optional[bool]=False,
+        ignore_individual: Optional[bool] = False,
     ):
         super().__init__(timeout=None)
         self.i = i
@@ -98,17 +98,17 @@ class PickView(ui.View):
             )
         if not channel_exist.get("ignore_no_group", False):
             channel_exist = await self.channels.find_one_and_update(  # type: ignore
-                    {
-                        "channel_id": self.i.channel_id,
-                        "guild_id": self.i.guild.id,
-                    },
-                    {
-                        "$set": {
-                            "ignore_no_group": [],
-                            }
-                    },
-                    return_document=ReturnDocument.AFTER
-                )
+                {
+                    "channel_id": self.i.channel_id,
+                    "guild_id": self.i.guild.id,
+                },
+                {
+                    "$set": {
+                        "ignore_no_group": [],
+                    }
+                },
+                return_document=ReturnDocument.AFTER,
+            )
         return (literal_eval(channel_exist["mangas"]), channel_exist["ignore_no_group"])
 
     async def update(self, choice: int):
@@ -116,7 +116,7 @@ class PickView(ui.View):
         titles = self.info[0]
         manga_ids = self.info[1]
         if self.i.command.name == "add":
-            if manga_ids[choice] not in res:
+            if manga_ids[choice] not in res[0]:
                 chapter_response: Optional[Chapter] = await self.md.get_latest(
                     manga_ids[choice]
                 )
@@ -135,7 +135,7 @@ class PickView(ui.View):
                         "$set": {
                             "mangas": str(res[0]),
                             "ignore_no_group": to_ignore,
-                            }
+                        }
                     },
                 )
                 await self.i.channel.send(  # type: ignore
@@ -196,7 +196,13 @@ class PickView(ui.View):
     ):
         await self.update(4)
 
-    @ui.select(placeholder="Select if you want to ignore individual translations or not.", options=[discord.SelectOption(value="0", label="Include"), discord.SelectOption(value="1", label="Ignore")])
+    @ui.select(
+        placeholder="Select if you want to ignore individual translations or not.",
+        options=[
+            discord.SelectOption(value="0", label="Include"),
+            discord.SelectOption(value="1", label="Ignore"),
+        ],
+    )
     async def choice(self, interaction: discord.Interaction, select: ui.Select[Self]):
         self.ignore_individual = select.values[0] == "1"
         await interaction.response.defer()

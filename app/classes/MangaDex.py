@@ -31,7 +31,7 @@ class Chapter:
         link: str,
         images: List[str],
         scanlation: Optional[str],
-        volume: Optional[int]
+        volume: Optional[int],
     ):
         self.id = id
         self.title = title
@@ -63,6 +63,12 @@ class MangaDex:
         self.emojis = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣"]
         self.scanlation_base_url = "https://api.mangadex.org/group/"
         self.bot = bot
+
+    async def find(self, id: str) -> bool:
+        url: str = self.base_manga_url + id
+        session: ClientSession = self.bot.session
+        async with session.get(url) as res:
+            return res.status == 200
 
     async def search(self, query: str, limit: str) -> Optional[List[Any]]:
         url = (
@@ -194,7 +200,7 @@ class MangaDex:
             chapter_link,
             image_urls,
             scanlation_id,
-            volume
+            volume,
         )
 
         return chapter

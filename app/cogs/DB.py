@@ -8,7 +8,7 @@ from aiohttp import ClientSession
 from discord import app_commands
 from discord.ext import commands, tasks
 from typing import List, Any, Dict, Union, Optional, Tuple, Mapping, cast, ClassVar
-from pymongo.collection import Collection
+from pymongo.collection import Collection, ReturnDocument
 from pymongo.database import Database
 from motor.motor_asyncio import AsyncIOMotorClient  # type: ignore
 from dotenv import load_dotenv  # type: ignore
@@ -552,71 +552,161 @@ class DB(commands.Cog):
     @app_commands.describe(
         series="The series you want to track in this channel, in fact!"
     )
+    @app_commands.choices(
+        include_all=[
+            app_commands.Choice(name="Ignore", value="0"),
+            app_commands.Choice(name="Include", value="1"),
+        ]
+    )
     @app_commands.checks.has_permissions(manage_channels=True)
-    async def commands_add_channel(self, i: discord.Interaction, series: str):
-        """Add a series to track to this channel.
+    async def commands_add_channel(
+        self,
+        i: discord.Interaction,
+        series: Optional[str] = None,
+        id: Optional[str] = None,
+        include_all: Optional[app_commands.Choice[str]] = None,
+    ):
+        """Add a series to track to this channel. You can either search for it with the 'series' argument or enter the id. You can also ignore individual (No Group) translations (default includes).
 
         Args:
             i (discord.Interaction): the interaction that invokes this coroutine
             series (str): the series to add this channel's tracking list
+            id (str): the id of the series to add this channel's tracking list
+            include_all (bool): whether to include individual translations
         """
-        md = MangaDex(self.bot)
-        channel_entry: Dict[str, int] = {
-            "id": i.channel_id,  # type: ignore
-            "guild_id": i.guild.id,
-        }
-        series = self.aliases[series] if series in self.aliases else series
-        success_msg = "This text channel will receive notifications, I suppose!"
-        failure_msg = "This text channel is already on the receiver list, in fact!"
-        is_in_list = self.channels_rz.count_documents(channel_entry, limit=1) != 0  # type: ignore
-        is_in_kaguya_list = (
-            self.channels_kaguya.count_documents(channel_entry, limit=1) != 0  # type: ignore
-        )
-        is_in_onk_list = self.channels_onk.count_documents(channel_entry, limit=1) != 0  # type: ignore
-        is_in_gb_list = self.channels_gb.count_documents(channel_entry, limit=1) != 0  # type: ignore
-        if series == "rz":
-            if not is_in_list:
-                await self.channels_rz.insert_one(channel_entry)  # type: ignore
-                msg = success_msg
-            else:
-                msg = failure_msg
-        elif series == "kaguya":
-            if not is_in_kaguya_list:
-                await self.channels_kaguya.insert_one(channel_entry)  # type: ignore
-                msg = success_msg
-            else:
-                msg = failure_msg
-        elif series == "onk":
-            if not is_in_onk_list:
-                await self.channels_onk.insert_one(channel_entry)  # type: ignore
-                msg = success_msg
-            else:
-                msg = failure_msg
-        elif series == "gb":
-            if not is_in_gb_list:
-                await self.channels_gb.insert_one(channel_entry)  # type: ignore
-                msg = success_msg
-            else:
-                msg = failure_msg
-        elif series == "" or series == " ":
-            msg = "To what list do you want to add this channel, in fact?!"
-        else:
+        if series is not None:
             md = MangaDex(self.bot)
-            results = await md.search(series, "5")
-            msg = results
-
-        if isinstance(msg, list):
-            titles = msg[2]
-            manga_ids = msg[3]
-            msg = msg[1]
-            manga_infos = (titles, manga_ids)
-            await i.response.send_message(
-                "Pick a series to follow, I suppose!",
-                embed=msg,
-                view=PickView(i, self.channels_md, manga_infos, self.bot, msg),
+            channel_entry: Dict[str, int] = {
+                "id": i.channel_id,  # type: ignore
+                "guild_id": i.guild.id,
+            }
+            series = self.aliases[series] if series in self.aliases else series
+            success_msg = "This text channel will receive notifications, I suppose!"
+            failure_msg = "This text channel is already on the receiver list, in fact!"
+            is_in_list = self.channels_rz.count_documents(channel_entry, limit=1) != 0  # type: ignore
+            is_in_kaguya_list = (
+                self.channels_kaguya.count_documents(channel_entry, limit=1) != 0  # type: ignore
             )
-        else:
-            await i.response.send_message(msg)
+            is_in_onk_list = self.channels_onk.count_documents(channel_entry, limit=1) != 0  # type: ignore
+            is_in_gb_list = self.channels_gb.count_documents(channel_entry, limit=1) != 0  # type: ignore
+            if series == "rz":
+                if not is_in_list:
+                    await self.channels_rz.insert_one(channel_entry)  # type: ignore
+                    msg = success_msg
+                else:
+                    msg = failure_msg
+            elif series == "kaguya":
+                if not is_in_kaguya_list:
+                    await self.channels_kaguya.insert_one(channel_entry)  # type: ignore
+                    msg = success_msg
+                else:
+                    msg = failure_msg
+            elif series == "onk":
+                if not is_in_onk_list:
+                    await self.channels_onk.insert_one(channel_entry)  # type: ignore
+                    msg = success_msg
+                else:
+                    msg = failure_msg
+            elif series == "gb":
+                if not is_in_gb_list:
+                    await self.channels_gb.insert_one(channel_entry)  # type: ignore
+                    msg = success_msg
+                else:
+                    msg = failure_msg
+            elif series == "" or series == " ":
+                msg = "To what list do you want to add this channel, in fact?!"
+            else:
+                md = MangaDex(self.bot)
+                results = await md.search(series, "5")
+                msg = results
+
+            if isinstance(msg, list):
+                titles = msg[2]
+                manga_ids = msg[3]
+                msg = msg[1]
+                manga_infos = (titles, manga_ids)
+                await i.response.send_message(
+                    "Pick a series to follow, I suppose!",
+                    embed=msg,
+                    view=PickView(i, self.channels_md, manga_infos, self.bot, msg),
+                )
+            else:
+                await i.response.send_message(msg)
+        elif series is None:
+            if id is None:
+                return await i.response.send_message(
+                    "Either the title or the exact ID of the series is required, in fact!"
+                )
+
+            md = MangaDex(self.bot)
+            found = await md.find(id)
+
+            if not found:
+                return await i.response.send_message("I couldn't find that, I suppose!")
+
+            channel_exist: Dict[str, Any] = await self.channels_md.find_one(  # type: ignore
+                {
+                    "channel_id": i.channel_id,
+                    "guild_id": i.guild.id,
+                }
+            )
+            if not channel_exist:
+                channel_exist: Dict[str, Any] = await self.channels_md.insert_one(  # type: ignore
+                    {
+                        "channel_id": i.channel_id,
+                        "guild_id": i.guild.id,
+                        "mangas": "{}",
+                        "ignore_no_group": [],
+                    }
+                )
+                channel_exist: Dict[str, Any] = await self.channels_md.find_one(  # type: ignore
+                    {
+                        "channel_id": i.channel_id,
+                        "guild_id": i.guild.id,
+                    }
+                )
+            if not channel_exist.get("ignore_no_group", False):
+                channel_exist = await self.channels_md.find_one_and_update(  # type: ignore
+                    {
+                        "channel_id": i.channel_id,
+                        "guild_id": i.guild.id,
+                    },
+                    {
+                        "$set": {
+                            "ignore_no_group": [],
+                        }
+                    },
+                    return_document=ReturnDocument.AFTER,
+                )
+            res = (
+                literal_eval(channel_exist["mangas"]),
+                channel_exist["ignore_no_group"],
+            )
+
+            if id not in res[0]:
+                res[0].update({f"{id}": "null"})
+                if include_all is not None:
+                    if include_all.value == "0":
+                        res[1].append(id)
+                await self.channels_md.find_one_and_update(  # type: ignore
+                    {
+                        "channel_id": i.channel_id,
+                        "guild_id": i.guild.id,
+                    },
+                    {
+                        "$set": {
+                            "mangas": str(res[0]),
+                            "ignore_no_group": res[1],
+                        }
+                    },
+                )
+                await i.response.send_message(
+                    f"This channel will receive notifications on new chapters of the manga with ID: {id}, I suppose!"
+                )
+            else:
+                await i.response.send_message(
+                    f"This channel is already following this series, I suppose!"
+                )
 
     @app_commands.command(name="remove")
     @app_commands.guild_only

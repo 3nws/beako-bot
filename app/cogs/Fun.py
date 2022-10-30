@@ -38,7 +38,10 @@ class Fun(commands.Cog):
                 await i.followup.send(embed=embed)
             else:
                 print("NormalAPI down!")
-                embed = discord.Embed(colour=discord.Colour.random(), description="Something's wrong with the [Normal API](https://normal-api.tk/)")
+                embed = discord.Embed(
+                    colour=discord.Colour.random(),
+                    description="Something's wrong with the [Normal API](https://normal-api.tk/)",
+                )
                 await i.followup.send(embed=embed)
 
     @app_commands.command(name="say")

@@ -118,6 +118,7 @@ async def getcount(ctx):
             await ctx.send("\n".join(messages[i * 5 : (i + 1) * 5]))
             await asyncio.sleep(1)
 
+
 @bot.command()
 @commands.is_owner()
 async def getstats(ctx):
@@ -133,7 +134,7 @@ async def getstats(ctx):
     embed = discord.Embed(
         title="Stats",
         colour=discord.Colour.random(),
-        description="\n".join([f"{k}: {v}" for k,v in stats.items()])
+        description="\n".join([f"{k}: {v}" for k, v in stats.items()]),
     )
     await ctx.send(embed=embed)
 
