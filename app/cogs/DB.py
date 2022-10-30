@@ -97,7 +97,7 @@ class DB(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        self.tasks_change_avatar.start()
+        # self.tasks_change_avatar.start()
         self.tasks_check_chapter.start()
         # self.tasks_filter_channels.start() NO
 
@@ -118,7 +118,7 @@ class DB(commands.Cog):
     #         self.bot.chapter_task_on = not self.bot.chapter_task_on
     #     await ctx.send(f"Avatar task current state: {self.bot.avatar_task_on}\
     #                     \nChapter task current state: {self.bot.chapter_task_on}")
-            
+
     async def cog_load(self) -> None:
         self.flips = [flip async for flip in self.flips_col.find()]  # type: ignore
 
@@ -196,7 +196,7 @@ class DB(commands.Cog):
                             e,
                         )
 
-    @tasks.loop(seconds=60*10)
+    @tasks.loop(seconds=60 * 15)
     async def tasks_check_chapter(self):
         """Checks for the newest chapters every minute."""
         try:
@@ -278,6 +278,7 @@ class DB(commands.Cog):
             if records_exist:
                 for record in records_exist:
                     mangas_on_channel = (record)["mangas"]
+                    ignore_no_groups = record.get("ignore_no_group", [])
                     mangas_dict = literal_eval(mangas_on_channel)
                     for manga_id in mangas_dict:
                         chapter = mangas_dict[manga_id]
@@ -288,6 +289,13 @@ class DB(commands.Cog):
                         latest = title_response[0]
                         is_title = title_response[1]
                         chapter_link = chapter_response.get_link()
+                        scanlation_group = None
+                        if chapter_response.scanlation:
+                            scanlation_group = await md.get_scanlation_group(
+                                chapter_response.scanlation
+                            )
+                        if scanlation_group is None and manga_id in ignore_no_groups:
+                            continue
                         if latest != chapter:
                             mangas_dict.update({f"{manga_id}": str(latest)})
                             await self.channels_md.find_one_and_update(  # type: ignore
@@ -299,9 +307,6 @@ class DB(commands.Cog):
                             )
                             channel = record["channel_id"]
                             chp_title = await md.get_manga_title(manga_id)
-                            scanlation_group = await md.get_scanlation_group(
-                                chapter_response.scanlation
-                            )
                             embed = discord.Embed(
                                 color=discord.Colour.random(),
                                 title=str(latest),
@@ -320,7 +325,9 @@ class DB(commands.Cog):
                                     )
                                 continue
                             current_page = 0
-                            group: str = scanlation_group["data"]["attributes"]["name"]  # type: ignore
+                            group = "No group"
+                            if scanlation_group:
+                                group: str = scanlation_group["data"]["attributes"]["name"]  # type: ignore
                             embed.set_footer(
                                 text=(
                                     f"Volume {volume}, Chapter {chapter_num} - "
@@ -398,9 +405,11 @@ class DB(commands.Cog):
             volume = chapter_response.volume
             chapter_num = chapter_response.num
             chp_title = await md.get_manga_title(search_query)
-            scanlation_group = await md.get_scanlation_group(
-                chapter_response.scanlation
-            )
+            scanlation_group = None
+            if chapter_response.scanlation is not None:
+                scanlation_group = await md.get_scanlation_group(
+                    chapter_response.scanlation
+                )
             title_response = chapter_response.get_title()
             latest = title_response[0]
             is_title = title_response[1]
@@ -485,9 +494,7 @@ class DB(commands.Cog):
     @app_commands.describe(
         series="The series you want to get the latest chapter of, in fact!"
     )
-    async def commands_latest_chapter(
-        self, i: discord.Interaction, series: str
-    ):
+    async def commands_latest_chapter(self, i: discord.Interaction, series: str):
         """Get the latest chapter of a series.
 
         Args:
@@ -821,13 +828,13 @@ class DB(commands.Cog):
                 if self.bot.get_channel(cast(int, channel["id"])) == i.channel:
                     series.append(self.collection_aliases[channels])
 
-        channel_exists: Dict[str, Any] = (
-            await self.channels_md.find_one(  # type: ignore
-                {
-                    "channel_id": i.channel_id,
-                    "guild_id": i.guild.id,
-                }
-            )
+        channel_exists: Dict[
+            str, Any
+        ] = await self.channels_md.find_one(  # type: ignore
+            {
+                "channel_id": i.channel_id,
+                "guild_id": i.guild.id,
+            }
         )
         if channel_exists:
             md = MangaDex(self.bot)

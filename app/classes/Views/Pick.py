@@ -1,6 +1,6 @@
 import discord
 
-from pymongo.collection import Collection
+from pymongo.collection import Collection, ReturnDocument
 from ast import literal_eval
 from discord import ui
 from typing import Tuple, Dict, Any, List, Optional, Mapping
@@ -21,6 +21,7 @@ class PickView(ui.View):
         "info",
         "num_of_results",
         "embed",
+        "ignore_individual"
     )
 
     def __init__(
@@ -30,6 +31,8 @@ class PickView(ui.View):
         info: Tuple[List[str], List[str]],
         bot: Bot,
         embed: discord.Embed,
+        *,
+        ignore_individual: Optional[bool]=False,
     ):
         super().__init__(timeout=None)
         self.i = i
@@ -40,8 +43,13 @@ class PickView(ui.View):
         self.info = info
         self.num_of_results: int = len(self.info[0])
         self.embed = embed
+        self.ignore_individual = ignore_individual
         if self.num_of_results != len(self.children):
-            for j in range(len(self.children) - 1, self.num_of_results - 1, -1):
+            if self.i.command.name == "add":
+                start = len(self.children) - 2
+            else:
+                start = len(self.children) - 1
+            for j in range(start, self.num_of_results - 1, -1):
                 self.remove_item(self.children[j])
 
     def disabled(self):
@@ -67,27 +75,41 @@ class PickView(ui.View):
         return cond
 
     async def find_one(self):
-        channel_exist: Dict[str, str] = await self.channels.find_one(  # type: ignore
+        channel_exist: Dict[str, Any] = await self.channels.find_one(  # type: ignore
             {
                 "channel_id": self.i.channel_id,
                 "guild_id": self.i.guild.id,
             }
         )
         if not channel_exist:
-            channel_exist: Dict[str, str] = await self.channels.insert_one(  # type: ignore
+            channel_exist: Dict[str, Any] = await self.channels.insert_one(  # type: ignore
                 {
                     "channel_id": self.i.channel_id,
                     "guild_id": self.i.guild.id,
                     "mangas": "{}",
+                    "ignore_no_group": [],
                 }
             )
-            channel_exist: Dict[str, str] = await self.channels.find_one(  # type: ignore
+            channel_exist: Dict[str, Any] = await self.channels.find_one(  # type: ignore
                 {
                     "channel_id": self.i.channel_id,
                     "guild_id": self.i.guild.id,
                 }
             )
-        return literal_eval(channel_exist["mangas"])
+        if not channel_exist.get("ignore_no_group", False):
+            channel_exist = await self.channels.find_one_and_update(  # type: ignore
+                    {
+                        "channel_id": self.i.channel_id,
+                        "guild_id": self.i.guild.id,
+                    },
+                    {
+                        "$set": {
+                            "ignore_no_group": [],
+                            }
+                    },
+                    return_document=ReturnDocument.AFTER
+                )
+        return (literal_eval(channel_exist["mangas"]), channel_exist["ignore_no_group"])
 
     async def update(self, choice: int):
         res = await self.find_one()
@@ -100,26 +122,34 @@ class PickView(ui.View):
                 )
                 title_response = chapter_response.get_title()
                 latest = title_response[0]
-                res.update({f"{manga_ids[choice]}": str(latest)})
+                res[0].update({f"{manga_ids[choice]}": str(latest)})
+                to_ignore = res[1]
+                if self.ignore_individual:
+                    to_ignore.append(manga_ids[choice])
                 await self.channels.find_one_and_update(  # type: ignore
                     {
                         "channel_id": self.i.channel_id,
                         "guild_id": self.i.guild.id,
                     },
-                    {"$set": {"mangas": str(res)}},
+                    {
+                        "$set": {
+                            "mangas": str(res[0]),
+                            "ignore_no_group": to_ignore,
+                            }
+                    },
                 )
                 await self.i.channel.send(  # type: ignore
                     f"This channel will receive notifications on new chapters of {titles[choice]}, I suppose!"
                 )
         else:
-            if manga_ids[choice] in res:
-                res.pop(manga_ids[choice])
+            if manga_ids[choice] in res[0]:
+                res[0].pop(manga_ids[choice])
                 await self.channels.find_one_and_update(  # type: ignore
                     {
                         "channel_id": self.i.channel_id,
                         "guild_id": self.i.guild.id,
                     },
-                    {"$set": {"mangas": str(res)}},
+                    {"$set": {"mangas": str(res[0])}},
                 )
                 title = titles[choice]
                 await self.i.channel.send(  # type: ignore
@@ -165,3 +195,8 @@ class PickView(ui.View):
         self, interaction: discord.Interaction, button: discord.ui.Button[Self]
     ):
         await self.update(4)
+
+    @ui.select(placeholder="Select if you want to ignore individual translations or not.", options=[discord.SelectOption(value="0", label="Include"), discord.SelectOption(value="1", label="Ignore")])
+    async def choice(self, interaction: discord.Interaction, select: ui.Select[Self]):
+        self.ignore_individual = select.values[0] == "1"
+        await interaction.response.defer()

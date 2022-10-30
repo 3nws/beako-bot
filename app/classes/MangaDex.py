@@ -30,7 +30,7 @@ class Chapter:
         pages: str,
         link: str,
         images: List[str],
-        scanlation: str,
+        scanlation: Optional[str],
         volume: Optional[int]
     ):
         self.id = id
@@ -159,7 +159,9 @@ class MangaDex:
                     print("Something went wrong with the MangaDex request!")
                     return
         data = r["data"]
-        scanlation_id = data[0]["relationships"][0]["id"]
+        scanlation_id = None
+        if data[0]["relationships"][0]["type"] == "scanlation_group":
+            scanlation_id = data[0]["relationships"][0]["id"]
         attrs = data[0]["attributes"]
         chapter_id = data[0]["id"]
         chapter_title = attrs["title"]
