@@ -74,8 +74,11 @@ class MangaDex:
             else:
                 print("Something went wrong with the MangaDex request!")
                 return False
-        r = r["data"]
-        return r["attributes"]["title"].get("en", False)
+        try:
+            r = r["data"]
+            return r["attributes"]["title"].get("en", False)
+        except Exception:
+            return False
 
     async def search(self, query: str, limit: str) -> Optional[List[Any]]:
         url = (
