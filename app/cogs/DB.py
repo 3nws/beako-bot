@@ -97,7 +97,7 @@ class DB(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        self.tasks_change_avatar.start()
+        # self.tasks_change_avatar.start()
         self.tasks_check_chapter.start()
         # self.tasks_filter_channels.start() NO
 
@@ -479,7 +479,6 @@ class DB(commands.Cog):
             List[app_commands.Choice[str]]: The list of choices matching the input
         """
         await self.sync(current)
-        print(self.mangas_list)
         return [
             app_commands.Choice(
                 name=manga["attributes"]["title"]["en"][:100],  # type: ignore
@@ -488,7 +487,7 @@ class DB(commands.Cog):
             for manga in self.mangas_list  # type: ignore
             if "en" in manga["attributes"]["title"].keys()  # type: ignore
             and current.lower() in manga["attributes"]["title"]["en"].lower()  # type: ignore
-            or any("en" in x for x in manga["attributes"]["altTitles"])  # type: ignore
+            or any("en" in list(x.keys()) for x in manga["attributes"]["altTitles"])  # type: ignore
             and any(current.lower() in list(x.values())[0].lower() for x in manga["attributes"]["altTitles"])  # type: ignore
         ][:25]
 
