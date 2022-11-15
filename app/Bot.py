@@ -5,6 +5,8 @@ import traceback
 import sys
 import aiohttp
 import discord
+import socket
+import json
 
 from discord.app_commands.checks import cooldown as cooldown_decorator
 from discord.app_commands import CommandTree
@@ -13,9 +15,11 @@ from typing import Any, List, Tuple
 from discord.ext import commands
 from aiohttp import ClientSession
 from discord.ui import View
+from dotenv import load_dotenv
 
 from Help_Messages import messages
 
+load_dotenv()
 
 track_cmds = ["add", "remove", "manga", "last"]
 admin_cmds = ["kick", "ban", "unban", "clean", "purge"]
@@ -77,6 +81,16 @@ class Bot(commands.Bot):
             else:
                 print(f"Unable to load {filename[:-3]}")
 
+    async def handle_client(self, client):
+        message = (await self.loop.sock_recv(client, 255)).decode("utf8")
+        if message != "":
+            try:
+                if (json_ := json.loads(message))["pass"] == os.getenv("SOCKET_PASS"):
+                    print(json_)
+            except KeyError:
+                pass
+        # await self.loop.sock_sendall(client, response.encode('utf8'))
+
     async def setup_hook(self) -> None:
         self.session = aiohttp.ClientSession()
         try:
@@ -91,6 +105,11 @@ class Bot(commands.Bot):
         self.add_view(PersistentViewHelp("0", self))
 
         await self.load_cogs()
+
+        self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.server.bind(("localhost", 15555))
+        self.server.listen(8)
+        self.server.setblocking(False)
 
     async def close(self):
         await self.session.close()

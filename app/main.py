@@ -1,6 +1,7 @@
 import asyncio
 import discord
 import os
+import logging
 
 from discord.app_commands import AppCommand
 from dotenv import load_dotenv  # type: ignore
@@ -139,14 +140,31 @@ async def getstats(ctx):
     await ctx.send(embed=embed)
 
 
+def error_handler(task: asyncio.Task):
+    exc = task.exception()
+    if exc:
+        logging.error("ready task failed!", exc_info=exc)
+
+
+async def run_once_when_ready():
+    await bot.wait_until_ready()
+    client, _ = await bot.loop.sock_accept(bot.server)
+    while True:
+        bot.loop.create_task(bot.handle_client(client))
+        await asyncio.sleep(1)
+
+
 @bot.event
 async def on_ready():
     print(f"Logged in as: {bot.user.name}\n")
 
 
-def main():
-    bot.run(os.getenv("TOKEN", "no"))
+async def main():
+    async with bot:
+        ready_task = asyncio.create_task(run_once_when_ready())
+        ready_task.add_done_callback(error_handler)
+        await bot.start(os.getenv("TOKEN", "no"))
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

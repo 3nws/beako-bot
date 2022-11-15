@@ -97,9 +97,11 @@ class DB(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        self.tasks_change_avatar.start()
-        self.tasks_check_chapter.start()
+        # move these
+        # self.tasks_change_avatar.start()
+        # self.tasks_check_chapter.start()
         # self.tasks_filter_channels.start() NO
+        pass
 
     # @commands.command()
     # @commands.is_owner()
