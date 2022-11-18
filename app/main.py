@@ -150,6 +150,9 @@ async def run_once_when_ready():
     await bot.wait_until_ready()
     client, _ = await bot.loop.sock_accept(bot.server)
     while True:
+        if bot.no_client:
+            client, _ = await bot.loop.sock_accept(bot.server)
+            bot.no_client = False
         bot.loop.create_task(bot.handle_client(client))
         bot.loop.create_task(bot.send_stats(client))
         await asyncio.sleep(1)
@@ -164,7 +167,7 @@ async def main():
     async with bot:
         ready_task = asyncio.create_task(run_once_when_ready())
         ready_task.add_done_callback(error_handler)
-        await bot.start(os.getenv("TOKEN_PROD", "no"))
+        await bot.start(os.getenv("TOKEN_DEBUG", "no"))
 
 
 if __name__ == "__main__":

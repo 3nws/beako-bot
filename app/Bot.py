@@ -70,6 +70,8 @@ class Bot(commands.Bot):
         self._client = None
         self.session: ClientSession
 
+        self.no_client: bool = False
+
         self.stats = {}
 
         # self.avatar_task_on: bool = not True
@@ -84,7 +86,11 @@ class Bot(commands.Bot):
                 print(f"Unable to load {filename[:-3]}")
 
     async def handle_client(self, client):
-        message = (await self.loop.sock_recv(client, 255)).decode("utf8")
+        try:
+            message = (await self.loop.sock_recv(client, 255)).decode("utf8")
+        except ConnectionResetError:
+            self.no_client = True
+            return
         if message != "":
             try:
                 if (json_ := json.loads(message))["pass"] == os.getenv("SOCKET_PASS"):
@@ -112,7 +118,11 @@ class Bot(commands.Bot):
             "servers": len(self.guilds),
             "members": num_members,
         }
-        await self.loop.sock_sendall(client, json.dumps(self.stats).encode("utf8"))
+        try:
+            await self.loop.sock_sendall(client, json.dumps(self.stats).encode("utf8"))
+        except ConnectionResetError:
+            self.no_client = True
+            return
 
     async def setup_hook(self) -> None:
         self.session = aiohttp.ClientSession()
@@ -131,7 +141,7 @@ class Bot(commands.Bot):
 
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server.bind(("localhost", 15555))
-        self.server.listen(8)
+        self.server.listen(1)
         self.server.setblocking(False)
 
     async def close(self):
