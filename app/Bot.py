@@ -11,7 +11,7 @@ import json
 from discord.app_commands.checks import cooldown as cooldown_decorator
 from discord.app_commands import CommandTree
 from pymongo.errors import ServerSelectionTimeoutError
-from typing import Any, List, Tuple
+from typing import Any, List, Tuple, Dict
 from discord.ext import commands
 from aiohttp import ClientSession
 from discord.ui import View
@@ -70,6 +70,8 @@ class Bot(commands.Bot):
         self._client = None
         self.session: ClientSession
 
+        self.stats = {}
+
         # self.avatar_task_on: bool = not True
         # self.chapter_task_on: bool = True
 
@@ -89,7 +91,28 @@ class Bot(commands.Bot):
                     print(json_)
             except KeyError:
                 pass
-        # await self.loop.sock_sendall(client, response.encode('utf8'))
+
+    async def send_stats(self, client):
+        stats_: Dict[str, int] = {}
+        for tup in self.tree.app_command_invokes_namespaces:  # type: ignore
+            command_name = tup[0]
+            if stats_.get(command_name, None):
+                stats_[command_name] += 1
+            else:
+                stats_[command_name] = 1
+        stats_ = dict(sorted(stats_.items(), key=lambda item: item[1], reverse=True))
+        num_members: int = 0
+        for guild in set(self.guilds):
+            num_members += guild.member_count if guild.member_count is not None else 0
+
+        self.stats = {
+            "total": self.tree.app_commands_invoked,  # type: ignore
+            "namespaces": self.tree.app_command_invokes_namespaces,  # type: ignore
+            "stats": stats_,
+            "servers": len(self.guilds),
+            "members": num_members,
+        }
+        await self.loop.sock_sendall(client, json.dumps(self.stats).encode("utf8"))
 
     async def setup_hook(self) -> None:
         self.session = aiohttp.ClientSession()
@@ -218,7 +241,7 @@ class MyTree(CommandTree[discord.Client]):
         ]
         self.app_commands_invoked: int = 0
         self.app_command_invokes_namespaces: List[
-            Tuple[str, str, discord.app_commands.Namespace]
+            Tuple[str, str, List[Tuple[Any, Any]]]
         ] = []
 
     async def on_error(
@@ -262,8 +285,19 @@ class MyTree(CommandTree[discord.Client]):
 
     async def send_info(self, interaction: discord.Interaction):
         self.app_commands_invoked += 1
+        temp = []
+        l = list(interaction.namespace.__dict__.items())
+        for a in l:
+            if isinstance(a, (list, tuple, set)):
+                try:
+                    if isinstance(a[-1], (discord.User, discord.Member)):
+                        temp.append(a[-1].name)
+                    else:
+                        temp.append(a[-1])
+                except IndexError:
+                    pass
         self.app_command_invokes_namespaces.append(
-            (interaction.command.name, interaction.user.name, interaction.namespace)
+            (interaction.command.name, interaction.user.name, temp)
         )
         if self.app_commands_invoked % 10 == 0:
             user = interaction.client.get_user(442715989310832650)
