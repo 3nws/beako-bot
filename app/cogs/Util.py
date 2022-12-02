@@ -21,7 +21,7 @@ load_dotenv()
 class Util(commands.Cog):
 
     _saucenao_api_key: ClassVar[Optional[str]] = os.getenv("SAUCENAO_API_KEY", None)
-    _token: ClassVar[Optional[str]] = os.getenv("TOKEN_DEBUG", None)
+    _token: ClassVar[Optional[str]] = os.getenv("TOKEN_PROD", None)
 
     def __init__(self, bot: Bot):
         self.bot = bot

@@ -148,6 +148,9 @@ def error_handler(task: asyncio.Task):
 
 async def run_once_when_ready():
     await bot.wait_until_ready()
+    cog = bot.get_cog("DB")
+    cog.tasks_change_avatar.start()  # type: ignore
+    cog.tasks_check_chapter.start()  # type: ignore
     client, _ = await bot.loop.sock_accept(bot.server)
     while True:
         if bot.no_client:
@@ -167,7 +170,7 @@ async def main():
     async with bot:
         ready_task = asyncio.create_task(run_once_when_ready())
         ready_task.add_done_callback(error_handler)
-        await bot.start(os.getenv("TOKEN_DEBUG", "no"))
+        await bot.start(os.getenv("TOKEN_PROD", "no"))
 
 
 if __name__ == "__main__":

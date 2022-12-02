@@ -95,14 +95,6 @@ class DB(commands.Cog):
         self.avatar_urls: List[str] = []
         self.mangas_list = {}
 
-    @commands.Cog.listener()
-    async def on_ready(self):
-        # move these
-        # self.tasks_change_avatar.start()
-        # self.tasks_check_chapter.start()
-        # self.tasks_filter_channels.start() NO
-        pass
-
     # @commands.command()
     # @commands.is_owner()
     # async def toggle_task(self, ctx: commands.Context[Bot], task: Optional[str]=None):
