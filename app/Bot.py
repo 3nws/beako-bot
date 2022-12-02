@@ -140,7 +140,7 @@ class Bot(commands.Bot):
         await self.load_cogs()
 
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server.bind(("localhost", 15555))
+        self.server.bind(("0.0.0.0", 5555))
         self.server.listen(1)
         self.server.setblocking(False)
 
