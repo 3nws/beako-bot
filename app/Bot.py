@@ -70,7 +70,7 @@ class Bot(commands.Bot):
         self._client = None
         self.session: ClientSession
 
-        self.no_client: bool = False
+        self.no_client: bool = True
 
         self.stats = {}
 

@@ -151,14 +151,22 @@ async def run_once_when_ready():
     cog = bot.get_cog("DB")
     cog.tasks_change_avatar.start()  # type: ignore
     cog.tasks_check_chapter.start()  # type: ignore
-    client, _ = await bot.loop.sock_accept(bot.server)
+    address = ["0.0.0.0"]
     while True:
         if bot.no_client:
-            client, _ = await bot.loop.sock_accept(bot.server)
+            client, address = await bot.loop.sock_accept(bot.server)
             bot.no_client = False
-        bot.loop.create_task(bot.handle_client(client))
-        bot.loop.create_task(bot.send_stats(client))
         await asyncio.sleep(1)
+        if address[0] != os.getenv("ADMIN_IP", None):
+            try:
+                client.close()  # type: ignore
+            except Exception:
+                pass
+            finally:
+                bot.no_client = True
+                continue
+        bot.loop.create_task(bot.handle_client(client))  # type: ignore
+        bot.loop.create_task(bot.send_stats(client))  # type: ignore
 
 
 @bot.event
