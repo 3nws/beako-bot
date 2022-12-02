@@ -90,13 +90,6 @@ class Bot(commands.Bot):
             message = (await self.loop.sock_recv(client, 255)).decode("utf8")
         except ConnectionResetError:
             self.no_client = True
-            return
-        if message != "":
-            try:
-                if (json_ := json.loads(message))["pass"] == os.getenv("SOCKET_PASS"):
-                    print(json_)
-            except KeyError:
-                pass
 
     async def send_stats(self, client):
         stats_: Dict[str, int] = {}
@@ -120,9 +113,12 @@ class Bot(commands.Bot):
         }
         try:
             await self.loop.sock_sendall(client, json.dumps(self.stats).encode("utf8"))
-        except ConnectionResetError:
+        except (BrokenPipeError, ConnectionResetError):
             self.no_client = True
-            return
+            try:
+                client.close()
+            except Exception:
+                pass
 
     async def setup_hook(self) -> None:
         self.session = aiohttp.ClientSession()
