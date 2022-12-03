@@ -8,10 +8,11 @@ import discord
 import socket
 import json
 
+from asyncpg import Pool
 from discord.app_commands.checks import cooldown as cooldown_decorator
 from discord.app_commands import CommandTree
 from pymongo.errors import ServerSelectionTimeoutError
-from typing import Any, List, Tuple, Dict
+from typing import Any, List, Tuple, Dict, Optional
 from discord.ext import commands
 from aiohttp import ClientSession
 from discord.ui import View
@@ -69,6 +70,7 @@ class Bot(commands.Bot):
         super().__init__(*args, **kwargs)
         self._client = None
         self.session: ClientSession
+        self.db: Optional[Pool] = None
 
         self.no_client: bool = True
 
@@ -142,6 +144,7 @@ class Bot(commands.Bot):
 
     async def close(self):
         await self.session.close()
+        await self.db.close()
         for view in self.persistent_views:
             await view.on_timeout()
         await super().close()

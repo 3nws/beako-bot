@@ -1,7 +1,7 @@
 import discord
+import json
 
 from discord.ext import commands
-from typing import Any
 
 import traceback
 
@@ -32,9 +32,11 @@ class AddTagModal(discord.ui.Modal, title="Add a Tag"):
         max_length=500,
     )
 
-    def __init__(self, cog: commands.Cog, guild_id) -> None:
+    def __init__(self, cog: commands.Cog, bot) -> None:
         super().__init__()
         self.cog = cog
+        self.bot = bot
+        self.db = bot.db
         # tags = [discord.SelectOption(label="Existing tags for this server...", value="None", default=True)] + ([discord.SelectOption(label=tag, value=tag) for tag in self.cog.tags_list[guild_id].keys()])  # type: ignore
         # # tags = TagDropdown(self, self.cog, self.name, self.content, options=tags[:25])
         # tags = discord.ui.Select(options=tags[:25])
@@ -54,31 +56,27 @@ class AddTagModal(discord.ui.Modal, title="Add a Tag"):
             return await interaction.response.send_message(
                 "What should this tag return, in fact!"
             )
-        if self.name.value in self.cog.tags_list:  # type: ignore
+        if self.name.value in self.cog.tags_list[interaction.guild.id]:  # type: ignore
             msg = "Tag edited, in fact!"
         new = False
         if self.cog.tags_list != {}:  # type: ignore
             self.cog.tags_list[interaction.guild_id][self.name.value] = self.content.value  # type: ignore
         if self.cog.tags_list == {}:  # type: ignore
             to_insert = {
-                "guild_id": interaction.guild.id,
-                "tags": {
                     self.name.value: self.content.value,
-                },
-            }
-            await self.cog.tags_coll.insert_one(to_insert)  # type: ignore
+                }
+            connection = await self.db.acquire()
+            async with connection.transaction():
+                query = "INSERT INTO tags (guild_id, tags) VALUES ($1, $2)"
+                await self.db.execute(query, interaction.guild.id, json.dumps(to_insert))
+            await self.db.release(connection)
             new = True
         if not new:
-            await self.cog.tags_coll.find_one_and_update(  # type: ignore
-                {
-                    "guild_id": interaction.guild.id,
-                },
-                {
-                    "$set": {
-                        "tags": self.cog.tags_list[interaction.guild_id],  # type: ignore
-                    }
-                },
-            )
+            connection = await self.db.acquire()
+            async with connection.transaction():
+                query = f"UPDATE tags SET tags = $1 WHERE guild_id = $2"
+                await self.db.execute(query, json.dumps(self.cog.tags_list[interaction.guild_id]), interaction.guild.id)  # type: ignore
+            await self.db.release(connection)
         await interaction.response.send_message(msg)
 
     async def on_error(

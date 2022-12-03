@@ -1,6 +1,7 @@
 import asyncio
 import discord
 import os
+import asyncpg
 import logging
 
 from discord.app_commands import AppCommand
@@ -149,8 +150,8 @@ def error_handler(task: asyncio.Task):
 async def run_once_when_ready():
     await bot.wait_until_ready()
     cog = bot.get_cog("DB")
-    cog.tasks_change_avatar.start()  # type: ignore
-    cog.tasks_check_chapter.start()  # type: ignore
+    # cog.tasks_change_avatar.start()  # type: ignore
+    # cog.tasks_check_chapter.start()  # type: ignore
     address = ["0.0.0.0"]
     while True:
         if bot.no_client:
@@ -176,9 +177,23 @@ async def on_ready():
 
 async def main():
     async with bot:
+        credentials = {
+            "user": os.getenv("DB_USERNAME"),
+            "password": os.getenv("DB_PASSWORD"),
+            "database": "Beako",
+            "host": "127.0.0.1",
+            "port": "5433",
+        }
+        db = await asyncpg.create_pool(**credentials)
+
+        await db.execute(
+            "CREATE TABLE IF NOT EXISTS tags(guild_id bigint PRIMARY KEY, tags json);"
+        )
+        # await db.execute("CREATE TABLE IF NOT EXISTS tags(guild_id bigint PRIMARY KEY, tags json);")
+        bot.db = db
         ready_task = asyncio.create_task(run_once_when_ready())
         ready_task.add_done_callback(error_handler)
-        await bot.start(os.getenv("TOKEN_PROD", "no"))
+        await bot.start(os.getenv("TOKEN_DEBUG", "no"))
 
 
 if __name__ == "__main__":

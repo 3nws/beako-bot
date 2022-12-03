@@ -1,6 +1,5 @@
 import discord
-
-# import sys
+import json
 
 from discord.ext import commands
 from discord import app_commands
@@ -22,8 +21,10 @@ class Tag(commands.Cog):
 
     async def sync_tags(self):
         """Sync the tags according to guilds."""
-        async for tag in self.tags_coll.find():  # type: ignore
-            self.tags_list[tag["guild_id"]] = tag["tags"]  # type: ignore
+        query = "SELECT * FROM tags"
+        rows = await self.bot.db.fetch(query)
+        for row in rows:
+            self.tags_list[row["guild_id"]] = json.loads(row["tags"])
 
     @commands.Cog.listener("on_ready")
     async def on_ready(self) -> None:
@@ -107,7 +108,7 @@ class Tag(commands.Cog):
         Returns:
             None: None
         """
-        await i.response.send_modal(AddTagModal(self, i.guild_id))
+        await i.response.send_modal(AddTagModal(self, self.bot))
 
     @group.command(name="remove")
     @app_commands.autocomplete(tag_name=tag_autocomplete)
