@@ -94,5 +94,5 @@ I use [pysaucenao](https://github.com/FujiMakoto/pysaucenao) for reverse image s
 - Make the results for osu! prettier, they look awful
 - Add tracking for animes as well
 - Steam wishlisting? idk
-- Switch db to postgres
-- Rewrite the tracking feature
+- Switch db to postgres (WIP)
+- Rewrite the tracking feature (WIP)
