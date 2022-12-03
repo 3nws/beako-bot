@@ -3,7 +3,7 @@ import json
 
 from discord.ext import commands
 from discord import app_commands
-from typing import List, Optional, Any, Dict, Mapping
+from typing import List, Any, Dict, Mapping
 from pymongo.collection import Collection
 from io import BytesIO
 from classes.Views.AddTagModal import AddTagModal
@@ -14,9 +14,6 @@ from Bot import Bot
 class Tag(commands.Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
-        self.client = self.bot.client
-        db_tags: Collection[Mapping[str, Any]] = self.client.tags
-        self.tags_coll = db_tags.data
         self.tags_list: Dict[int, Dict[str, Any]] = {}
 
     async def sync_tags(self):
@@ -122,16 +119,11 @@ class Tag(commands.Cog):
             tag_name (str): the name of the tag to delete
         """
         self.tags_list[i.guild_id].pop(tag_name)  # type: ignore
-        await self.tags_coll.find_one_and_update(  # type: ignore
-            {
-                "guild_id": i.guild.id,
-            },
-            {
-                "$set": {
-                    "tags": self.tags_list[i.guild_id],  # type: ignore
-                }
-            },
-        )
+        connection = await self.bot.db.acquire()
+        async with connection.transaction():
+            query = f"UPDATE tags SET tags = $1 WHERE guild_id = $2"
+            await self.bot.db.execute(query, json.dumps(self.tags_list[i.guild_id]), i.guild_id)  # type: ignore
+        await self.bot.db.release(connection)
         await i.response.send_message("Tag removed, in fact!")
 
 
