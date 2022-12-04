@@ -1,4 +1,5 @@
 import discord
+import json
 
 from pymongo.collection import Collection, ReturnDocument
 from ast import literal_eval
@@ -14,7 +15,6 @@ class PickView(ui.View):
 
     __slots__ = (
         "i",
-        "channels",
         "mangas",
         "bot",
         "md",
@@ -27,7 +27,6 @@ class PickView(ui.View):
     def __init__(
         self,
         i: discord.Interaction,
-        channels: Collection[Mapping[str, Any]],
         info: Tuple[List[str], List[str]],
         bot: Bot,
         embed: discord.Embed,
@@ -36,9 +35,9 @@ class PickView(ui.View):
     ):
         super().__init__(timeout=None)
         self.i = i
-        self.channels = channels
         self.mangas: Dict[str, str] = {}
         self.bot = bot
+        self.db = self.bot.db
         self.md: MangaDex = MangaDex(self.bot)
         self.info = info
         self.num_of_results: int = len(self.info[0])
@@ -75,41 +74,27 @@ class PickView(ui.View):
         return cond
 
     async def find_one(self):
-        channel_exist: Dict[str, Any] = await self.channels.find_one(  # type: ignore
-            {
-                "channel_id": self.i.channel_id,
-                "guild_id": self.i.guild.id,
-            }
-        )
+        query = "SELECT * FROM mangadex WHERE channel_id = $1 AND guild_id = $2"
+        channel_exist = len(await self.bot.db.fetch(query, self.i.channel_id, self.i.guild.id)) != 0
         if not channel_exist:
-            channel_exist: Dict[str, Any] = await self.channels.insert_one(  # type: ignore
-                {
-                    "channel_id": self.i.channel_id,
-                    "guild_id": self.i.guild.id,
-                    "mangas": "{}",
-                    "ignore_no_group": [],
-                }
-            )
-            channel_exist: Dict[str, Any] = await self.channels.find_one(  # type: ignore
-                {
-                    "channel_id": self.i.channel_id,
-                    "guild_id": self.i.guild.id,
-                }
-            )
+            connection = await self.db.acquire()
+            async with connection.transaction():
+                query = "INSERT INTO mangadex (guild_id, channel_id, mangas, ignore_no_group) VALUES ($1, $2, $3, $4)"
+                await self.db.execute(
+                    query, self.i.guild.id, self.i.channel_id, {}, []
+                )
+            await self.db.release(connection)
+            query = "SELECT * FROM mangadex WHERE channel_id = $1 AND guild_id = $2"
+            channel_exist = await self.bot.db.fetchrow(query, self.i.channel_id, self.i.guild.id)
         if not channel_exist.get("ignore_no_group", False):
-            channel_exist = await self.channels.find_one_and_update(  # type: ignore
-                {
-                    "channel_id": self.i.channel_id,
-                    "guild_id": self.i.guild.id,
-                },
-                {
-                    "$set": {
-                        "ignore_no_group": [],
-                    }
-                },
-                return_document=ReturnDocument.AFTER,
-            )
-        return (literal_eval(channel_exist["mangas"]), channel_exist["ignore_no_group"])
+            connection = await self.db.acquire()
+            async with connection.transaction():
+                query = f"UPDATE mangadex SET ignore_no_group = $1 WHERE guild_id = $2 AND channel_id = $3"
+                await self.db.execute(query, [], self.i.guild.id, self.i.channel_id)  # type: ignore
+            await self.db.release(connection)
+        query = "SELECT * FROM mangadex WHERE channel_id = $1 AND guild_id = $2"
+        channel_exist = await self.bot.db.fetchrow(query, self.i.channel_id, self.i.guild.id)
+        return (json.loads(channel_exist["mangas"]), channel_exist["ignore_no_group"])
 
     async def update(self, choice: int):
         res = await self.find_one()
@@ -126,31 +111,23 @@ class PickView(ui.View):
                 to_ignore = res[1]
                 if self.ignore_individual:
                     to_ignore.append(manga_ids[choice])
-                await self.channels.find_one_and_update(  # type: ignore
-                    {
-                        "channel_id": self.i.channel_id,
-                        "guild_id": self.i.guild.id,
-                    },
-                    {
-                        "$set": {
-                            "mangas": str(res[0]),
-                            "ignore_no_group": to_ignore,
-                        }
-                    },
-                )
+
+                connection = await self.db.acquire()
+                async with connection.transaction():
+                    query = f"UPDATE mangadex SET mangas = $1, ignore_no_group = $2 WHERE guild_id = $3 AND channel_id = $4"
+                    await self.db.execute(query, json.dumps(res[0]), to_ignore, self.i.guild.id, self.i.channel_id)  # type: ignore
+                await self.db.release(connection)
                 await self.i.channel.send(  # type: ignore
                     f"This channel will receive notifications on new chapters of {titles[choice]}, I suppose!"
                 )
         else:
             if manga_ids[choice] in res[0]:
                 res[0].pop(manga_ids[choice])
-                await self.channels.find_one_and_update(  # type: ignore
-                    {
-                        "channel_id": self.i.channel_id,
-                        "guild_id": self.i.guild.id,
-                    },
-                    {"$set": {"mangas": str(res[0])}},
-                )
+                connection = await self.db.acquire()
+                async with connection.transaction():
+                    query = f"UPDATE mangadex SET mangas = $1, WHERE guild_id = $2 AND channel_id = $3"
+                    await self.db.execute(query, json.dumps(res[0]), self.i.guild.id, self.i.channel_id)  # type: ignore
+                await self.db.release(connection)
                 title = titles[choice]
                 await self.i.channel.send(  # type: ignore
                     f"This channel will no longer receive notifications on new chapters of {title}, I suppose!"
