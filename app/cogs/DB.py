@@ -136,11 +136,13 @@ class DB(commands.Cog):
             r = await r.read()
             r = json.loads(r)
             img_url: str = r["data"]["link"]
-            await self.db_avatars.insert_one(  # type: ignore
-                {
-                    "url": img_url,
-                }
-            )
+            connection = await self.bot.db.acquire()
+            async with connection.transaction():
+                query = "INSERT INTO avatars (url) VALUES ($1)"
+                await self.bot.db.execute(
+                    query, img_url
+                )
+            await self.bot.db.release(connection)
             self.avatar_urls.append(img_url)
         await self.bot.user.edit(avatar=await image.read())
         await ctx.send("Avatar changed, I suppose!")
@@ -822,20 +824,20 @@ class DB(commands.Cog):
     @tasks.loop(hours=12)
     async def tasks_change_avatar(self):
         """Task that changes the bot's avatar twice a day."""
-        async for image_record in self.db_avatars.find():  # type: ignore
-            url: str = image_record["url"]
-            if url not in self.avatar_urls:
-                self.avatar_urls.append(url)
+        query = "SELECT * FROM avatars"
+        rows = await self.bot.db.fetch(query)
+        for avatar in rows:
+            if avatar["url"] not in self.avatar_urls:
+                self.avatar_urls.append(avatar["url"])
 
         url = random.choice(self.avatar_urls)
         session: ClientSession = self.bot.session
         async with session.get(url) as resp:
             if resp.status == 200:
                 bytes_image = await resp.read()
-
-        await self.bot.wait_until_ready()
-        await self.bot.user.edit(avatar=bytes_image)
-        print("Avatar changed successfully!")
+                await self.bot.wait_until_ready()
+                await self.bot.user.edit(avatar=bytes_image)
+                print("Avatar changed successfully!")
 
     @tasks_change_avatar.before_loop
     async def wait_ready(self):

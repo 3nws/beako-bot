@@ -190,7 +190,10 @@ async def main():
             "CREATE TABLE IF NOT EXISTS tags(guild_id bigint PRIMARY KEY, tags json);"
         )
         await db.execute(
-            "CREATE TABLE IF NOT EXISTS flips(id bigint PRIMARY KEY, url text);"
+            "CREATE TABLE IF NOT EXISTS flips(id serial PRIMARY KEY, url text);"
+        )
+        await db.execute(
+            "CREATE TABLE IF NOT EXISTS avatars(id serial PRIMARY KEY, url text);"
         )
         bot.db = db
         ready_task = asyncio.create_task(run_once_when_ready())
