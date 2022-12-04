@@ -150,8 +150,8 @@ def error_handler(task: asyncio.Task):
 async def run_once_when_ready():
     await bot.wait_until_ready()
     cog = bot.get_cog("DB")
-    cog.tasks_change_avatar.start()  # type: ignore
-    # cog.tasks_check_chapter.start()  # type: ignore
+    # cog.tasks_change_avatar.start()  # type: ignore
+    cog.tasks_check_chapter.start()  # type: ignore
     address = ["0.0.0.0"]
     while True:
         if bot.no_client:
@@ -187,13 +187,22 @@ async def main():
         db = await asyncpg.create_pool(**credentials)
 
         await db.execute(
-            "CREATE TABLE IF NOT EXISTS tags(guild_id bigint PRIMARY KEY, tags json);"
+            "CREATE TABLE IF NOT EXISTS tags(guild_id bigint PRIMARY KEY NOT NULL, tags json);"
         )
         await db.execute(
             "CREATE TABLE IF NOT EXISTS flips(id serial PRIMARY KEY, url text);"
         )
         await db.execute(
             "CREATE TABLE IF NOT EXISTS avatars(id serial PRIMARY KEY, url text);"
+        )
+        await db.execute(
+            "CREATE TABLE IF NOT EXISTS chapter_ex(id bigint PRIMARY KEY NOT NULL, title text);"
+        )
+        await db.execute(
+            "CREATE TABLE IF NOT EXISTS channel(id bigint PRIMARY KEY NOT NULL, guild_id bigint NOT NULL, series_id bigint NOT NULL);"
+        )
+        await db.execute(
+            "CREATE TABLE IF NOT EXISTS mangadex(guild_id bigint PRIMARY KEY NOT NULL, channel_id bigint NOT NULL, mangas json, ignore_no_group bigint[]);"
         )
         bot.db = db
         ready_task = asyncio.create_task(run_once_when_ready())
