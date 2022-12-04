@@ -114,7 +114,9 @@ class DB(commands.Cog):
     #                     \nChapter task current state: {self.bot.chapter_task_on}")
 
     async def cog_load(self) -> None:
-        self.flips = [flip async for flip in self.flips_col.find()]  # type: ignore
+        query = "SELECT * FROM flips"
+        rows = await self.bot.db.fetch(query)
+        self.flips = [flip["url"] for flip in rows]
 
     @commands.command()
     @commands.is_owner()
@@ -150,9 +152,7 @@ class DB(commands.Cog):
         Args:
             i (discord.Interaction): the interaction that invokes this coroutine
         """
-        flip_dict: Dict[str, str] = random.choice(self.flips)
-        flip_url: str = flip_dict.get("url", "")
-        await i.response.send_message(flip_url)
+        await i.response.send_message(random.choice(self.flips))
 
     async def send_messages(
         self,

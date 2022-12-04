@@ -182,14 +182,16 @@ async def main():
             "password": os.getenv("DB_PASSWORD"),
             "database": "Beako",
             "host": "127.0.0.1",
-            "port": "5433",
+            "port": "5433",  # 5432 by default
         }
         db = await asyncpg.create_pool(**credentials)
 
         await db.execute(
             "CREATE TABLE IF NOT EXISTS tags(guild_id bigint PRIMARY KEY, tags json);"
         )
-        # await db.execute("CREATE TABLE IF NOT EXISTS tags(guild_id bigint PRIMARY KEY, tags json);")
+        await db.execute(
+            "CREATE TABLE IF NOT EXISTS flips(id bigint PRIMARY KEY, url text);"
+        )
         bot.db = db
         ready_task = asyncio.create_task(run_once_when_ready())
         ready_task.add_done_callback(error_handler)

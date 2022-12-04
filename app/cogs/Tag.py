@@ -3,8 +3,7 @@ import json
 
 from discord.ext import commands
 from discord import app_commands
-from typing import List, Any, Dict, Mapping
-from pymongo.collection import Collection
+from typing import List, Any, Dict
 from io import BytesIO
 from classes.Views.AddTagModal import AddTagModal
 

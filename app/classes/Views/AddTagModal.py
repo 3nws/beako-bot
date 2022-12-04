@@ -5,6 +5,7 @@ from discord.ext import commands
 
 import traceback
 
+from Bot import Bot
 
 # class TagDropdown(discord.ui.Select):
 
@@ -32,7 +33,7 @@ class AddTagModal(discord.ui.Modal, title="Add a Tag"):
         max_length=500,
     )
 
-    def __init__(self, cog: commands.Cog, bot) -> None:
+    def __init__(self, cog: commands.Cog, bot: Bot) -> None:
         super().__init__()
         self.cog = cog
         self.bot = bot
@@ -63,12 +64,14 @@ class AddTagModal(discord.ui.Modal, title="Add a Tag"):
             self.cog.tags_list[interaction.guild_id][self.name.value] = self.content.value  # type: ignore
         if self.cog.tags_list == {}:  # type: ignore
             to_insert = {
-                    self.name.value: self.content.value,
-                }
+                self.name.value: self.content.value,
+            }
             connection = await self.db.acquire()
             async with connection.transaction():
                 query = "INSERT INTO tags (guild_id, tags) VALUES ($1, $2)"
-                await self.db.execute(query, interaction.guild.id, json.dumps(to_insert))
+                await self.db.execute(
+                    query, interaction.guild.id, json.dumps(to_insert)
+                )
             await self.db.release(connection)
             new = True
         if not new:
