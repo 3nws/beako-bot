@@ -835,7 +835,6 @@ class DB(commands.Cog):
         async with session.get(url) as resp:
             if resp.status == 200:
                 bytes_image = await resp.read()
-                await self.bot.wait_until_ready()
                 await self.bot.user.edit(avatar=bytes_image)
                 print("Avatar changed successfully!")
 

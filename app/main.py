@@ -150,7 +150,7 @@ def error_handler(task: asyncio.Task):
 async def run_once_when_ready():
     await bot.wait_until_ready()
     cog = bot.get_cog("DB")
-    # cog.tasks_change_avatar.start()  # type: ignore
+    cog.tasks_change_avatar.start()  # type: ignore
     # cog.tasks_check_chapter.start()  # type: ignore
     address = ["0.0.0.0"]
     while True:
