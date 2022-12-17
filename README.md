@@ -12,6 +12,24 @@ It also has some osu! and WarframeMarket features, more info below.
 
 I use [pysaucenao](https://github.com/FujiMakoto/pysaucenao) for reverse image searching.
 
+## Example service
+
+```sh
+[Unit]
+Description=Beako bot container
+After=docker.service
+Requires=docker.service
+
+[Service]
+TimeoutStartSec=0
+Restart=always
+ExecStartPre=/usr/bin/docker build -t app /root/beako
+ExecStart=/usr/bin/docker run --rm --network="host" --name beako app
+
+[Install]
+WantedBy=multi-user.target
+```
+
 ## Series tracking and database action commands and the help command
 
 - `/beakohelp` (sends information about the commands)
