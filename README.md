@@ -112,5 +112,3 @@ WantedBy=multi-user.target
 - Make the results for osu! prettier, they look awful
 - Add tracking for animes as well
 - Steam wishlisting? idk
-- Switch db to postgres (WIP)
-- Rewrite the tracking feature (WIP)
