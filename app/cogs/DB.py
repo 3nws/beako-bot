@@ -7,10 +7,7 @@ from ast import literal_eval
 from aiohttp import ClientSession
 from discord import app_commands
 from discord.ext import commands, tasks
-from typing import List, Any, Dict, Union, Optional, Tuple, Mapping, cast, ClassVar
-from pymongo.collection import Collection, ReturnDocument
-from pymongo.database import Database
-from motor.motor_asyncio import AsyncIOMotorClient  # type: ignore
+from typing import List, Any, Dict, Union, Optional, Tuple, cast, ClassVar
 from dotenv import load_dotenv  # type: ignore
 
 from classes.Re_zero import Re_zero
@@ -38,7 +35,6 @@ class DB(commands.Cog):
             "4": "Grand Blue Dreaming",
         }
 
-        
         self.rz_id = 1
         self.kg_id = 2
         self.onk_id = 3
@@ -97,9 +93,7 @@ class DB(commands.Cog):
             connection = await self.bot.db.acquire()
             async with connection.transaction():
                 query = "INSERT INTO avatars (url) VALUES ($1)"
-                await self.bot.db.execute(
-                    query, img_url
-                )
+                await self.bot.db.execute(query, img_url)
             await self.bot.db.release(connection)
             self.avatar_urls.append(img_url)
         await self.bot.user.edit(avatar=await image.read())
@@ -185,7 +179,7 @@ class DB(commands.Cog):
 
             query = "SELECT * FROM chapter_ex WHERE id = $1"
             row = await self.bot.db.fetchrow(query, self.kg_id)
-            last_chapter = row["title"]
+            last_chapter = row["title"]  # type: ignore
 
             await self.send_messages(
                 self.kg_id,
@@ -203,7 +197,7 @@ class DB(commands.Cog):
 
             query = "SELECT * FROM chapter_ex WHERE id = $1"
             row = await self.bot.db.fetchrow(query, self.onk_id)
-            last_chapter = row["title"]
+            last_chapter = row["title"]  # type: ignore
 
             await self.send_messages(
                 self.onk_id,
@@ -221,7 +215,7 @@ class DB(commands.Cog):
 
             query = "SELECT * FROM chapter_ex WHERE id = $1"
             row = await self.bot.db.fetchrow(query, self.gb_id)
-            last_chapter = row["title"]
+            last_chapter = row["title"]  # type: ignore
 
             await self.send_messages(
                 self.gb_id,
@@ -536,7 +530,7 @@ class DB(commands.Cog):
             series = self.aliases[series] if series in self.aliases else series
             success_msg = "This text channel will receive notifications, I suppose!"
             failure_msg = "This text channel is already on the receiver list, in fact!"
-            
+
             query = "SELECT * FROM channel WHERE series_id = $1"
             is_in_list = len(await self.bot.db.fetch(query, self.rz_id)) != 0
             query = "SELECT * FROM channel WHERE series_id = $1"
@@ -631,25 +625,29 @@ class DB(commands.Cog):
                 connection = await self.bot.db.acquire()
                 async with connection.transaction():
                     query = "INSERT INTO mangadex (guild_id, channel_id, mangas, ignore_no_group) VALUES ($1, $2, $3, $4)"
-                    await self.bot.db.execute(
-                        query, i.guild.id, i.channel_id, {}, []
-                    )
+                    await self.bot.db.execute(query, i.guild.id, i.channel_id, {}, [])
                 await self.bot.db.release(connection)
                 query = "SELECT * FROM mangadex WHERE channel_id = $1 AND guild_id = $2"
-                channel_exist = await self.bot.db.fetchrow(query, i.channel_id, i.guild.id)
+                channel_exist = await self.bot.db.fetchrow(
+                    query, i.channel_id, i.guild.id
+                )
                 query = "SELECT * FROM mangadex WHERE channel_id = $1 AND guild_id = $2"
-                channel_exist = await self.bot.db.fetchrow(query, i.channel_id, i.guild.id)
-            if not channel_exist.get("ignore_no_group", False):
+                channel_exist = await self.bot.db.fetchrow(
+                    query, i.channel_id, i.guild.id
+                )
+            if not channel_exist.get("ignore_no_group", False):  # type: ignore
                 connection = await self.bot.db.acquire()
                 async with connection.transaction():
                     query = f"UPDATE mangadex SET ignore_no_group = $1 WHERE guild_id = $2 AND channel_id = $3"
                     await self.bot.db.execute(query, [], i.guild.id, i.channel_id)  # type: ignore
                 await self.bot.db.release(connection)
                 query = "SELECT * FROM mangadex WHERE channel_id = $1 AND guild_id = $2"
-                channel_exist = await self.bot.db.fetchrow(query, i.channel_id, i.guild.id)
+                channel_exist = await self.bot.db.fetchrow(
+                    query, i.channel_id, i.guild.id
+                )
             res = (
-                json.loads(channel_exist["mangas"]),
-                channel_exist["ignore_no_group"],
+                json.loads(channel_exist["mangas"]),  # type: ignore
+                channel_exist["ignore_no_group"],  # type: ignore
             )
 
             if id not in res[0]:
@@ -706,7 +704,9 @@ class DB(commands.Cog):
                 connection = await self.bot.db.acquire()
                 async with connection.transaction():
                     query = f"DELETE FROM mangadex WHERE channel_id = $1 AND guild_id = $2 AND series_id = $3"
-                    await self.bot.db.execute(query, i.channel_id, i.guild.id, self.rz_id)
+                    await self.bot.db.execute(
+                        query, i.channel_id, i.guild.id, self.rz_id
+                    )
                 await self.bot.db.release(connection)
                 msg = success_msg
             else:
@@ -716,7 +716,9 @@ class DB(commands.Cog):
                 connection = await self.bot.db.acquire()
                 async with connection.transaction():
                     query = f"DELETE FROM mangadex WHERE channel_id = $1 AND guild_id = $2 AND series_id = $3"
-                    await self.bot.db.execute(query, i.channel_id, i.guild.id, self.kg_id)
+                    await self.bot.db.execute(
+                        query, i.channel_id, i.guild.id, self.kg_id
+                    )
                 await self.bot.db.release(connection)
                 msg = success_msg
             else:
@@ -726,7 +728,9 @@ class DB(commands.Cog):
                 connection = await self.bot.db.acquire()
                 async with connection.transaction():
                     query = f"DELETE FROM mangadex WHERE channel_id = $1 AND guild_id = $2 AND series_id = $3"
-                    await self.bot.db.execute(query, i.channel_id, i.guild.id, self.onk_id)
+                    await self.bot.db.execute(
+                        query, i.channel_id, i.guild.id, self.onk_id
+                    )
                 await self.bot.db.release(connection)
                 msg = success_msg
             else:
@@ -736,7 +740,9 @@ class DB(commands.Cog):
                 connection = await self.bot.db.acquire()
                 async with connection.transaction():
                     query = f"DELETE FROM mangadex WHERE channel_id = $1 AND guild_id = $2 AND series_id = $3"
-                    await self.bot.db.execute(query, i.channel_id, i.guild.id, self.gb_id)
+                    await self.bot.db.execute(
+                        query, i.channel_id, i.guild.id, self.gb_id
+                    )
                 await self.bot.db.release(connection)
                 msg = success_msg
             else:
@@ -748,7 +754,7 @@ class DB(commands.Cog):
                 return await i.response.send_message(
                     "This channel is not on any receiver list, in fact!"
                 )
-            mangas_dict: Dict[str, str] = json.loads(channel_exists["mangas"])
+            mangas_dict: Dict[str, str] = json.loads(channel_exists["mangas"])  # type: ignore
 
             embed = discord.Embed(
                 title=f"Pick one of the series you wish to unfollow, I suppose! Only 5 series are shown at a time, in fact!"
@@ -827,7 +833,7 @@ class DB(commands.Cog):
         channel_exists = await self.bot.db.fetchrow(query, i.channel_id, i.guild.id)
         if channel_exists:
             md = MangaDex(self.bot)
-            mangas_on_channel = channel_exists["mangas"]
+            mangas_on_channel = channel_exists["mangas"]  # type: ignore
             mangas_dict = literal_eval(mangas_on_channel)
             for manga_id in mangas_dict:
                 manga_title = await md.get_manga_title(manga_id)

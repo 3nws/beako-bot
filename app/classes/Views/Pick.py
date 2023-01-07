@@ -1,10 +1,8 @@
 import discord
 import json
 
-from pymongo.collection import Collection, ReturnDocument
-from ast import literal_eval
 from discord import ui
-from typing import Tuple, Dict, Any, List, Optional, Mapping
+from typing import Tuple, Dict, Optional, List
 from typing_extensions import Self
 
 from classes.MangaDex import MangaDex, Chapter
@@ -75,17 +73,19 @@ class PickView(ui.View):
 
     async def find_one(self):
         query = "SELECT * FROM mangadex WHERE channel_id = $1 AND guild_id = $2"
-        channel_exist = len(await self.bot.db.fetch(query, self.i.channel_id, self.i.guild.id)) != 0
+        channel_exist = (
+            len(await self.bot.db.fetch(query, self.i.channel_id, self.i.guild.id)) != 0
+        )
         if not channel_exist:
             connection = await self.db.acquire()
             async with connection.transaction():
                 query = "INSERT INTO mangadex (guild_id, channel_id, mangas, ignore_no_group) VALUES ($1, $2, $3, $4)"
-                await self.db.execute(
-                    query, self.i.guild.id, self.i.channel_id, {}, []
-                )
+                await self.db.execute(query, self.i.guild.id, self.i.channel_id, {}, [])
             await self.db.release(connection)
             query = "SELECT * FROM mangadex WHERE channel_id = $1 AND guild_id = $2"
-            channel_exist = await self.bot.db.fetchrow(query, self.i.channel_id, self.i.guild.id)
+            channel_exist = await self.bot.db.fetchrow(
+                query, self.i.channel_id, self.i.guild.id
+            )
         if not channel_exist.get("ignore_no_group", False):
             connection = await self.db.acquire()
             async with connection.transaction():
@@ -93,8 +93,10 @@ class PickView(ui.View):
                 await self.db.execute(query, [], self.i.guild.id, self.i.channel_id)  # type: ignore
             await self.db.release(connection)
         query = "SELECT * FROM mangadex WHERE channel_id = $1 AND guild_id = $2"
-        channel_exist = await self.bot.db.fetchrow(query, self.i.channel_id, self.i.guild.id)
-        return (json.loads(channel_exist["mangas"]), channel_exist["ignore_no_group"])
+        channel_exist = await self.bot.db.fetchrow(
+            query, self.i.channel_id, self.i.guild.id
+        )
+        return (json.loads(channel_exist["mangas"]), channel_exist["ignore_no_group"])  # type: ignore
 
     async def update(self, choice: int):
         res = await self.find_one()
