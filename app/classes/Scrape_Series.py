@@ -9,8 +9,8 @@ class Scrape_Series(ABC):
 
     @abstractmethod
     def scrape(self) -> Any:
-        raise NotImplementedError("scrape method has not beeen implemented")
+        raise NotImplementedError("scrape method has not been implemented")
 
     @abstractmethod
     def latest_chapter(self) -> Any:
-        raise NotImplementedError("latest_chapter method has not beeen implemented")
+        raise NotImplementedError("latest_chapter method has not been implemented")
