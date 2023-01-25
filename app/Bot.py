@@ -170,7 +170,7 @@ class Dropdown(discord.ui.Select[PersistentViewHelp]):
                 value="2", label="Tag", emoji="<:_:576499016376909854>"
             ),
             discord.SelectOption(
-                value="3", label="Fun", emoji="<:_:586291133059956908>"
+                value="3", label="Fun", emoji="<:_:978602542177091604>"
             ),
             discord.SelectOption(
                 value="4", label="Gif", emoji="<a:_:662661255278100489>"
