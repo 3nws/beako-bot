@@ -26,8 +26,6 @@ load_dotenv()
 intents = discord.Intents.default()
 intents.members = True
 intents.guilds = True
-intents.messages = True
-intents.message_content = True
 
 
 client = discord.Client(intents=intents)
