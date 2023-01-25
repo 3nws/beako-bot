@@ -1,0 +1,35 @@
+version: '3.8'
+services:
+    postgres:
+        image: postgres:15
+        env_file:
+          .env
+        environment:
+            POSTGRES_USER: ${DB_USER}
+            POSTGRES_PASSWORD: ${DB_PASS}
+            POSTGRES_DB: ${DB_NAME}
+        ports:
+          - 5433:5433
+        volumes:
+            - beako_data:/var/lib/postgresql/data
+
+    pgadmin:
+        image: dpage/pgadmin4
+        env_file:
+          .env
+        environment:
+            PGADMIN_DEFAULT_EMAIL: ${PG_EMAIL}
+            PGADMIN_DEFAULT_PASSWORD: ${PG_PASS}
+            PGADMIN_LISTEN_PORT: 80
+        ports:
+            - 15432:80
+        volumes:
+            - pgadmin:/var/lib/pgadmin
+        depends_on:
+            - postgres
+
+
+volumes:
+    beako_data:
+    postgres:
+    pgadmin:

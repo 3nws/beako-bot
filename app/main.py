@@ -27,8 +27,6 @@ load_dotenv()
 intents = discord.Intents.default()
 intents.members = True
 intents.guilds = True
-intents.messages = True
-intents.message_content = True
 
 
 client = discord.Client(intents=intents)
@@ -182,7 +180,7 @@ async def main():
             "password": os.getenv("DB_PASSWORD"),
             "database": "Beako",
             "host": "127.0.0.1",
-            "port": "5433",  # 5432 by default
+            "port": "5432",
         }
         db = await asyncpg.create_pool(**credentials)
 
