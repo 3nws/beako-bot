@@ -33,8 +33,8 @@ WantedBy=multi-user.target
 ## Series tracking and database action commands and the help command
 
 - `/beakohelp` (sends information about the commands)
-- `/add series` (has autocomplete) (adds the text channel to the list that will receive notifications, if the series is not one of the four mentioned above it will search on mangadex and add them instead)  (needs `manage_channels` permission)
-- `/remove series` (remove the text channel from the list that will receive notifications, if no series argument is passed it will show the series followed on mangadex by the text channel) (needs `manage_channels` permission)
+- `/add series` (has autocomplete) (adds the text channel to the list that will receive notifications, if the series is not one of the four mentioned above it will search on mangadex and add them instead)
+- `/remove series` (remove the text channel from the list that will receive notifications, if no series argument is passed it will show the series followed on mangadex by the text channel)
 - `/manga series` (has autocomplete) (gives information about the given manga series)
 - `/last series` (has autocomplete) (informs of the latest translated chapter of given series, sends a reader for MangaDex)
 - `/following` (sends a message with the list of series a channel is following)
