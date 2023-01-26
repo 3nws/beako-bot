@@ -103,7 +103,7 @@ WantedBy=multi-user.target
 ## Tasks
 
 - `change_avatar()` (changes avatar every 12 hours, selecting randomly from db)
-- `check_chapter()` (checks the latest chapters of the followed series every minute and notifies)
+- `check_chapter()` (checks the latest chapters of the followed series every 15 minutes and notifies)
 - `filter_channels()` (filters out the channels that no longer exists from the db)
 
 ### TODOS
