@@ -178,7 +178,7 @@ async def main():
         credentials = {
             "user": os.getenv("DB_USERNAME"),
             "password": os.getenv("DB_PASSWORD"),
-            "database": "Beako",
+            "database": "beako",
             "host": "127.0.0.1",
             "port": "5432",
         }

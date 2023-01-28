@@ -1,5 +1,30 @@
 version: '3.8'
 services:
+    bot:
+        env_file: 
+            .env
+        environment:
+            TOKEN_DEBUG: ${TOKEN_DEBUG}
+            TOKEN_PROD: ${TOKEN_PROD}
+            DB_URL: ${DB_URL}
+            TENOR_API_KEY: ${TENOR_API_KEY}
+            OSU_API_KEY: ${OSU_API_KEY}
+            SAUCENAO_API_KEY: ${SAUCENAO_API_KEY}
+            IMGUR_ID: ${IMGUR_ID}
+            IMGUR_CLIENT: ${IMGUR_CLIENT}
+            DB_USERNAME: ${DB_USERNAME}
+            DB_PASSWORD: ${DB_PASSWORD}
+            ADMIN_IP: ${ADMIN_IP}
+        build: 
+            context: ./
+            dockerfile: Dockerfile
+        network_mode: 
+            "host" 
+        stdin_open: true
+        tty: true
+        depends_on:
+            - postgres
+
     postgres:
         image: postgres:15
         env_file:
@@ -9,9 +34,11 @@ services:
             POSTGRES_PASSWORD: ${DB_PASS}
             POSTGRES_DB: ${DB_NAME}
         ports:
-          - 5433:5433
+          - 5432:5432
         volumes:
             - beako_data:/var/lib/postgresql/data
+        networks:
+            - bot
 
     pgadmin:
         image: dpage/pgadmin4
@@ -33,3 +60,7 @@ volumes:
     beako_data:
     postgres:
     pgadmin:
+
+networks:
+    bot:
+        external: false
