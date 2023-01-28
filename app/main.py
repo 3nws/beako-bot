@@ -200,7 +200,7 @@ async def main():
             "CREATE TABLE IF NOT EXISTS channel(id bigint PRIMARY KEY NOT NULL, guild_id bigint NOT NULL, series_id bigint NOT NULL);"
         )
         await db.execute(
-            "CREATE TABLE IF NOT EXISTS mangadex(guild_id bigint PRIMARY KEY NOT NULL, channel_id bigint NOT NULL, mangas json, ignore_no_group bigint[]);"
+            "CREATE TABLE IF NOT EXISTS mangadex(guild_id bigint PRIMARY KEY NOT NULL, channel_id bigint NOT NULL, mangas json, ignore_no_group text[]);"
         )
         bot.db = db
         ready_task = asyncio.create_task(run_once_when_ready())
