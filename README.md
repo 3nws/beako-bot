@@ -108,6 +108,7 @@ WantedBy=multi-user.target
 
 ### TODOS
 
+- Remove legacy tracking options
 - Add more osu! functionality
 - Make the results for osu! prettier, they look awful
 - Add tracking for animes as well
