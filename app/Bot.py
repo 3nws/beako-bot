@@ -1,6 +1,5 @@
 import asyncio
 import os
-import motor.motor_asyncio
 import traceback
 import sys
 import aiohttp
@@ -88,7 +87,7 @@ class Bot(commands.Bot):
 
     async def handle_client(self, client):
         try:
-            message = (await self.loop.sock_recv(client, 255)).decode("utf8")
+            (await self.loop.sock_recv(client, 255)).decode("utf8")
         except ConnectionResetError:
             self.no_client = True
 
@@ -135,7 +134,8 @@ class Bot(commands.Bot):
 
     async def close(self):
         await self.session.close()
-        await self.db.close()
+        if self.db is not None:
+            await self.db.close()
         for view in self.persistent_views:
             await view.on_timeout()
         await super().close()
@@ -237,7 +237,7 @@ class MyTree(CommandTree[discord.Client]):
         ]
         self.app_commands_invoked: int = 0
         self.app_command_invokes_namespaces: List[
-            Tuple[str, str, List[Tuple[Any, Any]]]
+            Tuple[str, List[Tuple[Any, Any]]]
         ] = []
 
     async def on_error(
@@ -275,7 +275,7 @@ class MyTree(CommandTree[discord.Client]):
                 f"```py\n{''.join(traceback.format_exception(None, error, traceback_))}```"
             )
             await user.send(
-                f"{interaction.user.name} used {interaction.command.name or 'unknown'} which resulted with the error above!\
+                f"Someone used {interaction.command.name or 'unknown'} which resulted with the error above!\
                             \nNamespace: {interaction.namespace}"
             )
 
@@ -286,14 +286,14 @@ class MyTree(CommandTree[discord.Client]):
         for a in l:
             if isinstance(a, (list, tuple, set)):
                 try:
-                    if isinstance(a[-1], (discord.User, discord.Member)):
-                        temp.append(a[-1].name)
+                    if isinstance(a[-1], (discord.User, discord.Member)): # type: ignore
+                        temp.append(a[-1].name) # type: ignore
                     else:
-                        temp.append(a[-1])
+                        temp.append(a[-1]) # type: ignore
                 except IndexError:
                     pass
         self.app_command_invokes_namespaces.append(
-            (interaction.command.name, interaction.user.name, temp)
+            (interaction.command.name, temp)
         )
         if self.app_commands_invoked % 10 == 0:
             user = interaction.client.get_user(442715989310832650)

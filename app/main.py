@@ -106,8 +106,8 @@ async def sync(
 async def getcount(ctx):
     await ctx.send(ctx.bot.tree.app_commands_invoked)
     messages: List[str] = []
-    for cmd, user, namespace in ctx.bot.tree.app_command_invokes_namespaces:
-        messages.append(f"{user} used {cmd} with {namespace}.")
+    for cmd, namespace in ctx.bot.tree.app_command_invokes_namespaces:
+        messages.append(f"Someone used {cmd} with {namespace}.")
 
     if len(messages) < 5 and len(messages) > 0:
         return await ctx.send("\n".join(messages))
@@ -132,7 +132,7 @@ async def getstats(ctx):
             stats[command_name] = 1
     stats = dict(sorted(stats.items(), key=lambda item: item[1], reverse=True))
     embed = discord.Embed(
-        title="Stats",
+        title=f"{ctx.bot.tree.app_commands_invoked} commands were used throughout this session.",
         colour=discord.Colour.random(),
         description="\n".join([f"{k}: {v}" for k, v in stats.items()]),
     )
@@ -182,7 +182,11 @@ async def main():
             "host": "127.0.0.1",
             "port": "5432",
         }
-        db = await asyncpg.create_pool(**credentials)
+        db: Optional[asyncpg.Pool] = await asyncpg.create_pool(**credentials)
+
+        if db is None:
+            print("Could not connect to database")
+            return
 
         await db.execute(
             "CREATE TABLE IF NOT EXISTS tags(guild_id bigint PRIMARY KEY NOT NULL, tags json);"
