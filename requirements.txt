@@ -19,7 +19,7 @@ colorama==0.4.4
 debtcollector==2.5.0
 dill==0.3.5.1
 discord-ext-menus @ git+https://github.com/Rapptz/discord-ext-menus
-discord.py @ git+https://github.com/Rapptz/discord.py
+discord.py @ git+https://github.com/Rapptz/discord.py@be6db2025580fd9e6298e5ad2bc0b93919f6c6a9
 dnspython==2.1.0
 Flask==2.1.3
 frozenlist==1.3.0

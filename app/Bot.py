@@ -65,7 +65,7 @@ modes = [
 
 
 class Bot(commands.Bot):
-    def __init__(self, *args: List[Any], **kwargs: List[Any]):
+    def __init__(self, *args: Any, **kwargs: Any):
         super().__init__(*args, **kwargs)
         self.session: ClientSession
         self.db: Optional[Pool] = None
