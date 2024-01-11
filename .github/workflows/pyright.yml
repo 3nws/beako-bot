@@ -1,2 +1,9 @@
-- name: Run pyright
-  uses: jakebailey/pyright-action@v1.8.1
+name: Pyright
+
+on: [push, pull_request]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: jakebailey/pyright-action@v1.8.1
