@@ -10,7 +10,6 @@ from Bot import Bot
 
 
 class PickView(ui.View):
-
     __slots__ = (
         "i",
         "mangas",

@@ -98,7 +98,6 @@ def apply_filter(func: Callable_) -> Callable_:
 
 
 class FilterView(ui.View):
-
     __slots__ = (
         "i",
         "embed",

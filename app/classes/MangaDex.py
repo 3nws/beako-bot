@@ -8,7 +8,6 @@ from Bot import Bot
 
 
 class Chapter:
-
     __slots__ = (
         "id",
         "title",

@@ -20,7 +20,6 @@ class Source(menus.ListPageSource):
 
 
 class MangaReader(ui.View, menus.MenuPages):
-
     __slots__ = (
         "_source",
         "current_page",

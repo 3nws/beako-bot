@@ -16,7 +16,6 @@ load_dotenv()
 
 
 class Gif(commands.Cog):
-
     _tenor_api_key: ClassVar[Optional[str]] = os.getenv("TENOR_API_KEY", None)
 
     def __init__(self, bot: Bot):

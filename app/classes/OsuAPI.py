@@ -12,7 +12,6 @@ load_dotenv()
 
 
 class OsuAPI:
-
     __slots__ = (
         "bot",
         "base_url",

@@ -9,7 +9,6 @@ from .Scrape_Series import Scrape_Series
 
 
 class Re_zero(Scrape_Series):
-
     __slots__ = ("url", "bot")
 
     def __init__(self, url: str, bot: Bot):

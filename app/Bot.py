@@ -122,7 +122,7 @@ class Bot(commands.Bot):
 
     async def setup_hook(self) -> None:
         self.session = aiohttp.ClientSession()
-        
+
         self.add_view(PersistentViewHelp("0", self))
 
         await self.load_cogs()
@@ -139,7 +139,7 @@ class Bot(commands.Bot):
         for view in self.persistent_views:
             await view.on_timeout()
         await super().close()
-        
+
 
 class PersistentViewHelp(View):
     def __init__(self, mode: str, bot: Bot):
@@ -286,15 +286,13 @@ class MyTree(CommandTree[discord.Client]):
         for a in l:
             if isinstance(a, (list, tuple, set)):
                 try:
-                    if isinstance(a[-1], (discord.User, discord.Member)): # type: ignore
-                        temp.append(a[-1].name) # type: ignore
+                    if isinstance(a[-1], (discord.User, discord.Member)):  # type: ignore
+                        temp.append(a[-1].name)  # type: ignore
                     else:
-                        temp.append(a[-1]) # type: ignore
+                        temp.append(a[-1])  # type: ignore
                 except IndexError:
                     pass
-        self.app_command_invokes_namespaces.append(
-            (interaction.command.name, temp)
-        )
+        self.app_command_invokes_namespaces.append((interaction.command.name, temp))
         if self.app_commands_invoked % 10 == 0:
             user = interaction.client.get_user(442715989310832650)
             await user.send(

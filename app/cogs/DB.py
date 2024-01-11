@@ -22,7 +22,6 @@ load_dotenv()
 
 
 class DB(commands.Cog):
-
     _IMGUR: ClassVar[Optional[str]] = os.getenv("IMGUR_ID", None)
 
     def __init__(self, bot: Bot):
