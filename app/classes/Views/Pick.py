@@ -134,17 +134,13 @@ class PickView(ui.View):
                     f"This channel will no longer receive notifications on new chapters of {title}, I suppose!"
                 )
 
-    @ui.button(
-        emoji="1️⃣", style=discord.ButtonStyle.blurple, custom_id="persistent:one"
-    )
+    @ui.button(emoji="1️⃣", style=discord.ButtonStyle.blurple, custom_id="persistent:one")
     async def opt_one(
         self, interaction: discord.Interaction, button: discord.ui.Button[Self]
     ):
         await self.update(0)
 
-    @ui.button(
-        emoji="2️⃣", style=discord.ButtonStyle.blurple, custom_id="persistent:two"
-    )
+    @ui.button(emoji="2️⃣", style=discord.ButtonStyle.blurple, custom_id="persistent:two")
     async def opt_two(
         self, interaction: discord.Interaction, button: discord.ui.Button[Self]
     ):

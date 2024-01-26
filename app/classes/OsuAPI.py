@@ -67,9 +67,9 @@ class OsuAPI:
         player["accuracy"] = player["accuracy"][:5]
         player["playtime"] = str(int(player["total_seconds_played"]) // 60 // 60)
 
-        player[
-            "desc"
-        ] = f"Rank: #{player['pp_rank']} (#{player['pp_country_rank']} {player['country']})\n\n"
+        player["desc"] = (
+            f"Rank: #{player['pp_rank']} (#{player['pp_country_rank']} {player['country']})\n\n"
+        )
         player[
             "desc"
         ] += f"{player['pp']} pp, {player['accuracy']}%, {player['playcount']} plays ({player['playtime']})\n\n"

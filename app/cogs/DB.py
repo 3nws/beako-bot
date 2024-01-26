@@ -756,9 +756,11 @@ class DB(commands.Cog):
             mangas_dict: Dict[str, str] = json.loads(channel_exists["mangas"])  # type: ignore
 
             embed = discord.Embed(
-                title=f"Pick one of the series you wish to unfollow, I suppose! Only 5 series are shown at a time, in fact!"
-                if len(mangas_dict) > 0
-                else "This channel is not following any series, in fact!\n Use `/add <manga_title>` to pick some series to start, I suppose!",
+                title=(
+                    f"Pick one of the series you wish to unfollow, I suppose! Only 5 series are shown at a time, in fact!"
+                    if len(mangas_dict) > 0
+                    else "This channel is not following any series, in fact!\n Use `/add <manga_title>` to pick some series to start, I suppose!"
+                ),
                 color=discord.Colour.random(),
             )
 
@@ -841,12 +843,16 @@ class DB(commands.Cog):
 
         frame = discord.Embed(
             color=discord.Colour.random(),
-            title="This channel is following the series below, in fact!"
-            if len(series) > 0
-            else "This channel is not following any series, I suppose!",
-            description=""
-            if len(series) > 0
-            else "Use `/add <series>` to start following a series on this channel, in fact!",
+            title=(
+                "This channel is following the series below, in fact!"
+                if len(series) > 0
+                else "This channel is not following any series, I suppose!"
+            ),
+            description=(
+                ""
+                if len(series) > 0
+                else "Use `/add <series>` to start following a series on this channel, in fact!"
+            ),
         )
         if len(series) > 0:
             counter = 1

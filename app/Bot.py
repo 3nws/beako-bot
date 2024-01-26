@@ -236,9 +236,9 @@ class MyTree(CommandTree[discord.Client]):
             0
         ]
         self.app_commands_invoked: int = 0
-        self.app_command_invokes_namespaces: List[
-            Tuple[str, List[Tuple[Any, Any]]]
-        ] = []
+        self.app_command_invokes_namespaces: List[Tuple[str, List[Tuple[Any, Any]]]] = (
+            []
+        )
 
     async def on_error(
         self,
